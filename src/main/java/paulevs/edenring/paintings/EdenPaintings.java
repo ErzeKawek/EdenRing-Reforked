@@ -4,9 +4,11 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import org.betterx.bclib.BCLib;
 import org.jetbrains.annotations.Nullable;
@@ -17,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 public class EdenPaintings {
-	private static final Map<ResourceLocation, PaintingInfo> PAINTING_BY_ID = Maps.newHashMap();
+	private static final Map<Identifier, PaintingInfo> PAINTING_BY_ID = Maps.newHashMap();
 	private static final List<PaintingInfo> PAINTINGS_LIST = Lists.newArrayList();
 	
 	public static void init() {
@@ -35,14 +37,14 @@ public class EdenPaintings {
 	}
 	
 	private static void register(String name, int width, int height, @Nullable PaintingColorProvider<ClientLevel, BlockPos> provider) {
-		ResourceLocation id = EdenRing.makeID(name);
-		ResourceLocation tex = EdenRing.makeID("textures/painting/" + name + ".png");
+		Identifier id = EdenRing.of(name);
+		Identifier tex = EdenRing.of("textures/painting/" + name + ".png");
 		PaintingInfo info = new PaintingInfo(PAINTINGS_LIST.size(), id, tex, width, height, provider);
 		PAINTING_BY_ID.put(id, info);
 		PAINTINGS_LIST.add(info);
 	}
 	
-	public static PaintingInfo getPainting(ResourceLocation id) {
+	public static PaintingInfo getPainting(Identifier id) {
 		return PAINTING_BY_ID.get(id);
 	}
 	
@@ -56,7 +58,7 @@ public class EdenPaintings {
 	
 	@Nullable
 	private static PaintingColorProvider<ClientLevel, BlockPos> getGrassColor() {
-		return BCLib.isClient() ? getGrassColorClient() : null;
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT ? getGrassColorClient() : null;
 	}
 	
 	@Environment(EnvType.CLIENT)

@@ -8,12 +8,8 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.blocks.BlockProperties;
-import org.betterx.bclib.complexmaterials.WoodenComplexMaterial;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
 public class BrainTreeFeature {
@@ -38,12 +34,12 @@ public class BrainTreeFeature {
 		BlockState brain = TYPES[random.nextInt(3)];
 		BlockState brainActive = brain.setValue(EdenBlockProperties.ACTIVE, true);
 		//BlockState stem = EdenBlocks.BRAIN_TREE_LOG.defaultBlockState();
-		BlockState stem = EdenBlocks.BRAIN_TREE_MATERIAL.getBlock(WoodenComplexMaterial.BLOCK_LOG).defaultBlockState();
+		BlockState stem = EdenBlocks.BRAIN_TREE_MATERIAL.log.defaultBlockState();
 		
 		MutableBlockPos pos = center.mutable();
-		int h = MHelper.randRange(2, 4, random);
+		int h = AllPurposeUtility.randRange(2, 4, random);
 		
-		BlocksHelper.setWithoutUpdate(level, pos, stem);
+		level.setBlock(pos, stem, AllPurposeUtility.Flags.SILENT);
 		for (int i = 1; i < h; i++) {
 			pos.setY(center.getY() + i);
 			setBlock(level, pos, stem);
@@ -95,11 +91,11 @@ public class BrainTreeFeature {
 	
 	private void setBlock(WorldGenLevel level, BlockPos pos, BlockState state) {
 		if (canReplace(level.getBlockState(pos))) {
-			BlocksHelper.setWithoutUpdate(level, pos, state);
+			level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 		}
 	}
 	
 	private boolean canReplace(BlockState state) {
-		return state.isAir() || BlocksHelper.replaceableOrPlant(state);
+		return state.isAir() || state.canBeReplaced();
 	}
 }

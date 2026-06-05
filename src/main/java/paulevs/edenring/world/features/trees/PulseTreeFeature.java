@@ -8,15 +8,12 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.blocks.EdenBlockProperties.PulseTreeState;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class PulseTreeFeature extends DefaultFeature {
-	@Override
+public class PulseTreeFeature {
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
@@ -28,7 +25,7 @@ public class PulseTreeFeature extends DefaultFeature {
 		}
 		
 		MutableBlockPos pos = center.mutable();
-		int h = MHelper.randRange(5, 12, random);
+		int h = AllPurposeUtility.randRange(5, 12, random);
 		for (int i = 1; i < h; i++) {
 			pos.setY(center.getY() + i);
 			if (!level.getBlockState(pos).isAir()) {
@@ -46,31 +43,31 @@ public class PulseTreeFeature extends DefaultFeature {
 		BlockState headBig = EdenBlocks.PULSE_TREE.defaultBlockState().setValue(EdenBlockProperties.PULSE_TREE, PulseTreeState.HEAD_BIG);
 		BlockState stem = EdenBlocks.PULSE_TREE.defaultBlockState();
 		int mediumCount = Mth.floor(h * 0.2F + 0.5F);
-		int offsetCount = MHelper.randRange(2, 3, random);
+		int offsetCount = AllPurposeUtility.randRange(2, 3, random);
 		int bigCount = h - offsetCount - mediumCount * 2 - 1;
 		
 		pos.setY(center.getY());
 		for (int i = 0; i < offsetCount; i++) {
-			BlocksHelper.setWithoutUpdate(level, pos, stem);
+			level.setBlock(pos, stem, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() + 1);
 		}
 		
 		for (int i = 0; i < mediumCount; i++) {
-			BlocksHelper.setWithoutUpdate(level, pos, headMedium);
+			level.setBlock(pos, headMedium, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() + 1);
 		}
 		
 		for (int i = 0; i < bigCount; i++) {
-			BlocksHelper.setWithoutUpdate(level, pos, headBig);
+			level.setBlock(pos, headBig, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() + 1);
 		}
 		
 		for (int i = 0; i < mediumCount; i++) {
-			BlocksHelper.setWithoutUpdate(level, pos, headMedium);
+			level.setBlock(pos, headMedium, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() + 1);
 		}
-		
-		BlocksHelper.setWithoutUpdate(level, pos, headSmall);
+
+		level.setBlock(pos, headSmall, AllPurposeUtility.Flags.SILENT);
 		
 		return true;
 	}

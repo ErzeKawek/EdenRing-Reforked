@@ -9,9 +9,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import org.betterx.bclib.noise.OpenSimplexNoise;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
+import paulevs.edenring.misc.noise.OpenSimplexNoise;
 import paulevs.edenring.noise.InterpolationCell;
 import paulevs.edenring.noise.VoronoiNoise;
 
@@ -32,8 +31,8 @@ public class CaveGenerator {
 	public static void carve(ChunkAccess chunkAccess, InterpolationCell cellTerrain) {
 		short minX = (short) chunkAccess.getPos().getMinBlockX();
 		short minZ = (short) chunkAccess.getPos().getMinBlockZ();
-		short minY = (short) chunkAccess.getMinBuildHeight();
-		short maxY = (short) chunkAccess.getMaxBuildHeight();
+		short minY = (short) chunkAccess.getMinY();
+		short maxY = (short) chunkAccess.getMaxY();
 		
 		final float[] buffer9 = new float[9];
 		final float[] buffer27 = new float[27];
@@ -49,8 +48,8 @@ public class CaveGenerator {
 		
 		MutableBlockPos pos = new MutableBlockPos();
 		
-		short newMinY = (short) MHelper.min(cellTerrain.getMinY(), cellSparse.getMinY());
-		minY = (short) MHelper.max(minY, newMinY);
+		short newMinY = (short) Math.min(cellTerrain.getMinY(), cellSparse.getMinY());
+		minY = (short) Math.max(minY, newMinY);
 		int maxCheck = maxY - 16;
 		
 		for (int x = 0; x < 16; x++) {
@@ -97,7 +96,7 @@ public class CaveGenerator {
 						
 						float average = 0;
 						for (int i = 0; i < accumulation.length; i++) {
-							noise = MHelper.max(noise, accumulation[i]);
+							noise = Math.max(noise, accumulation[i]);
 							average += accumulation[i];
 						}
 						noise = (noise + (average / accumulation.length)) * 0.5F - 0.9F;
@@ -139,9 +138,9 @@ public class CaveGenerator {
 	
 	private static float getMinValue(InterpolationCell cell, BlockPos pos) {
 		float value = 1;
-		for (Direction dir : BlocksHelper.DIRECTIONS) {
+		for (Direction dir : AllPurposeUtility.DirectionalUtility.DIRECTIONS) {
 			float side = cell.get(pos.relative(dir, 15), false);
-			value = MHelper.min(value, side);
+			value = Math.min(value, side);
 		}
 		return value;
 	}
@@ -154,8 +153,8 @@ public class CaveGenerator {
 		float noise = (float) simplexNoise.eval(pos.getX() * 0.03, pos.getY() * 0.03, pos.getZ() * 0.03);
 		
 		float value = getMinValue(cell, pos);
-		value = MHelper.max(value, getMinValue(cell, pos.above(8)));
-		value = MHelper.max(value, getMinValue(cell, pos.below(8)));
+		value = Math.max(value, getMinValue(cell, pos.above(8)));
+		value = Math.max(value, getMinValue(cell, pos.below(8)));
 		if (noise < 0) {
 			value += noise;
 		}

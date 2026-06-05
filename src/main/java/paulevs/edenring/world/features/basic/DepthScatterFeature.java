@@ -9,11 +9,9 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
-public class DepthScatterFeature extends DefaultFeature {
+public class DepthScatterFeature {
 	private Block block;
 	private Block[] scatterIn;
 	private int minCount;
@@ -33,8 +31,7 @@ public class DepthScatterFeature extends DefaultFeature {
 	public DepthScatterFeature(Block block, Block... scatterIn) {
 		this(block, 50, 8, scatterIn);
 	}
-	
-	@Override
+
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		RandomSource random = featurePlaceContext.random();
 		BlockPos center = featurePlaceContext.origin();
@@ -45,13 +42,13 @@ public class DepthScatterFeature extends DefaultFeature {
 		
 		MutableBlockPos pos = new MutableBlockPos();
 		
-		int iterations = MHelper.randRange(minCount, maxCount, random);
+		int iterations = AllPurposeUtility.randRange(minCount, maxCount, random);
 		for (int n = 0; n < iterations; n++) {
 			int wx = posX | random.nextInt(16);
 			int wz = posZ | random.nextInt(16);
 			int wy = random.nextInt(256);
-			int radius = MHelper.randRange(minRadius, maxRadius, random);
-			int count = (int) (radius * radius * MHelper.randRange(0.7F, 2F, random));
+			int radius = AllPurposeUtility.randRange(minRadius, maxRadius, random);
+			int count = (int) (radius * radius * AllPurposeUtility.randRange(0.7F, 2F, random));
 			float multiplier = radius / 3.0F;
 			for (int i = 0; i < count; i++) {
 				int px = wx + Mth.floor(Mth.clamp(random.nextGaussian() * multiplier, -radius, radius));
@@ -62,7 +59,7 @@ public class DepthScatterFeature extends DefaultFeature {
 				BlockState state = level.getBlockState(pos);
 				for (Block b: scatterIn) {
 					if (state.is(b)) {
-						BlocksHelper.setWithoutUpdate(level, pos, block);
+						level.setBlock(pos, block.defaultBlockState(), AllPurposeUtility.Flags.SILENT);
 						break;
 					}
 				}

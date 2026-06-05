@@ -8,8 +8,6 @@ import net.minecraft.world.level.levelgen.GenerationStep.Decoration;
 import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v3.levelgen.features.BCLFeature;
-import org.betterx.bclib.api.v3.levelgen.features.BCLFeatureBuilder;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.SixSidePlant;
 import paulevs.edenring.world.features.basic.*;
@@ -20,7 +18,7 @@ import paulevs.edenring.world.features.trees.*;
 public class EdenFeatures {
 	public static final StonePillar STONE_PILLAR_FEATURE = inlineBuild("stone_pillar", new StonePillar());
 
-	public static final BCLFeature<ScatterFeature, NoneFeatureConfiguration> MOSS_LAYER = registerVegetation("moss_layer", inlineBuild("moss_layer", new ScatterFeature(Blocks.MOSS_CARPET)), 4);
+	public static final Feature<NoneFeatureConfiguration> MOSS_LAYER = registerVegetation("moss_layer", inlineBuild("moss_layer", new ScatterFeature(Blocks.MOSS_CARPET)), 4);
 	public static final BCLFeature<ScatterFeature, NoneFeatureConfiguration> EDEN_MOSS_LAYER = registerVegetation("eden_moss_layer", inlineBuild("eden_moss_layer", new ScatterFeature(EdenBlocks.EDEN_MOSS)), 6);
 	
 	public static final BCLFeature<FloorScatterFeature, NoneFeatureConfiguration> MOSS_FLOOR = registerVegetation(

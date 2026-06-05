@@ -2,7 +2,7 @@ package paulevs.edenring.registries;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -26,8 +26,8 @@ public class EdenEntitiesRenderers {
 		register(EdenEntities.LIGHTNING_RAY, LightningRayRenderer::new);
 		register(EdenEntities.LIMPHIUM_PAINTING, EdenPaintingRenderer::new);
 		register(EdenEntities.DISKWING, DiskwingEntityRenderer::new);
-		
-		EntityModelLayerRegistry.registerModelLayer(DISKWING_MODEL, DiskwingEntityModel::getTexturedModelData);
+
+		ModelLayerRegistry.registerModelLayer(DISKWING_MODEL, DiskwingEntityModel::getTexturedModelData);
 	}
 	
 	private static void register(EntityType<?> type, Function<Context, ? extends EntityRenderer> renderer) {
@@ -35,6 +35,6 @@ public class EdenEntitiesRenderers {
 	}
 	
 	private static ModelLayerLocation registerMain(String id) {
-		return new ModelLayerLocation(EdenRing.makeID(id), "main");
+		return new ModelLayerLocation(EdenRing.of(id), "main");
 	}
 }

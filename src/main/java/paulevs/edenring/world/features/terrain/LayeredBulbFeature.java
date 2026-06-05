@@ -8,12 +8,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.noise.OpenSimplexNoise;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
+import paulevs.edenring.misc.noise.OpenSimplexNoise;
 
-public class LayeredBulbFeature extends DefaultFeature {
+public class LayeredBulbFeature {
 	private static final OpenSimplexNoise NOISE = new OpenSimplexNoise("ore".hashCode());
 	private Block[] layers;
 	private Block[] scatterIn;
@@ -30,8 +28,7 @@ public class LayeredBulbFeature extends DefaultFeature {
 		this.minRadius = radius / 2;
 		this.maxRadius = radius;
 	}
-	
-	@Override
+
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		RandomSource random = featurePlaceContext.random();
 		BlockPos center = featurePlaceContext.origin();
@@ -41,14 +38,14 @@ public class LayeredBulbFeature extends DefaultFeature {
 		int posZ = center.getZ() & 0xFFFFFFF0;
 		
 		MutableBlockPos pos = new MutableBlockPos();
-		int iterations = MHelper.randRange(minCount, maxCount, random);
+		int iterations = AllPurposeUtility.randRange(minCount, maxCount, random);
 		
 		for (int n = 0; n < iterations; n++) {
 			int wx = posX | random.nextInt(16);
 			int wz = posZ | random.nextInt(16);
 			int wy = random.nextInt(256);
 			
-			int radius = MHelper.randRange(minRadius, maxRadius, random);
+			int radius = AllPurposeUtility.randRange(minRadius, maxRadius, random);
 			
 			int x1 = wx - radius;
 			int x2 = wx + radius;
@@ -63,7 +60,7 @@ public class LayeredBulbFeature extends DefaultFeature {
 					pos.setY(y);
 					for (int z = z1; z <= z2; z++) {
 						pos.setZ(z);
-						float dist = MHelper.length(x - wx, y - wy, z - wz);
+						float dist = AllPurposeUtility.length(x - wx, y - wy, z - wz);
 						float localRadius = radius - (float) NOISE.eval(x * 0.3, y * 0.3, z * 0.3) * radius * 0.3F;
 						if (dist < localRadius - random.nextInt(3)) {
 							int index = (int) (dist / localRadius * layers.length);
@@ -71,7 +68,7 @@ public class LayeredBulbFeature extends DefaultFeature {
 							BlockState worldState = level.getBlockState(pos);
 							for (Block block: scatterIn) {
 								if (worldState.is(block)) {
-									BlocksHelper.setWithoutUpdate(level, pos, state);
+									level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 								}
 							}
 						}

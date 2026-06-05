@@ -62,7 +62,6 @@ public void onInitialize() {
   EdenSounds.init();
   EdenBlocks.init();
   EdenBlockEntities.init();
-  EdenBiomes.register();
   EdenPaintings.init();
   EdenEntities.init();
   EdenItems.init();

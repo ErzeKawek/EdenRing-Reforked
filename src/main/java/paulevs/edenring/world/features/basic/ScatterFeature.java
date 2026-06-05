@@ -8,20 +8,19 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
-public class ScatterFeature extends DefaultFeature {
+public class ScatterFeature extends Feature<NoneFeatureConfiguration> {
 	private Block block;
-	
+
 	public ScatterFeature(Block block) {
+		super(NoneFeatureConfiguration.CODEC);
 		this.block = block;
 	}
-	
-	@Override
+
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		RandomSource random = featurePlaceContext.random();
@@ -40,7 +39,7 @@ public class ScatterFeature extends DefaultFeature {
 				pos.setY(center.getY() + y);
 				if (level.getBlockState(pos).isFaceSturdy(level, pos, Direction.UP)) {
 					pos.setY(pos.getY() + 1);
-					if (level.getBlockState(pos).isAir() && block.canSurvive(state, level, pos)) {
+					if (level.getBlockState(pos).isAir() && state.canSurvive(level, pos)) {
 						placeBlock(level, pos, state);
 						break;
 					}
@@ -52,9 +51,9 @@ public class ScatterFeature extends DefaultFeature {
 	}
 	
 	protected int getCount(RandomSource random) {
-		return MHelper.randRange(10, 20, random);
+		return AllPurposeUtility.randRange(10, 20, random);
 	}
 	protected void placeBlock(WorldGenLevel level, BlockPos pos, BlockState state) {
-		BlocksHelper.setWithoutUpdate(level, pos, state);
+		level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 	}
 }

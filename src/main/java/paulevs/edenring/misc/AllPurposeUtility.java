@@ -17,10 +17,13 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import org.joml.Vector3f;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 public class AllPurposeUtility {
 
@@ -99,6 +102,110 @@ public class AllPurposeUtility {
         int h = seed + x * 374761393 + y * 668265263 + z;
         h = (h ^ (h >> 13)) * 1274126177;
         return h ^ (h >> 16);
+    }
+
+    public static void offset(List<Vector3f> spline, Vector3f offset) {
+        for (Vector3f v : spline) {
+            v.set(offset.x() + v.x(), offset.y() + v.y(), offset.z() + v.z());
+        }
+    }
+
+    public static int floor(double x) {
+        return x < 0 ? (int) (x - 1) : (int) x;
+    }
+
+    public static int min(int a, int b) {
+        return a < b ? a : b;
+    }
+
+    public static int min(int a, int b, int c) {
+        return min(a, min(b, c));
+    }
+
+    public static int max(int a, int b) {
+        return a > b ? a : b;
+    }
+
+    public static float min(float a, float b) {
+        return a < b ? a : b;
+    }
+
+    public static float max(float a, float b) {
+        return a > b ? a : b;
+    }
+
+    public static float max(float a, float b, float c) {
+        return max(a, max(b, c));
+    }
+
+    public static int max(int a, int b, int c) {
+        return max(a, max(b, c));
+    }
+
+    public class SplineMath {
+        public static void fillLineForce(
+                Vector3f start,
+                Vector3f end,
+                WorldGenLevel level,
+                BlockState state,
+                BlockPos pos,
+                Function<BlockState, Boolean> replace
+        ) {
+            float dx = end.x() - start.x();
+            float dy = end.y() - start.y();
+            float dz = end.z() - start.z();
+            float max = AllPurposeUtility.max(Math.abs(dx), Math.abs(dy), Math.abs(dz));
+            int count = AllPurposeUtility.floor(max + 1);
+            dx /= max;
+            dy /= max;
+            dz /= max;
+            float x = start.x();
+            float y = start.y();
+            float z = start.z();
+            boolean down = Math.abs(dy) > 0.2;
+
+            BlockState bState;
+            BlockPos.MutableBlockPos bPos = new BlockPos.MutableBlockPos();
+            for (int i = 0; i < count; i++) {
+                bPos.set(x + pos.getX(), y + pos.getY(), z + pos.getZ());
+                bState = level.getBlockState(bPos);
+                if (replace.apply(bState)) {
+                    level.setBlock(bPos, state, Flags.SILENT);
+                    bPos.setY(bPos.getY() - 1);
+                    bState = level.getBlockState(bPos);
+                    if (down && replace.apply(bState)) {
+                        level.setBlock(bPos, state, Flags.SILENT);
+                    }
+                }
+                x += dx;
+                y += dy;
+                z += dz;
+            }
+            bPos.set(end.x() + pos.getX(), end.y() + pos.getY(), end.z() + pos.getZ());
+            bState = level.getBlockState(bPos);
+            if (replace.apply(bState)) {
+                level.setBlock(bPos, state, Flags.SILENT);
+                bPos.setY(bPos.getY() - 1);
+                bState = level.getBlockState(bPos);
+                if (down && replace.apply(bState)) {
+                    level.setBlock(bPos, state, Flags.SILENT);
+                }
+            }
+        }
+        public static void fillSplineForce(
+                List<Vector3f> spline,
+                WorldGenLevel level,
+                BlockState state,
+                BlockPos pos,
+                Function<BlockState, Boolean> replace
+        ) {
+            Vector3f startPos = spline.get(0);
+            for (int i = 1; i < spline.size(); i++) {
+                Vector3f endPos = spline.get(i);
+                fillLineForce(startPos, endPos, level, state, pos, replace);
+                startPos = endPos;
+            }
+        }
     }
 
     public class StrW {

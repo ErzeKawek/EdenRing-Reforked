@@ -5,9 +5,8 @@ import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 import paulevs.edenring.world.features.basic.ScatterFeature;
 
@@ -18,7 +17,7 @@ public class TallMushroomFeature extends ScatterFeature {
 	
 	@Override
 	protected int getCount(RandomSource random) {
-		return MHelper.randRange(5, 10, random);
+		return AllPurposeUtility.randRange(5, 10, random);
 	}
 	
 	@Override
@@ -29,12 +28,12 @@ public class TallMushroomFeature extends ScatterFeature {
 			state = state.setValue(EdenBlockProperties.TEXTURE_4, (int) i);
 			if (i == height) state = state.setValue(EdenBlockProperties.TEXTURE_4, 3);
 			if (level.getBlockState(p.above()).isAir()) {
-				BlocksHelper.setWithoutUpdate(level, p, state);
+				level.setBlock(p, state, AllPurposeUtility.Flags.SILENT);
 				p.setY(p.getY() + 1);
 			}
 			else {
 				state = state.setValue(EdenBlockProperties.TEXTURE_4, 3);
-				BlocksHelper.setWithoutUpdate(level, p, state);
+				level.setBlock(p, state, AllPurposeUtility.Flags.SILENT);
 				return;
 			}
 		}

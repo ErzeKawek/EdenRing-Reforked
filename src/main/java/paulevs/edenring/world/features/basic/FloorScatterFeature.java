@@ -6,22 +6,23 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
-public class FloorScatterFeature extends DefaultFeature {
+
+public class FloorScatterFeature extends Feature<NoneFeatureConfiguration> {
 	private Block block;
 	private Block[] floors;
 	private boolean checkAir;
-	
+
 	public FloorScatterFeature(Block block, Block... floors) {
 		this(block, false, floors);
 	}
 	
 	public FloorScatterFeature(Block block, boolean checkAir, Block... floors) {
+		super(NoneFeatureConfiguration.CODEC);
 		this.block = block;
 		this.floors = floors;
 		this.checkAir = checkAir;
@@ -34,7 +35,7 @@ public class FloorScatterFeature extends DefaultFeature {
 		WorldGenLevel level = featurePlaceContext.level();
 		
 		MutableBlockPos pos = new MutableBlockPos();
-		int count = MHelper.randRange(100, 200, random);
+		int count = AllPurposeUtility.randRange(100, 200, random);
 		for (int i = 0; i < count; i++) {
 			int px = center.getX() + Mth.floor(Mth.clamp(random.nextGaussian() * 2, -8, 8));
 			int py = center.getY() + Mth.floor(Mth.clamp(random.nextGaussian() * 2, -8, 8));
@@ -42,7 +43,7 @@ public class FloorScatterFeature extends DefaultFeature {
 			pos.set(px, py, pz);
 			for (Block floor: floors) {
 				if (level.getBlockState(pos).is(floor) && (!checkAir || level.getBlockState(pos.above()).isAir())) {
-					BlocksHelper.setWithoutUpdate(level, pos, block);
+					level.setBlock(pos, block.defaultBlockState(), AllPurposeUtility.Flags.SILENT);
 					break;
 				}
 			}

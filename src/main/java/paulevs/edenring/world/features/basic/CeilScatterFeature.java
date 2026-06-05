@@ -7,13 +7,12 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
-public abstract class CeilScatterFeature extends DefaultFeature {
-	@Override
+public abstract class CeilScatterFeature {
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
@@ -21,13 +20,13 @@ public abstract class CeilScatterFeature extends DefaultFeature {
 		Biome biome = level.getBiome(center).value();
 		
 		MutableBlockPos pos = center.mutable();
-		int maxY = getYOnSurfaceWG(level, center.getX(), center.getZ());
+		int maxY = level.getHeight(Heightmap.Types.WORLD_SURFACE_WG, center.getX(), center.getZ());
 		for (int y = maxY - 1; y > 5; y--) {
 			pos.setY(y);
 			if (level.getBlockState(pos).isAir()) {
 				pos.setY(y + 1);
 				if (level.getBlockState(pos).isFaceSturdy(level, pos, Direction.DOWN)) {
-					int count = MHelper.randRange(5, 20, random);
+					int count = AllPurposeUtility.randRange(5, 20, random);
 					for (int n = 0; n < count; n++) {
 						int px = center.getX() + Mth.floor(Mth.clamp(random.nextGaussian() * 2 + 0.5F, -8, 8));
 						int pz = center.getZ() + Mth.floor(Mth.clamp(random.nextGaussian() * 2 + 0.5F, -8, 8));

@@ -6,29 +6,27 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class SmallIslandFeature extends DefaultFeature {
-	@Override
+public class SmallIslandFeature {
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
 		RandomSource random = featurePlaceContext.random();
 		
-		if (getYOnSurface(level, center.getX(), center.getZ()) > 0) {
+		if (level.getHeight(Heightmap.Types.WORLD_SURFACE, center.getX(), center.getZ()) > 0) {
 			return false;
 		}
 		
-		int size = MHelper.randRange(5, 9, random);
+		int size = AllPurposeUtility.randRange(5, 9, random);
 		
 		MutableBlockPos pos = center.mutable();
 		if (center.getY() == 0) {
-			pos.setY(MHelper.randRange(64, 192, random));
+			pos.setY(AllPurposeUtility.randRange(64, 192, random));
 		}
 		makeCircle(level, pos, EdenBlocks.EDEN_GRASS_BLOCK.defaultBlockState(), size - 1, random);
 		
@@ -65,7 +63,7 @@ public class SmallIslandFeature extends DefaultFeature {
 						if (state.is(EdenBlocks.EDEN_GRASS_BLOCK) && !level.getBlockState(mut.above()).isAir()) {
 							setState = Blocks.DIRT.defaultBlockState();
 						}
-						BlocksHelper.setWithoutUpdate(level, mut, setState);
+						level.setBlock(mut, setState, AllPurposeUtility.Flags.SILENT);
 					}
 				}
 			}

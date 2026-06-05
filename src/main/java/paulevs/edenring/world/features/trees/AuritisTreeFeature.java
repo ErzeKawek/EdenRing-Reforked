@@ -34,7 +34,7 @@ public class AuritisTreeFeature {
 		
 		boolean hasMax = false;
 		MutableBlockPos pos = center.mutable();
-		for (Direction dir: AllPurposeUtility.DirectionalUtility.HORIZONTAL) {
+		for (Direction dir: AllPurposeUtility.DirectionalUtility.makeHorizontal()) {
 			pos.set(center).move(dir);
 			int h = hasMax ? random.nextInt(2) : random.nextInt(3);
 			if (!hasMax) {

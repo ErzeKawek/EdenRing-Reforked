@@ -14,7 +14,7 @@ public abstract class AllayMixin extends MobMixin {
     @Inject(method="tick()V", at=@At("TAIL"))
     public void considerConvertingToVex(CallbackInfo ci) {
         if (this.level().dimension() == EdenRing.EDEN_RING_KEY) {
-            float timeOfDay = this.level().getTimeOfDay(1.0F);
+            float timeOfDay = this.level().getGameTime();
             if ((timeOfDay > 0.25) && (timeOfDay < 0.75)){
                 if (!this.level().isClientSide()) {
                     this.convertTo(EntityType.VEX, true).tick();

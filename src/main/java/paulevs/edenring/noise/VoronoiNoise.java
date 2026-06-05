@@ -1,7 +1,7 @@
 package paulevs.edenring.noise;
 
 import net.minecraft.util.Mth;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
 import java.util.Arrays;
 import java.util.Random;
@@ -75,19 +75,19 @@ public class VoronoiNoise {
 			}
 		}
 		
-		random.setSeed(MHelper.getSeed(seed, x1 + pointResult[0], z1 + pointResult[1]));
+		random.setSeed(AllPurposeUtility.getSeed(seed, x1 + pointResult[0], z1 + pointResult[1]));
 		return random.nextFloat();
 	}
 	
 	private void getPoint(int seed, int x, int y, int z, Random random, float[] point) {
-		random.setSeed(MHelper.getSeed(seed, x, y, z));
+		random.setSeed(AllPurposeUtility.getSeed(seed, x, y, z));
 		point[0] = random.nextFloat();
 		point[1] = random.nextFloat();
 		point[2] = random.nextFloat();
 	}
 	
 	private void getPoint(int seed, int x, int z, Random random, float[] point) {
-		random.setSeed(MHelper.getSeed(seed, x, z));
+		random.setSeed(AllPurposeUtility.getSeed(seed, x, z));
 		point[0] = random.nextFloat();
 		point[1] = random.nextFloat();
 	}

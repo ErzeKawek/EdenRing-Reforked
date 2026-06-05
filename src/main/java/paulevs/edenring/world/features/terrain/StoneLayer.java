@@ -1,5 +1,6 @@
 package paulevs.edenring.world.features.terrain;
 
+import it.unimi.dsi.fastutil.booleans.AbstractBooleanList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -10,10 +11,10 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.noise.OpenSimplexNoise;
+import paulevs.edenring.misc.AllPurposeUtility;
+import paulevs.edenring.misc.noise.OpenSimplexNoise;
 
-public class StoneLayer extends DefaultFeature {
+public class StoneLayer {
 	private static final OpenSimplexNoise OFFSET_NOISE = new OpenSimplexNoise("stone".hashCode());
 	private OpenSimplexNoise noise;
 	private Block block;
@@ -22,8 +23,7 @@ public class StoneLayer extends DefaultFeature {
 		noise = new OpenSimplexNoise(BuiltInRegistries.BLOCK.getKey(block).hashCode());
 		this.block = block;
 	}
-	
-	@Override
+
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
@@ -46,7 +46,7 @@ public class StoneLayer extends DefaultFeature {
 				for (int y = 0; y < maxY; y++) {
 					pos.setY(y);
 					if (noise.eval(wx * 0.01, y * 0.1 + offset, wz * 0.01) > 0.45F && chunk.getBlockState(pos).is(Blocks.STONE)) {
-						chunk.setBlockState(pos, block.defaultBlockState(), false);
+						chunk.setBlockState(pos, block.defaultBlockState(), AllPurposeUtility.Flags.SILENT);
 					}
 				}
 			}

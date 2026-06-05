@@ -4,6 +4,8 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.fabricmc.fabric.api.object.builder.v1.entity.FabricEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
@@ -12,6 +14,8 @@ import net.minecraft.world.entity.EntityType.EntityFactory;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import org.betterx.bclib.api.v2.spawning.SpawnRuleBuilder;
 import org.betterx.bclib.config.PathConfig;
@@ -25,6 +29,9 @@ public class EdenEntities {
 	
 	// Living //
 	public static final EntityType<DiskwingEntity> DISKWING = register("diskwing", MobCategory.AMBIENT, 0.9F, 0.25F, DiskwingEntity::new, DiskwingEntity.createMobAttributes(), 0x5b3e52, 0x978090);
+	public static final  EdenMob<DiskwingEntity> DISKWING = new EdenMob<>("dragonfly",
+			EntityType.Builder.of(Dragonfly::new, MobCategory.AMBIENT).sized(
+					0.6F, 0.5F).eyeHeight(0.25F).clientTrackingRange(8));
 	
 	// Technical //
 	public static final EntityType<LightningRayEntity> LIGHTNING_RAY = register("lightning_ray", MobCategory.MISC, 1.0F, 1.0F, LightningRayEntity::new);
@@ -63,5 +70,24 @@ public class EdenEntities {
 			EdenItems.REGISTRY.registerEgg(EdenRing.makeID("spawn_egg_" + name), type, eggColor, dotsColor);
 		}
 		return type;
+	}
+
+	public static class EdenEntity<T extends Entity> {
+
+		public final EntityType<T> mob;
+		public final Item spawnEgg;
+
+		public EdenEntity(String name, EntityType.Builder<T> settings) {
+			mob = Registry.register(BuiltInRegistries.ENTITY_TYPE,
+					EdenRing.of(name),
+					settings.build(
+							ResourceKey.create(
+									Registries.ENTITY_TYPE, EdenRing.of(name))));
+			spawnEgg = EdenItems.register(
+					name + "_spawn_egg",
+					(properties) -> new SpawnEggItem(properties.spawnEgg(mob)),
+					new Item.Properties()
+			);
+		}
 	}
 }

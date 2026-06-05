@@ -7,12 +7,10 @@ import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.SixSidePlant;
+import paulevs.edenring.misc.AllPurposeUtility;
 
-public class SixSideScatter extends DefaultFeature {
+public class SixSideScatter {
 	private SixSidePlant block;
 	
 	public SixSideScatter(SixSidePlant block) {
@@ -29,7 +27,7 @@ public class SixSideScatter extends DefaultFeature {
 		int minZ = center.getZ() & 0xFFFFFFF0;
 		
 		int px = minX | random.nextInt(16);
-		int py = MHelper.randRange(32, 224, random);
+		int py = AllPurposeUtility.randRange(32, 224, random);
 		int pz = minZ | random.nextInt(16);
 		
 		MutableBlockPos pos = new MutableBlockPos();
@@ -43,7 +41,7 @@ public class SixSideScatter extends DefaultFeature {
 						if (level.getBlockState(pos).isAir()) {
 							BlockState state = block.getAttachedState(level, pos);
 							if (state != null) {
-								BlocksHelper.setWithoutUpdate(level, pos, state);
+								level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 							}
 						}
 					}

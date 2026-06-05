@@ -2,6 +2,7 @@ package paulevs.edenring.world.features.plants;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
+import net.minecraft.data.tags.TagsProvider;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
@@ -10,19 +11,16 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class AquatusFeature extends DefaultFeature {
-	@Override
+public class AquatusFeature {
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
 		RandomSource random = featurePlaceContext.random();
 		
-		int side = MHelper.randRange(1, 3, random);
+		int side = AllPurposeUtility.randRange(1, 3, random);
 		int min = -(side >> 1);
 		int max = side + min;
 		
@@ -117,12 +115,12 @@ public class AquatusFeature extends DefaultFeature {
 	}
 	
 	private boolean canReplace(BlockState state) {
-		return state.isAir() || state.is(EdenBlocks.AQUATUS_BLOCK) || BlocksHelper.replaceableOrPlant(state);
+		return state.isAir() || state.is(EdenBlocks.AQUATUS_BLOCK);
 	}
 	
 	private void setBlock(WorldGenLevel level, BlockPos pos, BlockState state) {
 		if (canReplace(level.getBlockState(pos))) {
-			BlocksHelper.setWithoutUpdate(level, pos, state);
+			level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 		}
 	}
 }

@@ -23,6 +23,7 @@ import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
 import paulevs.edenring.blocks.EdenBlockProperties.QuadShape;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 			return false;
 		}
 		
-		BlockState log = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.getBlock(WoodenComplexMaterial.BLOCK_LOG).defaultBlockState();
+		BlockState log = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.log.defaultBlockState();
 		
 		MutableBlockPos p = center.mutable().setY(center.getY() + 4);
 		if (!level.getBlockState(center).is(EdenBlocks.BALLOON_MUSHROOM_SMALL)) {
@@ -57,11 +58,11 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 			}
 		}
 		
-		BlockState bark = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.getBlock(WoodenComplexMaterial.BLOCK_BARK).defaultBlockState();
+		BlockState bark = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.wood.defaultBlockState();
 		BlockState block = EdenBlocks.BALLOON_MUSHROOM_BLOCK.defaultBlockState();
 		BlockState stem = EdenBlocks.BALLOON_MUSHROOM_STEM.defaultBlockState();
 		
-		int height = MHelper.randRange(8, 12, random);
+		int height = AllPurposeUtility.randRange(8, 12, random);
 		makeTrunk(level, center, p.set(center), log, height);
 		makeRoots(level, center, p, log, bark, stem, random);
 		makeBranches(level, center, p, stem, height, random);
@@ -117,15 +118,15 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 					float xyz = xz + y2;
 					if (xyz <= r2) {
 						BlockState cap = y > startY && xyz < r3 ? sporocap : state;
-						BlocksHelper.setWithoutUpdate(level, p.set(center).move(x, Mth.floor(y - startY), z), cap);
+						level.setBlock(p.set(center).move(x, Mth.floor(y - startY), z), cap, AllPurposeUtility.Flags.SILENT);
 						updateBlocks.add(p.immutable());
 						if (y == startY) {
 							if (random.nextInt(16) == 0 && xz > 3) {
-								int length = MHelper.randRange(4, 7, random);
+								int length = AllPurposeUtility.randRange(4, 7, random);
 								makeLantern(level, p.mutable().setY(p.getY() - 1), length, lantern, stemMiddle, stemTop);
 							}
 							else if (random.nextInt(4) > 0) {
-								int length = MHelper.randRange(1, 3, random);
+								int length = AllPurposeUtility.randRange(1, 3, random);
 								makeVine(level, p.mutable().setY(p.getY() - 1), length, hymenophoreSmall, hymenophoreBottom, hymenophoreMiddle, hymenophoreTop);
 							}
 						}
@@ -137,24 +138,24 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		updateBlocks.forEach(pos -> {
 			BlockState s = level.getBlockState(pos);
 			s = s.getBlock().updateShape(s, Direction.UP, AIR, level, pos, pos);
-			BlocksHelper.setWithoutUpdate(level, pos, s);
+			level.setBlock(pos, s, AllPurposeUtility.Flags.SILENT);
 		});
 	}
 	
 	private void makeVine(WorldGenLevel level, MutableBlockPos pos, int length, BlockState small, BlockState bottom, BlockState middle, BlockState top) {
 		if (!level.getBlockState(pos).isAir()) return;
 		if (length == 1) {
-			BlocksHelper.setWithoutUpdate(level, pos, small);
+			level.setBlock(pos, small, AllPurposeUtility.Flags.SILENT);
 			return;
 		}
 		int maxLength = length - 1;
 		for (int i = 0; i < length; i++) {
 			BlockState state = i == maxLength ? bottom : i == 0 ? top : middle;
-			BlocksHelper.setWithoutUpdate(level, pos, state);
+			level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() - 1);
 			if (!level.getBlockState(pos).isAir()) {
 				state = i == 0 ? small : bottom;
-				BlocksHelper.setWithoutUpdate(level, pos.setY(pos.getY() + 1), state);
+				level.setBlock(pos.setY(pos.getY() + 1), state, AllPurposeUtility.Flags.SILENT);
 				return;
 			}
 		}
@@ -165,10 +166,10 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		int maxLength = length - 1;
 		for (int i = 0; i < length; i++) {
 			BlockState state = i == maxLength ? lantern : i == 0 ? top : middle;
-			BlocksHelper.setWithoutUpdate(level, pos, state);
+			level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 			pos.setY(pos.getY() - 1);
 			if (!level.getBlockState(pos).isAir()) {
-				BlocksHelper.setWithoutUpdate(level, pos.setY(pos.getY() + 1), lantern);
+				level.setBlock(pos.setY(pos.getY() + 1), lantern, AllPurposeUtility.Flags.SILENT);
 				return;
 			}
 		}
@@ -184,50 +185,50 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		for (int i = 0; i < 2; i++) {
 			if (random.nextBoolean()) {
 				int h = random.nextInt(3);
-				int h2 = -(h + MHelper.randRange(2, 3, random));
+				int h2 = -(h + AllPurposeUtility.randRange(2, 3, random));
 				makeLine(level, p.set(center).move(i, h, -1), bark, log, h2);
 				mask[i + 1][0] = h + 1;
 			}
 			if (random.nextBoolean()) {
 				int h = random.nextInt(3);
-				int h2 = -(h + MHelper.randRange(2, 3, random));
+				int h2 = -(h + AllPurposeUtility.randRange(2, 3, random));
 				makeLine(level, p.set(center).move(i, h, 2), bark, log, h2);
 				mask[i + 1][3] = h + 1;
 			}
 			if (random.nextBoolean()) {
 				int h = random.nextInt(3);
-				int h2 = -(h + MHelper.randRange(2, 3, random));
+				int h2 = -(h + AllPurposeUtility.randRange(2, 3, random));
 				makeLine(level, p.set(center).move(-1, h, i), bark, log, h2);
 				mask[0][i + 1] = h + 1;
 			}
 			if (random.nextBoolean()) {
 				int h = random.nextInt(3);
-				int h2 = -(h + MHelper.randRange(2, 3, random));
+				int h2 = -(h + AllPurposeUtility.randRange(2, 3, random));
 				makeLine(level, p.set(center).move(2, h, i), bark, log, h2);
 				mask[3][i + 1] = h + 1;
 			}
 		}
 		
 		if (random.nextBoolean()) {
-			int h = MHelper.randRange(1, 2, random);
+			int h = AllPurposeUtility.randRange(1, 2, random);
 			int h2 = (-h - 2);
 			makeLine(level, p.set(center).move(-1, h - 1, -1), bark, log, h2);
 			mask[0][0] = h;
 		}
 		if (random.nextBoolean()) {
-			int h = MHelper.randRange(1, 2, random);
+			int h = AllPurposeUtility.randRange(1, 2, random);
 			int h2 = (-h - 2);
 			makeLine(level, p.set(center).move(2, h - 1, -1), bark, log, h2);
 			mask[3][0] = h;
 		}
 		if (random.nextBoolean()) {
-			int h = MHelper.randRange(1, 2, random);
+			int h = AllPurposeUtility.randRange(1, 2, random);
 			int h2 = (-h - 2);
 			makeLine(level, p.set(center).move(2, h - 1, 2), bark, log, h2);
 			mask[3][3] = h;
 		}
 		if (random.nextBoolean()) {
-			int h = MHelper.randRange(1, 2, random);
+			int h = AllPurposeUtility.randRange(1, 2, random);
 			int h2 = (-h - 2);
 			makeLine(level, p.set(center).move(-1, h - 1, 2), bark, log, h2);
 			mask[0][3] = h;
