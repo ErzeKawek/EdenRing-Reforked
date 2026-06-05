@@ -1,11 +1,11 @@
 package paulevs.edenring;
 
+import net.minecraft.resources.Identifier;
 import org.betterx.bclib.api.v2.datafixer.DataFixerAPI;
 import org.betterx.bclib.api.v2.datafixer.ForcedLevelPatch;
 import org.betterx.bclib.api.v2.datafixer.MigrationProfile;
 import org.betterx.bclib.creativetab.BCLCreativeTabManager;
 import org.betterx.bclib.registry.BaseRegistry;
-import org.betterx.worlds.together.util.Logger;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.loot.v2.LootTableEvents;
@@ -22,20 +22,28 @@ import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.betterx.worlds.together.world.WorldConfig;
+import org.slf4j.LoggerFactory;
 import paulevs.edenring.config.Configs;
 import paulevs.edenring.paintings.EdenPaintings;
 import paulevs.edenring.registries.*;
 import paulevs.edenring.world.EdenPortal;
 import paulevs.edenring.world.generator.EdenBiomeSource;
 import paulevs.edenring.world.generator.GeneratorOptions;
+import org.slf4j.Logger;
 
 public class EdenRing implements ModInitializer {
 public static final String MOD_ID = "edenring";
-public static final Logger LOGGER = new Logger(MOD_ID);
+public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+
+public static Identifier of(String name) {
+    return Identifier.fromNamespaceAndPath(MOD_ID, name);
+}
 
 public static final ResourceKey<DimensionType> EDEN_RING_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, makeID(MOD_ID));
 public static final ResourceKey<Level> EDEN_RING_KEY = ResourceKey.create(Registries.DIMENSION, makeID(MOD_ID));
-	
+
+
+
 @Override
 public void onInitialize() {
   WorldConfig.registerModCache(MOD_ID); //idk
@@ -59,6 +67,7 @@ public void onInitialize() {
   EdenEntities.init();
   EdenItems.init();
   EdenFeatures.register();
+  EdenTags.init();
   // EdenRecipes.register(); Use data generation
   EdenParticles.ensureStaticallyLoadedServerside();
   Configs.saveConfigs();
@@ -106,14 +115,14 @@ public void onInitialize() {
     }
   });
   
-  final ResourceLocation[] possibleLocations = new ResourceLocation[] {
-    new ResourceLocation("chests/end_city_treasure"),
-    new ResourceLocation("chests/buried_treasure"),
-    new ResourceLocation("chests/desert_pyramid"),
-    new ResourceLocation("chests/jungle_temple"),
-    new ResourceLocation("chests/pillager_outpost"),
-    new ResourceLocation("chests/shipwreck_treasure"),
-    new ResourceLocation("chests/simple_dungeon")
+  final Identifier[] possibleLocations = new Identifier[] {
+          Identifier.withDefaultNamespace("chests/end_city_treasure"),
+          Identifier.withDefaultNamespace("chests/buried_treasure"),
+          Identifier.withDefaultNamespace("chests/desert_pyramid"),
+          Identifier.withDefaultNamespace("chests/jungle_temple"),
+          Identifier.withDefaultNamespace("chests/pillager_outpost"),
+          Identifier.withDefaultNamespace("chests/shipwreck_treasure"),
+          Identifier.withDefaultNamespace("chests/simple_dungeon")
   };
   LootTableEvents.MODIFY.register((resourceManager, lootManager, id, table, setter) -> {
     for (ResourceLocation resourceLocation: possibleLocations) {

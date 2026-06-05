@@ -2,11 +2,12 @@ package paulevs.edenring.world.generator;
 
 import com.google.common.collect.Maps;
 import net.minecraft.core.BlockPos;
+import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
-import org.betterx.bclib.noise.OpenSimplexNoise;
-import org.betterx.bclib.sdf.SDF;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
+import paulevs.edenring.misc.noise.OpenSimplexNoise;
+import paulevs.edenring.misc.sdf.SDF;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -30,8 +31,8 @@ public class IslandLayer {
 	}
 	
 	public void updatePositions(double x, double z) {
-		int ix = MHelper.floor(x / options.distance);
-		int iz = MHelper.floor(z / options.distance);
+		int ix = Mth.floor(x / options.distance);
+		int iz = Mth.floor(z / options.distance);
 		
 		if (lastX != ix || lastZ != iz || positions.isEmpty()) {
 			lastX = ix;
@@ -42,9 +43,9 @@ public class IslandLayer {
 				int px = pox + ix;
 				for (int poz = -1; poz < 2; poz++) {
 					int pz = poz + iz;
-					random.setSeed(MHelper.getSeed(seed, px, pz));
+					random.setSeed(AllPurposeUtility.getSeed(seed, px, pz));
 					double posX = (px + random.nextFloat()) * options.distance;
-					double posY = MHelper.randRange(options.minY, options.maxY, random);
+					double posY = AllPurposeUtility.randRange(options.minY, options.maxY, random);
 					double posZ = (pz + random.nextFloat()) * options.distance;
 					if (density.eval(posX * 0.01, posZ * 0.01) > options.coverage) {
 						BlockPos pos = new BlockPos((int)posX, (int)posY, (int)posZ);
@@ -58,7 +59,7 @@ public class IslandLayer {
 	
 	private SDF getIsland(BlockPos pos) {
 		return islandCache.computeIfAbsent(pos, i -> {
-			random.setSeed(MHelper.getSeed(seed, pos.getX(), pos.getZ()));
+			random.setSeed(AllPurposeUtility.getSeed(seed, pos.getX(), pos.getZ()));
 			return IslandTypes.getIsland(options, random);
 		});
 	}

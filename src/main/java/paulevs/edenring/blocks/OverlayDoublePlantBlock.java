@@ -9,6 +9,7 @@ import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.item.ItemStack;
@@ -33,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements CustomColorProvider {
+public abstract class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements CustomColorProvider {
 	@Override
 	@Environment(EnvType.CLIENT)
 	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
@@ -89,4 +90,7 @@ public class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements Cus
 			return Collections.EMPTY_LIST;
 		}
 	}
+
+	@Environment(EnvType.CLIENT)
+	public abstract UnbakedModel getModelVariant(Identifier stateId, BlockState blockState, Map<Identifier, UnbakedModel> modelCache);
 }

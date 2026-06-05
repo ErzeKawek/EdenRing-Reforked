@@ -10,7 +10,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
@@ -35,7 +35,7 @@ import paulevs.edenring.blocks.EdenPatterns;
 import java.util.Map;
 import java.util.Optional;
 
-public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
+public class BaseCTBlock {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	
 	public BaseCTBlock(Properties settings) {
@@ -79,12 +79,12 @@ public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(Identifier stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		BlockState def = defaultBlockState();
 		String modID = stateId.getNamespace();
 		String name = stateId.getPath();
 		
-		ModelResourceLocation keyCube = new ModelResourceLocation(modID, name, def.toString());
+		Identifier keyCube = new Identifier(modID, name, def.toString());
 		ModelResourceLocation[] keyQuad = new ModelResourceLocation[4];
 		for (int i = 0; i < 4; i++) {
 			keyQuad[i] = new ModelResourceLocation(modID, name, def + "_" + i);
@@ -106,8 +106,8 @@ public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
 				modelCache.put(keyQuad[i], model);
 			}
 		}
-		
-		MultiPartBuilder builder = MultiPartBuilder.create(stateDefinition);
+
+		builder = MultiPartBuilder.create(stateDefinition);
 		appendCentralModel(stateId, builder, keyCube, modelCache);
 		//builder.part(keyCube).add();
 		

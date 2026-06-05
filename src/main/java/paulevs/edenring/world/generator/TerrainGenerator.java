@@ -3,7 +3,7 @@ package paulevs.edenring.world.generator;
 import com.google.common.collect.Lists;
 import net.minecraft.core.BlockPos;
 import net.minecraft.util.Mth;
-import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 
 import java.awt.Point;
 import java.util.List;
@@ -64,10 +64,10 @@ public class TerrainGenerator {
 			double py = y * scaleY + pos.getY();
 			float dist = largeIslands.getDensity(px, py, pz);
 			if (dist < 0.3F) {
-				dist = MHelper.max(dist, mediumIslands.getDensity(px, py, pz));
+				dist = Math.max(dist, mediumIslands.getDensity(px, py, pz));
 			}
 			if (dist < 0.3F) {
-				dist = MHelper.max(dist, smallIslands.getDensity(px, py, pz));
+				dist = Math.max(dist, smallIslands.getDensity(px, py, pz));
 			}
 			buffer[y] = dist;
 		}
@@ -84,10 +84,10 @@ public class TerrainGenerator {
 		
 		float dist = largeIslands.getDensity(x, y, z);
 		if (dist < 0.3F) {
-			dist = MHelper.max(dist, mediumIslands.getDensity(x, y, z));
+			dist = Math.max(dist, mediumIslands.getDensity(x, y, z));
 		}
 		if (dist < 0.3F) {
-			dist = MHelper.max(dist, smallIslands.getDensity(x, y, z));
+			dist = Math.max(dist, smallIslands.getDensity(x, y, z));
 		}
 		return dist;
 	}
@@ -98,7 +98,7 @@ public class TerrainGenerator {
 		List<Point> pos = Lists.newArrayList();
 		for (int x = -3; x <= 3; x++) {
 			for (int z = -3; z <= 3; z++) {
-				float dist = MHelper.length(x, z) / 3F;
+				float dist = AllPurposeUtility.length(x, z) / 3F;
 				if (dist <= 1) {
 					sum += dist;
 					coef.add(dist);

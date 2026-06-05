@@ -2,24 +2,19 @@ package paulevs.edenring.world.generator;
 
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
-import org.betterx.bclib.noise.OpenSimplexNoise;
-import org.betterx.bclib.sdf.SDF;
-import org.betterx.bclib.sdf.operator.SDFCoordModify;
-import org.betterx.bclib.sdf.operator.SDFDisplacement;
-import org.betterx.bclib.sdf.operator.SDFScale;
-import org.betterx.bclib.sdf.operator.SDFScale3D;
-import org.betterx.bclib.sdf.operator.SDFSmoothUnion;
-import org.betterx.bclib.sdf.operator.SDFTranslate;
-import org.betterx.bclib.sdf.operator.SDFUnion;
-import org.betterx.bclib.sdf.primitive.SDFCappedCone;
-import org.betterx.bclib.sdf.primitive.SDFSphere;
-import org.betterx.bclib.util.MHelper;
-import org.betterx.bclib.util.WeightedList;
+import paulevs.edenring.misc.AllPurposeUtility;
+import paulevs.edenring.misc.EdenWeightList;
+import paulevs.edenring.misc.noise.OpenSimplexNoise;
+import paulevs.edenring.misc.sdf.SDF;
+
+import paulevs.edenring.misc.sdf.operators.*;
+import paulevs.edenring.misc.sdf.primitives.SDFCappedCone;
+import paulevs.edenring.misc.sdf.primitives.SDFSphere;
 
 import java.util.function.BiFunction;
 
 public class IslandTypes {
-	private static final WeightedList<BiFunction<LayerOptions, RandomSource, SDF>> ISLAND_FUNCTIONS;
+	private static final EdenWeightList<BiFunction<LayerOptions, RandomSource, SDF>> ISLAND_FUNCTIONS;
 	
 	public static SDF getIsland(LayerOptions options, RandomSource random) {
 		return ISLAND_FUNCTIONS.get(random).apply(options, random);
@@ -91,14 +86,14 @@ public class IslandTypes {
 			
 			if (options.scale > 35) {
 				float distance = scale * 0.6F;
-				float offset = random.nextFloat() * MHelper.PI2;
-				int count = MHelper.randRange(3, 5, random);
+				float offset = random.nextFloat() * (float) (Math.PI * 2);
+				int count = AllPurposeUtility.randRange(3, 5, random);
 				for (int i = 0; i < count; i++) {
-					float angle = (float) i / count * MHelper.PI2 + offset;
+					float angle = (float) i / count * (float) (Math.PI * 2) + offset;
 					float px = (float) Math.sin(angle) * distance;
 					float pz = (float) Math.cos(angle) * distance;
-					SDF part = new SDFScale().setScale(scale * MHelper.randRange(0.3F, 0.6F, random)).setSource(defaultIsland);
-					part = new SDFTranslate().setTranslate(px, MHelper.randRange(-0.25F, 0.25F, random) * distance, pz).setSource(part);
+					SDF part = new SDFScale().setScale(scale * AllPurposeUtility.randRange(0.3F, 0.6F, random)).setSource(defaultIsland);
+					part = new SDFTranslate().setTranslate(px, AllPurposeUtility.randRange(-0.25F, 0.25F, random) * distance, pz).setSource(part);
 					island = new SDFUnion().setSourceA(island).setSourceB(part);
 				}
 			}
@@ -108,7 +103,7 @@ public class IslandTypes {
 			final float noiseScale = Mth.clamp((options.scale - 30) / 30F, 0.1F, 1.0F);
 			final float scale2 = 20F / options.scale * noiseScale;
 			
-			island = new SDFDisplacement()
+			island = new SDFBlink()
 				.setFunction(pos -> (float) noise1.eval(pos.x() * scale1, pos.y() * scale1, pos.z() * scale1) * scale2)
 				.setSource(island);
 			
@@ -178,7 +173,7 @@ public class IslandTypes {
 	}
 	
 	static {
-		ISLAND_FUNCTIONS = new WeightedList<>();
+		ISLAND_FUNCTIONS = new EdenWeightList<>();
 		ISLAND_FUNCTIONS.add(makeSimpleIsland(), 2.0F);
 		ISLAND_FUNCTIONS.add(makeTallSphereIsland(), 1.0F);
 		ISLAND_FUNCTIONS.add(makeDoubleConeIsland(), 1.5F);

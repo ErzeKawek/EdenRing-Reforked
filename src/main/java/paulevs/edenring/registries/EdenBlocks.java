@@ -1,42 +1,35 @@
 package paulevs.edenring.registries;
 
 import com.google.common.collect.Maps;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Items;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import org.betterx.bclib.api.v2.ComposterAPI;
-import org.betterx.bclib.api.v2.ShovelAPI;
-import org.betterx.bclib.blocks.BaseBlock;
-import org.betterx.bclib.blocks.BaseLeavesBlock;
-import org.betterx.bclib.blocks.BaseVineBlock;
-import org.betterx.bclib.blocks.FeatureSaplingBlock;
-import org.betterx.bclib.complexmaterials.ComplexMaterial;
-import org.betterx.bclib.config.PathConfig;
-import org.betterx.bclib.registry.BlockRegistry;
-import org.betterx.worlds.together.tag.v3.CommonBlockTags;
-import org.betterx.worlds.together.tag.v3.CommonItemTags;
-import org.betterx.worlds.together.tag.v3.MineableTags;
-import org.betterx.worlds.together.tag.v3.TagManager;
 import org.jetbrains.annotations.NotNull;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.*;
 import paulevs.edenring.blocks.complex.BrainTreeComplexMaterial;
+import paulevs.edenring.blocks.complex.EdenSaplings;
+import paulevs.edenring.blocks.complex.EdenWoodBlocks;
 import paulevs.edenring.blocks.complex.EdenWoodenComplexMaterial;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+import net.minecraft.world.level.material.PushReaction;
+import paulevs.edenring.world.features.trees.AuritisTreeFeature;
 
 import java.util.Map;
+import java.util.function.Function;
 
 public class EdenBlocks {
-	public static final BlockRegistry REGISTRY = new BlockRegistry(new PathConfig(EdenRing.MOD_ID, "blocks"));
 	
 	public static final Block EDEN_GRASS_BLOCK = register(
 			"eden_grass",
@@ -47,18 +40,20 @@ public class EdenBlocks {
 			new TexturedTerrainBlock(),
 			BlockTags.NYLIUM
 	);
-	public static final Block MOSSY_STONE = register("mossy_stone", new MossyStoneBlock());
+	public static Block MOSSY_STONE = register("mossy_stone", MossyStoneBlock::new);
 
-	public static final Block AURITIS_SAPLING = register(
-			"auritis_sapling",
-			new FeatureSaplingBlock<>((state) -> EdenFeatures.AURITIS_TREE.configuredFeature)
-	);
-	public static final Block AURITIS_LEAVES = register(
+	public static Block AURITIS_SAPLING = register("auritis_sapling",
+			settings -> new EdenSaplings(AuritisTreeFeature::new, settings.mapColor(MapColor.GOLD)));
+
+	public static Block AURITIS_LEAVES = register(
 			"auritis_leaves",
-			new AuritisLeavesBlock()
+			settings -> new TintedParticleLeavesBlock(
+					0.01F,
+					applyLeafSettings(settings.mapColor(MapColor.GOLD))
+			)
 	);
 
-	public static final ComplexMaterial AURITIS_MATERIAL = new EdenWoodenComplexMaterial(EdenRing.MOD_ID, "auritis", "eden", MapColor.COLOR_BROWN, MapColor.GOLD).init(REGISTRY, EdenItems.REGISTRY);
+	public static EdenWoodBlocks.EdenWoodSet AURITIS_MATERIAL = new EdenWoodBlocks.EdenWoodSet("auritis", MapColor.COLOR_BROWN, MapColor.GOLD);
 	
 	public static final Block BALLOON_MUSHROOM_SMALL = register("balloon_mushroom_small", new BalloonMushroomSmallBlock());
 	public static final Block BALLOON_MUSHROOM_BLOCK = register("balloon_mushroom_block", new BalloonMushroomBlock());
@@ -133,7 +128,8 @@ public class EdenBlocks {
 	
 	public static final Block GRAVILITE_BLOCK = register("gravilite_block", new GraviliteBlock());
 	public static final Block GRAVILITE_SHARDS = register("gravilite_shards", new GraviliteShardsBlock());
-	public static final Block GRAVILITE_LAMP = register("gravilite_lamp", new GraviliteLampBlock());
+	public static final Block GRAVILITE_LAMP = register("gravilite_lamp", GraviliteLampBlock::new);
+
 	public static final Block GRAVILITE_LANTERN = register("gravilite_lantern", new GraviliteLanternBlock());
 	public static final Block GRAVILITE_LANTERN_TALL = register("gravilite_lantern_tall", new GraviliteTallLanternBlock());
 	
@@ -174,31 +170,77 @@ public class EdenBlocks {
 			}
 		});
 	}
-	
+	public static Block register(String name, Function<Properties, Block> factory) {
+		return register(name, factory, true);
+	}
+
+	public static Block register(String name, Function<Properties, Block> factory, boolean hasItem) {
+		return register(name, factory, Properties.of(), hasItem);
+	}
+
+	private static Block register(String name, Function<Properties, Block> factory, Properties settings) {
+		return register(name, factory, settings, true);
+	}
+
+	private static Block register(
+			String name,
+			Function<Properties, Block> factory,
+			Properties settings,
+			boolean hasItem
+	) {
+		Identifier id = EdenRing.of(name);
+		Block block = factory.apply(settings.setId(ResourceKey.create(Registries.BLOCK, id)));
+
+		if (hasItem) {
+			ResourceKey<Item> itemKey = ResourceKey.create(Registries.ITEM, id);
+			Registry.register(BuiltInRegistries.ITEM, itemKey,
+					new BlockItem(block, new Item.Properties().setId(itemKey)));
+		}
+		ResourceKey<Block> blockKey = ResourceKey.create(Registries.BLOCK, id);
+		return Registry.register(BuiltInRegistries.BLOCK, blockKey, block);
+	}
+
+	public static void initialize() {
+	}
+
+
 	private static Block register(String name, Block block) {
 		return REGISTRY.register(EdenRing.makeID(name), block);
 	}
 
-	public static Block registerBlock(ResourceLocation id, Block block, TagKey<Block>... tags) {
+	public static Block registerBlock(Identifier id, Block block, TagKey<Block>... tags) {
 //		Sometimes maybe
 //		if (!Configs.BLOCK_CONFIG.getBooleanRoot(id.getPath(), true)) {
 //			return block;
 //		}
 		getBlockRegistry().register(id, block);
-		TagManager.BLOCKS.add(block, tags);
 		return block;
 	}
 
 	private static Block register(String name, Block block,  TagKey<Block>... tags) {
 		return registerBlock(EdenRing.makeID(name), block, tags);
 	}
-	
+
 	private static Block registerBlockOnly(String name, Block block) {
 		return REGISTRY.registerBlockOnly(EdenRing.makeID(name), block);
 	}
-	
+
 	public static boolean never(BlockState blockState, BlockGetter blockGetter, BlockPos blockPos) {
 		return false;
+	}
+
+	public static Properties applyLeafSettings(Properties settings) {
+		return settings
+				.strength(0.2F)
+				.randomTicks()
+				.sound(SoundType.GRASS)
+				.noOcclusion()
+				.isValidSpawn(Blocks::ocelotOrParrot)
+				.isSuffocating(Blocks::never)
+				.isViewBlocking(Blocks::never)
+				.ignitedByLava()
+				.pushReaction(PushReaction.DESTROY)
+				.isRedstoneConductor(Blocks::never);
 	}
 
 	@NotNull

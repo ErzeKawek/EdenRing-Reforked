@@ -5,7 +5,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
 import org.betterx.bclib.blocks.BaseRotatedPillarBlock;
 
-public class AquatusBlock extends BaseRotatedPillarBlock {
+public class AquatusBlock {
 	public AquatusBlock() {
 		super(FabricBlockSettings.copyOf(Blocks.OAK_PLANKS).sounds(SoundType.WART_BLOCK));
 	}

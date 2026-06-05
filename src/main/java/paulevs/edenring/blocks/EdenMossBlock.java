@@ -21,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MossBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -35,13 +36,13 @@ import org.betterx.ui.ColorUtil;
 import java.util.Map;
 import java.util.Optional;
 
-public class EdenMossBlock extends MossBlock implements BlockModelProvider, CustomColorProvider, RenderLayerProvider {
+public class EdenMossBlock {
 	private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 2, 16);
 	
 	public EdenMossBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MOSS_BLOCK).sound(SoundType.MOSS).offsetType(OffsetType.NONE).noCollission());
+		BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK).sound(SoundType.MOSS).offsetType(BlockBehaviour.OffsetType.NONE).noCollision();
 	}
-	
+
 	@Override
 	public boolean canSurvive(BlockState state, LevelReader world, BlockPos pos) {
 		BlockPos below = pos.below();

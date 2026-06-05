@@ -13,19 +13,19 @@ import org.betterx.bclib.blocks.BlockProperties;
 import org.betterx.bclib.complexmaterials.WoodenComplexMaterial;
 import org.betterx.bclib.util.BlocksHelper;
 import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class BrainTreeFeature extends DefaultFeature {
+public class BrainTreeFeature {
 	private static final BlockState[] TYPES = new BlockState[3];
-	
-	@Override
+
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
 		RandomSource random = featurePlaceContext.random();
-		
-		if (!EdenBlocks.PULSE_TREE_SAPLING.canSurvive(EdenBlocks.PULSE_TREE_SAPLING.defaultBlockState(), level, center)) {
+
+		if (!EdenBlocks.PULSE_TREE_SAPLING.defaultBlockState().canSurvive(level, center)) {
 			return false;
 		}
 		
@@ -36,7 +36,7 @@ public class BrainTreeFeature extends DefaultFeature {
 		}
 		
 		BlockState brain = TYPES[random.nextInt(3)];
-		BlockState brainActive = brain.setValue(BlockProperties.ACTIVE, true);
+		BlockState brainActive = brain.setValue(EdenBlockProperties.ACTIVE, true);
 		//BlockState stem = EdenBlocks.BRAIN_TREE_LOG.defaultBlockState();
 		BlockState stem = EdenBlocks.BRAIN_TREE_MATERIAL.getBlock(WoodenComplexMaterial.BLOCK_LOG).defaultBlockState();
 		

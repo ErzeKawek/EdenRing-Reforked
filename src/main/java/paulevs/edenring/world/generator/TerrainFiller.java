@@ -7,17 +7,16 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.chunk.LevelChunkSection;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.noise.InterpolationCell;
 
 public class TerrainFiller {
 	private static final BlockState STONE = Blocks.STONE.defaultBlockState();
 	
 	public static InterpolationCell fill(ChunkAccess chunkAccess) {
-		short minY = (short) chunkAccess.getMinBuildHeight();
-		short maxY = (short) chunkAccess.getMaxBuildHeight();
+		short minY = (short) chunkAccess.getMinY();
+		short maxY = (short) chunkAccess.getMaxY();
 		ChunkPos chunkPos = chunkAccess.getPos();
-		final BlockPos origin = new BlockPos(chunkPos.getMinBlockX(), chunkAccess.getMinBuildHeight(), chunkPos.getMinBlockZ());
+		final BlockPos origin = new BlockPos(chunkPos.getMinBlockX(), chunkAccess.getMinY(), chunkPos.getMinBlockZ());
 		final short maxCell = (short) ((maxY - minY) / 8 + 1);
 		
 		TerrainGenerator generator = MultiThreadGenerator.getTerrainGenerator();
@@ -27,16 +26,16 @@ public class TerrainFiller {
 		MutableBlockPos pos = new MutableBlockPos();
 		MutableBlockPos wpos = new MutableBlockPos();
 		
-		short newMinY = (short) MHelper.min(cellTerrain.getMinY(), cellTerrain2.getMinY());
-		short newMaxY = (short) MHelper.max(cellTerrain.getMaxY(), cellTerrain2.getMaxY());
-		minY = (short) MHelper.max(minY, newMinY);
-		maxY = (short) MHelper.min(maxY, newMaxY);
+		short newMinY = (short) Math.min(cellTerrain.getMinY(), cellTerrain2.getMinY());
+		short newMaxY = (short) Math.max(cellTerrain.getMaxY(), cellTerrain2.getMaxY());
+		minY = (short) Math.max(minY, newMinY);
+		maxY = (short) Math.min(maxY, newMaxY);
 		
 		for (short y = minY; y < maxY; y++) {
 			pos.setY(y);
 			wpos.setY(y);
 			short sectionY = (short) chunkAccess.getSectionIndexFromSectionY(y >> 4);
-			if (sectionY < 0 || sectionY >= chunkAccess.getMaxSection()) continue;
+			if (sectionY < 0 || sectionY >= chunkAccess.getMaxSectionY()) continue;
 			LevelChunkSection section = chunkAccess.getSection(sectionY);
 			for (int x = 0; x < 16; x++) {
 				pos.setX(x);

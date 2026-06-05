@@ -1,11 +1,11 @@
 package paulevs.edenring.blocks;
 
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.world.level.block.Blocks;
-import org.betterx.bclib.blocks.BaseBlock;
 
-public class GraviliteLampBlock extends BaseBlock {
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+
+public class GraviliteLampBlock {
 	public GraviliteLampBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.LANTERN).luminance(15));
+		BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel(value -> 15);
 	}
 }

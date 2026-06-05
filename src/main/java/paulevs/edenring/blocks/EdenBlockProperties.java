@@ -5,15 +5,16 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import org.betterx.bclib.blocks.BlockProperties;
 
-public class EdenBlockProperties extends BlockProperties {
+public class EdenBlockProperties {
 	public static final EnumProperty<BalloonMushroomStemState> BALLOON_MUSHROOM_STEM = EnumProperty.create("shape", BalloonMushroomStemState.class);
 	public static final EnumProperty<EdenPortalState> EDEN_PORTAL = EnumProperty.create("shape", EdenPortalState.class);
 	public static final EnumProperty<PulseTreeState> PULSE_TREE = EnumProperty.create("shape", PulseTreeState.class);
 	public static final EnumProperty<QuadShape> QUAD_SHAPE = EnumProperty.create("shape", QuadShape.class);
+	public static final EnumProperty<TripleShape> TRIPLE_SHAPE = EnumProperty.create("shape", TripleShape.class);
 	public static final IntegerProperty TEXTURE_4 = IntegerProperty.create("texture", 0, 3);
 	public static final BooleanProperty NATURAL = BooleanProperty.create("natural");
+	public static final BooleanProperty ACTIVE = BooleanProperty.create("active");
 	public static final BooleanProperty[] DIRECTIONS = new BooleanProperty[] {
 		BlockStateProperties.DOWN,
 		BlockStateProperties.UP,
@@ -136,5 +137,36 @@ public class EdenBlockProperties extends BlockProperties {
 		public String toString() {
 			return name;
 		}
+	}
+
+	public enum TripleShape implements StringRepresentable {
+		TOP("top", 0), MIDDLE("middle", 1), BOTTOM("bottom", 2);
+
+		private final String name;
+		private final int index;
+
+		TripleShape(String name, int index) {
+			this.name = name;
+			this.index = index;
+		}
+
+		@Override
+		public String getSerializedName() {
+			return name;
+		}
+
+		@Override
+		public String toString() {
+			return name;
+		}
+
+		public int getIndex() {
+			return index;
+		}
+
+		public static TripleShape fromIndex(int index) {
+			return index > 1 ? BOTTOM : index == 1 ? MIDDLE : TOP;
+		}
+	}
 	}
 }

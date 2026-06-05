@@ -1,7 +1,5 @@
 package paulevs.edenring.world.biomes.land;
 
-import org.betterx.bclib.api.v2.levelgen.biomes.BCLBiomeBuilder;
-
 import net.minecraft.data.worldgen.placement.VegetationPlacements;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import paulevs.edenring.registries.EdenBiomes;
@@ -38,4 +36,6 @@ public class BrainStormBiome extends EdenRingBiome.Config {
                 .feature(EdenFeatures.LAYERED_COPPER)
                 .feature(EdenFeatures.LAYERED_GOLD);
     }
+
+
 }

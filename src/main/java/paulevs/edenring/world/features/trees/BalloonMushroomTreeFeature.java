@@ -11,19 +11,18 @@ import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
 import paulevs.edenring.blocks.EdenBlockProperties.QuadShape;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class BalloonMushroomTreeFeature extends DefaultFeature {
-	@Override
+import static net.minecraft.world.level.block.Blocks.AIR;
+
+public class BalloonMushroomTreeFeature {
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
@@ -36,7 +35,7 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 		}
 		
 		MutableBlockPos pos = center.mutable();
-		int h = MHelper.randRange(5, 9, random);
+		int h = AllPurposeUtility.randRange(5, 9, random);
 		for (int i = 1; i <= h; i++) {
 			pos.setY(center.getY() + i);
 			if (!level.getBlockState(pos).isAir()) {
@@ -51,12 +50,12 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 				BlockState state = tall.setValue(EdenBlockProperties.TEXTURE_4, (int) i);
 				if (i == h) state = state.setValue(EdenBlockProperties.TEXTURE_4, 3);
 				if (level.getBlockState(pos.above()).isAir()) {
-					BlocksHelper.setWithoutUpdate(level, pos, state);
+					level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 					pos.setY(pos.getY() + 1);
 				}
 				else {
 					state = state.setValue(EdenBlockProperties.TEXTURE_4, 3);
-					BlocksHelper.setWithoutUpdate(level, pos, state);
+					level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 					return true;
 				}
 			}
@@ -68,7 +67,7 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 		if (h > 5 && random.nextInt(6) == 0) {
 			for (int i = 0; i < h; i++) {
 				pos.setY(center.getY() + i);
-				BlocksHelper.setWithoutUpdate(level, pos, stem);
+				level.setBlock(pos, stem, AllPurposeUtility.Flags.SILENT);
 			}
 			
 			List<BlockPos> updateBlocks = new ArrayList<BlockPos>(27);
@@ -88,21 +87,21 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 						if (x == 0 || z == 0) {
 							BlockPos bpos = pos.below();
 							if (level.getBlockState(bpos).isAir()) {
-								BlocksHelper.setWithoutUpdate(level, pos, hymenophoreTop);
-								BlocksHelper.setWithoutUpdate(level, bpos, hymenophoreBottom);
+								level.setBlock(pos, hymenophoreTop, AllPurposeUtility.Flags.SILENT);
+								level.setBlock(bpos, hymenophoreBottom, AllPurposeUtility.Flags.SILENT);
 							}
 							else {
-								BlocksHelper.setWithoutUpdate(level, pos, hymenophoreSmall);
+								level.setBlock(pos, hymenophoreSmall, AllPurposeUtility.Flags.SILENT);
 							}
 						}
 						else {
-							BlocksHelper.setWithoutUpdate(level, pos, hymenophoreSmall);
+							level.setBlock(pos, hymenophoreSmall, AllPurposeUtility.Flags.SILENT);
 						}
 					}
 					for (int y = 0; y < 3; y++) {
 						pos.setY(center.getY() + h + y);
 						if (level.getBlockState(pos).isAir()) {
-							BlocksHelper.setWithoutUpdate(level, pos, y == 0 ? head : block);
+							level.setBlock(pos, y == 0 ? head : block, AllPurposeUtility.Flags.SILENT);
 							updateBlocks.add(pos.immutable());
 						}
 					}
@@ -111,7 +110,7 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 			updateBlocks.forEach(p -> {
 				BlockState s = level.getBlockState(p);
 				s = s.getBlock().updateShape(s, Direction.UP, AIR, level, p, p);
-				BlocksHelper.setWithoutUpdate(level, p, s);
+				level.setBlock(p, s, AllPurposeUtility.Flags.SILENT);
 			});
 		}
 		else {
@@ -120,10 +119,10 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 			int hMax = h - 1;
 			for (int i = 0; i < h; i++) {
 				pos.setY(center.getY() + i);
-				BlocksHelper.setWithoutUpdate(level, pos, i == hMax ? thin_up : thin);
+				level.setBlock(pos, i == hMax ? thin_up : thin, AllPurposeUtility.Flags.SILENT);
 			}
 			pos.setY(center.getY() + h);
-			BlocksHelper.setWithoutUpdate(level, pos, block.setValue(EdenBlockProperties.NATURAL, true));
+			level.setBlock(pos, block.setValue(EdenBlockProperties.NATURAL, true), AllPurposeUtility.Flags.SILENT);
 		}
 		
 		return true;

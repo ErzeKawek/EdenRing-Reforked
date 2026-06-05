@@ -7,16 +7,17 @@ buildscript {
 plugins {
     id 'idea'
     id 'eclipse'
-    id 'fabric-loom' version "${loom_version}"
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
     id 'maven-publish'
 }
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-archivesBaseName = project.archives_base_name
+
 version = project.mod_version
 group = project.maven_group
-def local_bclib = findProject(':BCLib') != null
-def local_wunderlib = findProject(':WunderLib') != null
+
+base {
+    archivesName = project.archives_base_name
+}
+
 
 loom {
     interfaceInjection {
@@ -73,25 +74,11 @@ repositories {
 }
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    println "Using local BCLib: ${local_bclib}"
-    if (local_bclib){
-        implementation( project(path:":BCLib", configuration: 'dev') )
-    } else {
-        modImplementation "com.github.quiqueck:BCLib:${project.bclib_version}"
-    }
+    implementation "net.fabricmc:fabric-loader:$project.loader_version"
 
-    if (local_wunderlib) {
-        implementation project(path: ":WunderLib", configuration: 'dev')
-        include project(path: ":WunderLib", configuration: 'dev')
-    } else {
-        modImplementation "com.github.quiqueck:WunderLib:1.1.5"
-//        modApi "com.github.quiqueck:WunderLib"
-//        include "com.github.quiqueck:WunderLib"
-    }
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
     dependencies {
         include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.2")))
     }
@@ -142,7 +129,7 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-	it.options.release = 17
+	it.options.release = 21
 }
 javadoc {
     options.tags = ["reason"]

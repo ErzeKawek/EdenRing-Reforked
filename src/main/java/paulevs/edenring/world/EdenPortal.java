@@ -8,9 +8,7 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.HorizontalDirectionalBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
-import org.betterx.bclib.util.BlocksHelper;
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.blocks.EdenBlockProperties.EdenPortalState;
 import paulevs.edenring.registries.EdenBlocks;
@@ -31,7 +29,7 @@ public class EdenPortal {
 			if (stateWorld.equals(state)) {
 				BlockState replacement = PRE_PORTAL.getOrDefault(pos, air);
 				if (!(stateWorld.equals(replacement))) {
-					BlocksHelper.setWithoutUpdate(level, offsetted, replacement);
+					level.setBlock(pos.offset(center), level.getBlockState(offsetted), 18);
 				}
 			}
 		});
@@ -63,7 +61,7 @@ public class EdenPortal {
 	
 	public static void buildPortal(Level level, BlockPos center) {
 		PORTAL.forEach((pos, state) -> {
-			BlocksHelper.setWithoutUpdate(level, pos.offset(center), state);
+			level.setBlock(pos.offset(center), state, 16 | 2);
 		});
 	}
 	
@@ -95,7 +93,7 @@ public class EdenPortal {
 		PORTAL.put(below.west(), portal.setValue(portalProperty, EdenPortalState.CENTER_W));
 		PORTAL.put(below.north().west(), portal.setValue(portalProperty, EdenPortalState.CENTER_NW));
 		
-		DirectionProperty facing = HorizontalDirectionalBlock.FACING;
+		EnumProperty<Direction> facing = HorizontalDirectionalBlock.FACING;
 		BlockState stairs = Blocks.WAXED_CUT_COPPER_STAIRS.defaultBlockState();
 		for (int i = -1; i < 2; i++) {
 			PORTAL.put(below.north(2).east(i), stairs.setValue(facing, Direction.SOUTH));

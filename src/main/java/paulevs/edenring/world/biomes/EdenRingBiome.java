@@ -22,7 +22,6 @@ import paulevs.edenring.EdenRing;
 import paulevs.edenring.registries.EdenBiomes;
 import paulevs.edenring.registries.EdenBlocks;
 import paulevs.edenring.registries.EdenSounds;
-import paulevs.edenring.world.CBCLBiomeSettings;
 
 import java.util.List;
 import java.util.Optional;

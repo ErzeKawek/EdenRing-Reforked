@@ -14,7 +14,7 @@ public class MultiThreadGenerator {
 	}
 	
 	public static TerrainGenerator getTerrainGenerator() {
-		return TERRAIN_POOL.computeIfAbsent(Thread.currentThread().getId(), i -> new TerrainGenerator(seed));
+		return TERRAIN_POOL.computeIfAbsent(Thread.currentThread().threadId(), i -> new TerrainGenerator(seed));
 	}
 	
 	public static long getSeed() {

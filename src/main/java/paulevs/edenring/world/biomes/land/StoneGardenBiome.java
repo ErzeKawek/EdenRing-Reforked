@@ -1,5 +1,11 @@
 package paulevs.edenring.world.biomes.land;
 
+import net.minecraft.core.HolderGetter;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.data.worldgen.BootstrapContext;
+import net.minecraft.world.level.biome.Biome;
+import net.minecraft.world.level.levelgen.carver.ConfiguredWorldCarver;
+import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import org.betterx.bclib.api.v2.levelgen.biomes.BCLBiomeBuilder;
 
 import net.minecraft.data.worldgen.placement.MiscOverworldPlacements;
@@ -11,10 +17,17 @@ import paulevs.edenring.registries.EdenSounds;
 import paulevs.edenring.world.biomes.BiomesCommonMethods;
 import paulevs.edenring.world.biomes.EdenRingBiome;
 
-public class StoneGardenBiome extends EdenRingBiome.Config {
-    public StoneGardenBiome() {
-        super(EdenBiomes.STONE_GARDEN.location());
-    }
+public class StoneGardenBiome {
+
+    public static Biome create(BootstrapContext<Biome> context) {
+        HolderGetter<PlacedFeature> features = context.lookup(
+                Registries.PLACED_FEATURE
+        );
+        HolderGetter<ConfiguredWorldCarver<?>> carvers = context.lookup(
+                Registries.CONFIGURED_CARVER
+        );
+
+
 
     @Override
     protected void addCustomBuildData(BCLBiomeBuilder builder) {
