@@ -21,10 +21,10 @@ import paulevs.edenring.registries.EdenFeatures;
 import java.util.Optional;
 
 @SuppressWarnings("all")
-public class BalloonMushroomSmallBlock extends FeatureSaplingBlock {
+public class OldBalloonMushroomSmallBlock {
 	private static final VoxelShape SHAPE = Block.box(4, 0, 4, 12, 8, 12);
 	
-	public BalloonMushroomSmallBlock() {
+	public OldBalloonMushroomSmallBlock() {
 		super(BehaviourBuilders.createPlant()
 			.noCollission()
 			.instabreak()

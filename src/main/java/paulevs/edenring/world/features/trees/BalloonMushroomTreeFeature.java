@@ -9,6 +9,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import paulevs.edenring.blocks.EdenBlockProperties;
@@ -22,7 +23,10 @@ import java.util.List;
 
 import static net.minecraft.world.level.block.Blocks.AIR;
 
-public class BalloonMushroomTreeFeature {
+public class BalloonMushroomTreeFeature extends Feature<NoneFeatureConfiguration> {
+	public BalloonMushroomTreeFeature() {
+		super(NoneFeatureConfiguration.CODEC);
+	}
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
@@ -101,17 +105,12 @@ public class BalloonMushroomTreeFeature {
 					for (int y = 0; y < 3; y++) {
 						pos.setY(center.getY() + h + y);
 						if (level.getBlockState(pos).isAir()) {
-							level.setBlock(pos, y == 0 ? head : block, AllPurposeUtility.Flags.SILENT);
-							updateBlocks.add(pos.immutable());
+							level.setBlock(pos, y == 0 ? head : block, Block.UPDATE_ALL);
+							// no need to add to updateBlocks
 						}
 					}
 				}
 			}
-			updateBlocks.forEach(p -> {
-				BlockState s = level.getBlockState(p);
-				s = s.getBlock().updateShape(s, Direction.UP, AIR, level, p, p);
-				level.setBlock(p, s, AllPurposeUtility.Flags.SILENT);
-			});
 		}
 		else {
 			BlockState thin = stem.setValue(EdenBlockProperties.BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.THIN);

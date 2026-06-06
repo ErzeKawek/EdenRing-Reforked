@@ -1,6 +1,7 @@
 package paulevs.edenring.registries;
 
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -141,12 +142,8 @@ public class EdenFeatures {
 	}
 
 	private static <F extends Feature<FC>, FC extends FeatureConfiguration> BCLFeature<F, FC> registerVegetation(
-			String name,
-			F feature,
-			FC config,
-			int density
-	) {
-		ResourceLocation id = EdenRing.makeID(name);
+			String name, F feature, FC config, int density) {
+		Identifier id = EdenRing.of(name);
 		return BCLFeatureBuilder.start(id, feature)
 				.configuration(config)
 				.build()

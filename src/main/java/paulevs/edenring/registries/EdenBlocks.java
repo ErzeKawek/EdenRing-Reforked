@@ -18,13 +18,12 @@ import net.minecraft.world.level.material.MapColor;
 import org.jetbrains.annotations.NotNull;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.*;
-import paulevs.edenring.blocks.complex.BrainTreeComplexMaterial;
-import paulevs.edenring.blocks.complex.EdenSaplings;
-import paulevs.edenring.blocks.complex.EdenWoodBlocks;
-import paulevs.edenring.blocks.complex.EdenWoodenComplexMaterial;
+import paulevs.edenring.blocks.complex.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.PushReaction;
 import paulevs.edenring.world.features.trees.AuritisTreeFeature;
+import paulevs.edenring.world.features.trees.BalloonMushroomTreeFeature;
+import paulevs.edenring.world.features.trees.PulseTreeFeature;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -44,6 +43,19 @@ public class EdenBlocks {
 
 	public static Block AURITIS_SAPLING = register("auritis_sapling",
 			settings -> new EdenSaplings(AuritisTreeFeature::new, settings.mapColor(MapColor.GOLD)));
+	public static Block BALLOON_MUSHROOM_SMALL = register(
+			"balloon_mushroom_small",
+			settings -> new EdenSaplings(
+					BalloonMushroomTreeFeature::new,
+					settings.mapColor(MapColor.COLOR_PINK)
+			));
+	public static Block PULSE_TREE_SAPLING = register(
+			"pulse_tree_sapling",
+			settings -> new EdenSaplings(
+					PulseTreeFeature::new,
+					settings.mapColor(MapColor.COLOR_LIGHT_BLUE)
+			)
+	);
 
 	public static Block AURITIS_LEAVES = register(
 			"auritis_leaves",
@@ -52,14 +64,16 @@ public class EdenBlocks {
 					applyLeafSettings(settings.mapColor(MapColor.GOLD))
 			)
 	);
-
+	// Woodsets
 	public static EdenWoodBlocks.EdenWoodSet AURITIS_MATERIAL = new EdenWoodBlocks.EdenWoodSet("auritis", MapColor.COLOR_BROWN, MapColor.GOLD);
-	
-	public static final Block BALLOON_MUSHROOM_SMALL = register("balloon_mushroom_small", new BalloonMushroomSmallBlock());
+	public static EdenWoodBlocks.EdenWoodSet BALLOON_MUSHROOM_MATERIAL = new EdenWoodBlocks.EdenWoodSet("balloon_mushroom", MapColor.COLOR_PURPLE, MapColor.COLOR_PURPLE);
+	public static EdenWoodBlocks.EdenWoodSet PULSE_TREE_MATERIAL = new EdenWoodBlocks.EdenWoodSet("pulse_tree", MapColor.COLOR_CYAN, MapColor.COLOR_CYAN);
+	public static BrainTreeWoodBlock.BrainTreeWoodSet BRAIN_TREE_MATERIAL = new BrainTreeWoodBlock.BrainTreeWoodSet("brain_tree", MapColor.COLOR_GRAY, MapColor.COLOR_LIGHT_GRAY);
+
+	// Balloon Mushroom Things
 	public static final Block BALLOON_MUSHROOM_BLOCK = register("balloon_mushroom_block", new BalloonMushroomBlock());
 	public static final Block BALLOON_MUSHROOM_STEM = register("balloon_mushroom_stem", new BalloonMushroomStemBlock());
 	public static final Block BALLOON_MUSHROOM_BRANCH = register("balloon_mushroom_branch", new BranchBlock(BALLOON_MUSHROOM_STEM));
-	public static final ComplexMaterial BALLOON_MUSHROOM_MATERIAL = new EdenWoodenComplexMaterial(EdenRing.MOD_ID, "balloon_mushroom", "eden", MapColor.COLOR_PURPLE, MapColor.COLOR_PURPLE).init(REGISTRY, EdenItems.REGISTRY);
 	public static final Block BALLOON_MUSHROOM_HYMENOPHORE = register("balloon_mushroom_hymenophore", new ShadedVineBlock());
 	public static final Map<DyeColor, Block> MYCOTIC_LANTERN_COLORED = Maps.newEnumMap(DyeColor.class);
 	public static final Map<DyeColor, Block> BALLOON_MUSHROOM_SPOROCARP_COLORED = Maps.newEnumMap(DyeColor.class);
@@ -81,14 +95,11 @@ public class EdenBlocks {
 		}
 	}
 	// Pulse Tree //
-	public static final Block PULSE_TREE_SAPLING = register("pulse_tree_sapling", new FeatureSaplingBlock<>((state) -> EdenFeatures.PULSE_TREE.configuredFeature));
 	public static final Block PULSE_TREE = register("pulse_tree", new PulseTreeBlock());
-	public static final ComplexMaterial PULSE_TREE_MATERIAL = new EdenWoodenComplexMaterial(EdenRing.MOD_ID, "pulse_tree", "eden", MapColor.COLOR_CYAN, MapColor.COLOR_CYAN).init(REGISTRY, EdenItems.REGISTRY);
 	// Brain Tree //
 	public static final Block BRAIN_TREE_BLOCK_IRON = register("brain_tree_block_iron", new BrainTreeBlock(MapColor.COLOR_LIGHT_GRAY));
 	public static final Block BRAIN_TREE_BLOCK_COPPER = register("brain_tree_block_copper", new BrainTreeBlock(MapColor.COLOR_ORANGE));
 	public static final Block BRAIN_TREE_BLOCK_GOLD = register("brain_tree_block_gold", new BrainTreeBlock(MapColor.GOLD));
-	public static final ComplexMaterial BRAIN_TREE_MATERIAL = new BrainTreeComplexMaterial("brain_tree").init(REGISTRY, EdenItems.REGISTRY);
 	public static final Block COPPER_FRAMED_BRAIN_TREE_LOG = register("copper_framed_brain_tree_log", new BrainTreeLogBlock());
 	public static final Block IRON_FRAMED_BRAIN_TREE_LOG = register("iron_framed_brain_tree_log", new BrainTreeLogBlock());
 	public static final Block GOLD_FRAMED_BRAIN_TREE_LOG = register("gold_framed_brain_tree_log", new BrainTreeLogBlock());

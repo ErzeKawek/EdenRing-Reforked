@@ -6,6 +6,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import paulevs.edenring.blocks.EdenBlockProperties;
@@ -13,14 +14,19 @@ import paulevs.edenring.blocks.EdenBlockProperties.PulseTreeState;
 import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class PulseTreeFeature {
+public class PulseTreeFeature extends Feature<NoneFeatureConfiguration> {
+
+	public PulseTreeFeature() {
+		super(NoneFeatureConfiguration.CODEC);
+	}
+
 	@SuppressWarnings("deprecation")
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
 		RandomSource random = featurePlaceContext.random();
-		
-		if (!EdenBlocks.PULSE_TREE_SAPLING.canSurvive(EdenBlocks.PULSE_TREE_SAPLING.defaultBlockState(), level, center)) {
+
+		if (!EdenBlocks.PULSE_TREE_SAPLING.defaultBlockState().canSurvive(level, center)) {
 			return false;
 		}
 		

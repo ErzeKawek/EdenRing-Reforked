@@ -14,6 +14,9 @@ import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConf
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.world.features.basic.ScatterFeature;
 import paulevs.edenring.world.features.terrain.StonePillar;
+import paulevs.edenring.world.features.trees.AuritisTreeFeature;
+import paulevs.edenring.world.features.trees.BalloonMushroomTreeFeature;
+import paulevs.edenring.world.features.trees.PulseTreeFeature;
 
 public class EdenConfiguredFeatures {
 
@@ -33,8 +36,26 @@ public class EdenConfiguredFeatures {
 
     public static final ResourceKey<ConfiguredFeature<?, ?>> MOSS_LAYER = of("moss_layer");
 
+    public static final Feature<NoneFeatureConfiguration> AURITIS_TREE_FEATURE = Registry.register(
+            BuiltInRegistries.FEATURE,
+            EdenRing.of("auritis_tree"),
+            new AuritisTreeFeature()
+    );
+    public static final ResourceKey<ConfiguredFeature<?, ?>> AURITIS_TREE = of("auritis_tree");
 
+    public static final Feature<NoneFeatureConfiguration> BALLOON_MUSHROOM_TREE_FEATURE = Registry.register(
+            BuiltInRegistries.FEATURE,
+            EdenRing.of("balloon_mushroom_tree"),
+            new BalloonMushroomTreeFeature()
+    );
+    public static final ResourceKey<ConfiguredFeature<?, ?>> BALLOON_MUSHROOM_TREE = of("balloon_mushroom_tree");
 
+    public static final Feature<NoneFeatureConfiguration> PULSE_TREE_FEATURE = Registry.register(
+            BuiltInRegistries.FEATURE,
+            EdenRing.of("pulse_tree"),
+            new PulseTreeFeature()
+    );
+    public static final ResourceKey<ConfiguredFeature<?, ?>> PULSE_TREE = of("pulse_tree");
 
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         HolderGetter<ConfiguredFeature<?, ?>> lookup = context.lookup(
@@ -42,6 +63,9 @@ public class EdenConfiguredFeatures {
         );
         FeatureUtils.register(context, STONE_PILLAR, STONE_PILLAR_FEATURE);
         FeatureUtils.register(context, MOSS_LAYER, MOSS_LAYER_FEATURE);
+        FeatureUtils.register(context, AURITIS_TREE, AURITIS_TREE_FEATURE);
+        FeatureUtils.register(context, BALLOON_MUSHROOM_TREE, BALLOON_MUSHROOM_TREE_FEATURE);
+        FeatureUtils.register(context, PULSE_TREE, PULSE_TREE_FEATURE);
     }
 
     public static void init() {

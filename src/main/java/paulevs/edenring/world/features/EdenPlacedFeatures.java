@@ -13,13 +13,17 @@ import net.minecraft.world.level.levelgen.placement.InSquarePlacement;
 import net.minecraft.world.level.levelgen.placement.PlacedFeature;
 import net.minecraft.world.level.levelgen.placement.PlacementFilter;
 import paulevs.edenring.EdenRing;
+import paulevs.edenring.registries.EdenBlocks;
 
 import java.util.List;
 
 public class EdenPlacedFeatures {
 
     public static final ResourceKey<PlacedFeature> STONE_PILLAR = of("stone_pillar");
-    public static final ResourceKey<PlacedFeature> MOSS_LAYER = of("stone_pillar");
+    public static final ResourceKey<PlacedFeature> MOSS_LAYER = of("moss_layer");
+    public static final ResourceKey<PlacedFeature> AURITIS_TREE = of("auritis_tree");
+    public static final ResourceKey<PlacedFeature> BALLOON_MUSHROOM_TREE = of("balloon_mushroom_tree");
+    public static final ResourceKey<PlacedFeature> PULSE_TREE = of("pulse_tree");
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
 
@@ -45,6 +49,47 @@ public class EdenPlacedFeatures {
                         )
                 )
         );
+        context.register(
+                AURITIS_TREE,
+                new PlacedFeature(
+                        configuredFeatures.getOrThrow(EdenConfiguredFeatures.AURITIS_TREE),
+                        List.of(
+                                (net.minecraft.world.level.levelgen.placement.PlacementModifier) VegetationPlacements.treePlacement(
+                                        PlacementUtils.countExtra(1, 0.4F, 1),
+                                        EdenBlocks.AURITIS_SAPLING
+                                )
+                        )
+                )
+        );
+
+        context.register(
+                BALLOON_MUSHROOM_TREE,
+                new PlacedFeature(
+                        configuredFeatures.getOrThrow(EdenConfiguredFeatures.BALLOON_MUSHROOM_TREE),
+                        List.of(
+                                (net.minecraft.world.level.levelgen.placement.PlacementModifier) VegetationPlacements.treePlacement(
+                                        PlacementUtils.countExtra(8, 0.5F, 1),
+                                        EdenBlocks.BALLOON_MUSHROOM_SMALL
+                                )
+                        )
+                )
+        );
+
+        context.register(
+                PULSE_TREE,
+                new PlacedFeature(
+                        configuredFeatures.getOrThrow(EdenConfiguredFeatures.PULSE_TREE),
+                        List.of(
+                                (net.minecraft.world.level.levelgen.placement.PlacementModifier) VegetationPlacements.treePlacement(
+                                        PlacementUtils.countExtra(14, 0.5F, 2),
+                                        EdenBlocks.PULSE_TREE_SAPLING
+                                )
+                        )
+                )
+        );
+
+
+
                 }
     public static ResourceKey<PlacedFeature> of(String id) {
         return ResourceKey.create(Registries.PLACED_FEATURE, EdenRing.of(id));

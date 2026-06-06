@@ -9,13 +9,18 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class AuritisTreeFeature {
+public class AuritisTreeFeature extends Feature<NoneFeatureConfiguration> {
+
+	public AuritisTreeFeature() {
+		super(NoneFeatureConfiguration.CODEC);
+	}
 
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
@@ -161,6 +166,6 @@ public class AuritisTreeFeature {
 	}
 	
 	private boolean canReplace(BlockState state) {
-		return state.isAir() || state.is(BlockTags.LEAVES);
+		return state.isAir() || state.is(BlockTags.LEAVES) || state.canBeReplaced();
 	}
 }

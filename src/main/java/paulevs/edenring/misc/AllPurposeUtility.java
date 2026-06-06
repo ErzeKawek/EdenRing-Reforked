@@ -142,6 +142,15 @@ public class AllPurposeUtility {
         return max(a, max(b, c));
     }
 
+    public static <T> void shuffle(T[] array, RandomSource random) {
+        for (int i = 0; i < array.length; i++) {
+            int i2 = random.nextInt(array.length);
+            T element = array[i];
+            array[i] = array[i2];
+            array[i2] = element;
+        }
+    }
+
     public class SplineMath {
         public static void fillLineForce(
                 Vector3f start,

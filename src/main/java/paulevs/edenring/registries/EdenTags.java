@@ -1,6 +1,7 @@
 package paulevs.edenring.registries;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import net.minecraft.core.registries.Registries;
@@ -8,7 +9,8 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import paulevs.edenring.EdenRing;
-import paulevs.edenring.blocks.complex.EdenWoodBlocks;
+import paulevs.edenring.blocks.complex.BrainTreeWoodBlock;
+import paulevs.edenring.blocks.complex.EdenWoodBlocks.*;
 
 public class EdenTags {
 
@@ -22,15 +24,26 @@ public class EdenTags {
 
     public static void init() {
 
-        for (EdenWoodBlocks.EdenWoodSet wood : Arrays.asList(
+        for (EdenWoodSet wood : Arrays.asList(
                 EdenBlocks.AURITIS_MATERIAL,
                 EdenBlocks.BALLOON_MUSHROOM_MATERIAL,
-                EdenBlocks.BRAIN_TREE_MATERIAL,
                 EdenBlocks.PULSE_TREE_MATERIAL
         )) {
             LOGS.put(
                     wood.baseName,
-                    TagKey.create(Registries.ITEM, EdenRing     .of(wood.baseName + "_logs"))
+                    TagKey.create(Registries.ITEM, EdenRing.of(wood.baseName + "_logs"))
+            );
+            STRIPPED_LOG.put(
+                    wood.baseName,
+                    TagKey.create(Registries.ITEM, EdenRing.of("stripped_" + wood.baseName + "_logs"))
+            );
+        }
+        for (BrainTreeWoodBlock.BrainTreeWoodSet wood : Collections.singletonList(
+                EdenBlocks.BRAIN_TREE_MATERIAL
+        )) {
+            LOGS.put(
+                    wood.baseName,
+                    TagKey.create(Registries.ITEM, EdenRing.of(wood.baseName + "_logs"))
             );
             STRIPPED_LOG.put(
                     wood.baseName,

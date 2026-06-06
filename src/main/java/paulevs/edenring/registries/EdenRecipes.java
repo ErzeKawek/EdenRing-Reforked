@@ -43,7 +43,7 @@ public class EdenRecipes {
 						.addMaterial('I', CommonItemTags.IRON_INGOTS)
 						.build();
 		
-		Block log = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.getBlock(WoodenComplexMaterial.BLOCK_LOG);
+		Block log = EdenBlocks.BALLOON_MUSHROOM_MATERIAL.log;
 		BCLRecipeBuilder.crafting(EdenRing.makeID("baloon_mushroom_block"), log)
 						.setShape("##", "##")
 						.addMaterial('#', EdenBlocks.BALLOON_MUSHROOM_STEM, EdenBlocks.BALLOON_MUSHROOM_BRANCH)

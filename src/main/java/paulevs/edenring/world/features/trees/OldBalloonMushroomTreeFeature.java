@@ -15,10 +15,6 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
-import org.betterx.bclib.api.v2.levelgen.features.features.DefaultFeature;
-import org.betterx.bclib.complexmaterials.WoodenComplexMaterial;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.bclib.util.MHelper;
 
 import paulevs.edenring.blocks.EdenBlockProperties;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
@@ -29,8 +25,9 @@ import paulevs.edenring.registries.EdenBlocks;
 import java.util.ArrayList;
 import java.util.List;
 
-public class OldBalloonMushroomTreeFeature extends DefaultFeature {
-	@Override
+import static net.minecraft.world.level.block.Blocks.AIR;
+
+public class OldBalloonMushroomTreeFeature {
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
@@ -235,15 +232,15 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		}
 		
 		BlockState branch = EdenBlocks.BALLOON_MUSHROOM_BRANCH.defaultBlockState().setValue(BlockStateProperties.DOWN, true);
-		Direction[] dirs = BlocksHelper.makeHorizontal();
+		Direction[] dirs = AllPurposeUtility.DirectionalUtility.makeHorizontal();
 		for (int x = -2; x < 4; x++) {
 			for (int z = -2; z < 4; z++) {
 				if (random.nextInt(4) == 0) continue;
-				MHelper.shuffle(dirs, random);
+				AllPurposeUtility.shuffle(dirs, random);
 				for (Direction dir: dirs) {
 					int h = getConnection(x, z, dir, mask);
 					if (h > 0) {
-						if (h > 1) h = MHelper.randRange(1, h, random);
+						if (h > 1) h = AllPurposeUtility.randRange(1, h, random);
 						int h2 = -h - 3;
 						BlockState start = branch.setValue(EdenBlockProperties.DIRECTIONS[dir.get3DDataValue()], true);
 						makeLine(level, p.set(center).move(x, h - 1, z), start, stem, h2);
@@ -258,22 +255,22 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		BlockState branch = EdenBlocks.BALLOON_MUSHROOM_BRANCH.defaultBlockState().setValue(BlockStateProperties.UP, true);
 		for (int i = 0; i < 2; i++) {
 			if (random.nextInt(4) > 0) {
-				int dy = MHelper.randRange(2, 4, random);
+				int dy = AllPurposeUtility.randRange(2, 4, random);
 				int dx = random.nextInt(2);
 				singleBranch(level, p.set(center).move(i, height - dy, -1), Direction.NORTH, dx, dy, stem, branch);
 			}
 			if (random.nextInt(4) > 0) {
-				int dy = MHelper.randRange(2, 4, random);
+				int dy = AllPurposeUtility.randRange(2, 4, random);
 				int dx = random.nextInt(2);
 				singleBranch(level, p.set(center).move(i, height - dy, 2), Direction.SOUTH, dx, dy, stem, branch);
 			}
 			if (random.nextInt(4) > 0) {
-				int dy = MHelper.randRange(2, 4, random);
+				int dy = AllPurposeUtility.randRange(2, 4, random);
 				int dx = random.nextInt(2);
 				singleBranch(level, p.set(center).move(-1, height - dy, i), Direction.WEST, dx, dy, stem, branch);
 			}
 			if (random.nextInt(4) > 0) {
-				int dy = MHelper.randRange(2, 4, random);
+				int dy = AllPurposeUtility.randRange(2, 4, random);
 				int dx = random.nextInt(2);
 				singleBranch(level, p.set(center).move(2, height - dy, i), Direction.EAST, dx, dy, stem, branch);
 			}
@@ -313,8 +310,8 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 	
 	private void setBlock(WorldGenLevel level, BlockPos pos, BlockState state) {
 		BlockState place = level.getBlockState(pos);
-		if (BlocksHelper.replaceableOrPlant(state) || place.is(EdenBlocks.BALLOON_MUSHROOM_SMALL) || place.isAir()) {
-			BlocksHelper.setWithoutUpdate(level, pos, state);
+		if (state.canBeReplaced() || place.is(EdenBlocks.BALLOON_MUSHROOM_SMALL) || place.isAir()) {
+			level.setBlock(pos, state, AllPurposeUtility.Flags.SILENT);
 		}
 	}
 }
