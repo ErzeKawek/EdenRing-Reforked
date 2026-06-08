@@ -16,38 +16,12 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
-import net.minecraft.world.level.material.MapColor;
-import net.minecraft.world.level.storage.loot.LootParams;
-import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
-
-import org.betterx.bclib.blocks.BaseBlock;
-import org.betterx.bclib.client.models.BasePatterns;
-import org.betterx.bclib.client.models.ModelsHelper;
-import org.betterx.bclib.client.models.PatternsHelper;
-import paulevs.edenring.misc.JsonUtil;
-
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 public class MossyStoneBlock implements BonemealableBlock {
 	public MossyStoneBlock() {
 		BlockBehaviour.Properties.ofFullCopy(Blocks.STONE);
-	}
-
-
-	@Override
-	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		if (tool == null || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) == 0) {
-			return Collections.singletonList(new ItemStack(Blocks.STONE));
-		}
-		return Collections.singletonList(new ItemStack(this));
 	}
 
 

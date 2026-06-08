@@ -21,6 +21,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class VolvoxBlockDense extends BaseBlock {
+
 	public VolvoxBlockDense() {
 		super(BehaviourBuilders.createWood().strength(1F).sound(SoundType.SLIME_BLOCK));
 	}

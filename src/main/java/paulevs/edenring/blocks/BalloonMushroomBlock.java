@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -28,7 +29,7 @@ import paulevs.edenring.items.BalloonMushroomBlockItem;
 import java.util.Map;
 import java.util.Optional;
 
-public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvider {
+public class BalloonMushroomBlock extends BaseCTBlock {
 	public static final BooleanProperty NATURAL = EdenBlockProperties.NATURAL;
 	
 	public BalloonMushroomBlock() {
@@ -43,28 +44,7 @@ public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvi
 	}
 	
 	@Override
-	public BlockItem getCustomItem(ResourceLocation resourceLocation, Item.Properties itemProperties) {
+	public BlockItem getCustomItem(Identifier identifier, Item.Properties itemProperties) {
 		return new BalloonMushroomBlockItem(this, itemProperties);
-	}
-	
-	@Override
-	@Environment(EnvType.CLIENT)
-	protected void appendCentralModel(ResourceLocation stateId, MultiPartBuilder builder, ModelResourceLocation keyCube, Map<ResourceLocation, UnbakedModel> modelCache) {
-		builder.part(keyCube).setCondition(state -> !state.getValue(NATURAL)).add();
-		
-		keyCube = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), defaultBlockState().toString() + "_natural");
-		if (!modelCache.containsKey(keyCube)) {
-			Map<String, String> textures = Maps.newHashMap();
-			String side = stateId.getNamespace() + ":block/" + stateId.getPath();
-			textures.put("%bottom%", side + "_bottom");
-			textures.put("%side%", side);
-			textures.put("%top%", side);
-			Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_TOP_SIDE_BOTTOM, textures);
-			
-			BlockModel model = ModelsHelper.fromPattern(pattern);
-			modelCache.put(keyCube, model);
-		}
-		
-		builder.part(keyCube).setCondition(state -> state.getValue(NATURAL)).add();
 	}
 }

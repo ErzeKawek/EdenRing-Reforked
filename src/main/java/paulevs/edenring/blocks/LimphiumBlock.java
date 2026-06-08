@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.storage.loot.LootParams;
 
 import org.betterx.bclib.util.MHelper;
+import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 import paulevs.edenring.registries.EdenItems;
 
@@ -56,7 +57,7 @@ public class LimphiumBlock extends OverlayPlantBlock {
 	//public List<ItemStack> getLoot(BlockState state, Builder builder) {
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
 		if (state.getValue(HALF) == Half.TOP) {
-			return Lists.newArrayList(new ItemStack(EdenItems.LIMPHIUM_LEAF, MHelper.randRange(2, 4, MHelper.RANDOM_SOURCE)));
+			return Lists.newArrayList(new ItemStack(EdenItems.LIMPHIUM_LEAF, AllPurposeUtility.randRange(2, 4, MHelper.RANDOM_SOURCE)));
 		}
 		return MHelper.RANDOM.nextBoolean() ? Lists.newArrayList() : Lists.newArrayList(new ItemStack(EdenBlocks.LIMPHIUM_SAPLING));
 	}

@@ -14,6 +14,9 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.betterx.bclib.blocks.BaseAttachedBlock;
@@ -27,8 +30,11 @@ import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static net.minecraft.world.level.block.Block.box;
+
 public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLayerProvider {
 	private static final EnumMap<Direction, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Direction.class);
+	public static final EnumProperty FACING = BlockStateProperties.FACING;
 	
 	public GraviliteShardsBlock() {
 		super(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(15).noCollision().noOcclusion());
@@ -37,40 +43,6 @@ public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLay
 	@Override
 	public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext ePos) {
 		return BOUNDING_SHAPES.get(state.getValue(FACING));
-	}
-	
-	@Override
-	public BCLRenderLayer getRenderLayer() {
-		return BCLRenderLayer.CUTOUT;
-	}
-	
-	@Override
-	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		ModelResourceLocation shardsUp = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), this.defaultBlockState().toString());
-		
-		if (!modelCache.containsKey(shardsUp)) {
-			Map<String, String> textures = Maps.newHashMap();
-			textures.put("%modid%", stateId.getNamespace());
-			textures.put("%texture%", stateId.getPath());
-			Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures);
-			BlockModel model = ModelsHelper.fromPattern(pattern);
-			modelCache.put(shardsUp, model);
-		}
-		
-		Direction facing = blockState.getValue(FACING);
-		if (facing == Direction.UP) {
-			return modelCache.get(shardsUp);
-		}
-		
-		Transformation transformation = new Transformation(null, facing.getRotation(), null, null);
-		return ModelsHelper.createMultiVariant(shardsUp, transformation, false);
-	}
-	
-	@Override
-	@Environment(EnvType.CLIENT)
-	public BlockModel getItemModel(ResourceLocation itemID) {
-		return ModelsHelper.createBlockItem(itemID);
 	}
 	
 	static {

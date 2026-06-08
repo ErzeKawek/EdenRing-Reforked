@@ -9,8 +9,6 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.resources.ResourceLocation;
-import org.betterx.bclib.BCLib;
 import org.jetbrains.annotations.Nullable;
 import paulevs.edenring.EdenRing;
 
@@ -38,7 +36,7 @@ public class EdenPaintings {
 	
 	private static void register(String name, int width, int height, @Nullable PaintingColorProvider<ClientLevel, BlockPos> provider) {
 		Identifier id = EdenRing.of(name);
-		Identifier tex = EdenRing.of("textures/painting/" + name + ".png");
+		Identifier tex = EdenRing.makeID("textures/painting/" + name + ".png");
 		PaintingInfo info = new PaintingInfo(PAINTINGS_LIST.size(), id, tex, width, height, provider);
 		PAINTING_BY_ID.put(id, info);
 		PAINTINGS_LIST.add(info);

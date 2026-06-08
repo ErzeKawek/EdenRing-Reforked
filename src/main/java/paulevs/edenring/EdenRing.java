@@ -137,7 +137,7 @@ public void onInitialize() {
   });
 }
 
-public static ResourceLocation makeID(String path) {
-  return new ResourceLocation(MOD_ID, path);
+public static Identifier makeID(String path) {
+  return Identifier.fromNamespaceAndPath(MOD_ID, path);
 }
 }

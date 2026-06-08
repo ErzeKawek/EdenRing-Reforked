@@ -1,6 +1,6 @@
 package paulevs.edenring.blocks;
 
-import com.google.common.collect.Maps;
+import om.google.common.collect.Maps;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.storage.loot.LootParams;

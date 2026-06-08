@@ -1,10 +1,11 @@
 package paulevs.edenring.blocks;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import paulevs.edenring.EdenRing;
 
 public class EdenPatterns {
-	public static final ResourceLocation BLOCK_TINTED_CROSS_OVERLAY = EdenRing.makeID("patterns/block/tinted_cross_overlay.json");
+	public static final Identifier BLOCK_TINTED_CROSS_OVERLAY = EdenRing.makeID("patterns/block/tinted_cross_overlay.json");
 	public static final ResourceLocation BLOCK_TRANSLUCENT_PLANT = EdenRing.makeID("patterns/block/translucent_plant.json");
 	public static final ResourceLocation BLOCK_PILLAR_NO_SHADE = EdenRing.makeID("patterns/block/pillar_no_shade.json");
 	public static final ResourceLocation BLOCK_MYCOTIC_LANTERN = EdenRing.makeID("patterns/block/mycotic_lantern.json");

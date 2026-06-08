@@ -17,6 +17,7 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -30,9 +31,12 @@ import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.util.BlocksHelper;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
+import paulevs.edenring.misc.AllPurposeUtility;
 
 import java.util.Map;
 import java.util.Optional;
+
+import static net.minecraft.world.level.block.Block.box;
 
 public class BranchBlock extends BaseBlockNotFull {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
@@ -51,7 +55,7 @@ public class BranchBlock extends BaseBlockNotFull {
 		this(FabricBlockSettings.copyOf(block));
 	}
 	
-	public BranchBlock(Properties properties) {
+	public BranchBlock(BlockBehaviour.Properties properties) {
 		super(properties);
 		BlockState state = getStateDefinition().any();
 		for (BooleanProperty property: DIRECTIONS) {
@@ -92,7 +96,7 @@ public class BranchBlock extends BaseBlockNotFull {
 	
 	public BlockState getConnectedState(LevelAccessor level, BlockPos pos) {
 		BlockState state = defaultBlockState();
-		for (Direction dir: BlocksHelper.DIRECTIONS) {
+		for (Direction dir: AllPurposeUtility.DirectionalUtility.DIRECTIONS) {
 			if (isWall(level, pos.relative(dir), dir)) {
 				int index = dir.get3DDataValue();
 				state = state.setValue(DIRECTIONS[index], true);

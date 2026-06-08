@@ -11,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -30,12 +31,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class EdenPortalBlock extends BaseBlockNotFull {
+public class EdenPortalBlock extends Block {
 	public static final EnumProperty<EdenPortalState> EDEN_PORTAL = EdenBlockProperties.EDEN_PORTAL;
 	private static final Map<EdenPortalState, VoxelShape> BOUNDS = Maps.newEnumMap(EdenPortalState.class);
 	
 	public EdenPortalBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.COPPER_BLOCK));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK));
 	}
 	
 	@Override
