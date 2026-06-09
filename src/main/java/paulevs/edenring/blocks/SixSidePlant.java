@@ -2,24 +2,20 @@ package paulevs.edenring.blocks;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.minecraft.client.color.block.BlockColor;
-import net.minecraft.client.color.item.ItemColor;
-import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.Holder;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.BlockGetter;
-import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
@@ -35,18 +31,12 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
-import org.betterx.bclib.blocks.BaseBlockNotFull;
-import org.betterx.bclib.client.render.BCLRenderLayer;
-import org.betterx.bclib.interfaces.CustomColorProvider;
-import org.betterx.bclib.interfaces.RenderLayerProvider;
-import org.betterx.bclib.items.tool.BaseShearsItem;
-import org.betterx.bclib.util.BlocksHelper;
-import org.betterx.ui.ColorUtil;
+import paulevs.edenring.misc.AllPurposeUtility;
 
 import java.util.List;
 import java.util.Map;
 
-public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvider, RenderLayerProvider, BonemealableBlock {
+public class SixSidePlant extends Block implements BonemealableBlock {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	private static final VoxelShape UP_AABB = box(0, 15, 0, 16, 16, 16);
 	private static final VoxelShape DOWN_AABB = box(0, 0, 0, 16, 1, 16);
@@ -57,7 +47,7 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	
 	private final Map<BlockState, VoxelShape> shapesCache = Maps.newHashMap();
 	
-	public SixSidePlant(FabricBlockSettings settings) {
+	public SixSidePlant(Properties settings) {
 		super(settings);
 		BlockState state = getStateDefinition().any();
 		for (BooleanProperty property: DIRECTIONS) {
@@ -99,7 +89,7 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
-		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
+		ItemStack tool = (ItemStack) builder.getParameter(LootContextParams.TOOL);
 		if (tool != null && (isShears(tool) || hasSilkTouch(tool))) {
 			int count = getCount(state);
 			return count > 0 ? Lists.newArrayList(new ItemStack(this, count)) : Lists.newArrayList();
@@ -140,11 +130,10 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 		BlockState blockState2 = blockPlaceContext.getLevel().getBlockState(blockPlaceContext.getClickedPos());
 		return blockState2.is(this);
 	}
-	
-	@Override
+
 	public BlockState updateShape(BlockState state, Direction facing, BlockState neighborState, LevelAccessor world, BlockPos pos, BlockPos neighborPos) {
 		int count = 0;
-		for (Direction dir: BlocksHelper.DIRECTIONS) {
+		for (Direction dir: AllPurposeUtility.DirectionalUtility.DIRECTIONS) {
 			int index = dir.get3DDataValue();
 			if (state.getValue(DIRECTIONS[index])) {
 				if (!isWall(world, pos.relative(dir), dir)) {
@@ -170,34 +159,17 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	}
 	
 	private boolean isShears(ItemStack tool) {
-		return BaseShearsItem.isShear(tool);
+		return tool.is(Items.SHEARS);
 	}
 	
 	private boolean hasSilkTouch(ItemStack tool) {
-		return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
-	}
-	
-	@Override
-	@Environment(EnvType.CLIENT)
-	public BlockColor getProvider() {
-		return (blockState, blockAndTintGetter, blockPos, i) -> blockAndTintGetter != null && blockPos != null ? BiomeColors.getAverageGrassColor(blockAndTintGetter, blockPos) : GrassColor.get(0.5D, 1.0D);
-	}
-	
-	@Override
-	@Environment(EnvType.CLIENT)
-	public ItemColor getItemProvider() {
-		return (itemStack, i) -> i == 0 ? GrassColor.get(0.5D, 1.0D) : ColorUtil.color(255, 255, 255);
-	}
-	
-	@Override
-	public BCLRenderLayer getRenderLayer() {
-		return BCLRenderLayer.CUTOUT;
+		return EnchantmentHelper.getItemEnchantmentLevel((Holder<Enchantment>) Enchantments.SILK_TOUCH, tool) > 0;
 	}
 	
 	public BlockState getAttachedState(LevelAccessor level, BlockPos pos) {
 		BlockState state = defaultBlockState();
 		boolean isEmpty = true;
-		for (Direction dir: BlocksHelper.DIRECTIONS) {
+		for (Direction dir: AllPurposeUtility.DirectionalUtility.DIRECTIONS) {
 			if (isWall(level, pos.relative(dir), dir)) {
 				int index = dir.get3DDataValue();
 				state = state.setValue(DIRECTIONS[index], true);
@@ -206,18 +178,16 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 		}
 		return isEmpty ? null : state;
 	}
-	
+
 	@Override
-	public boolean isValidBonemealTarget(LevelReader blockGetter, BlockPos blockPos, BlockState blockState, boolean bl) {
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
 		return true;
 	}
-	
-	@Override
+
 	public boolean isBonemealSuccess(Level level, RandomSource random, BlockPos blockPos, BlockState blockState) {
 		return true;
 	}
-	
-	@Override
+
 	public void performBonemeal(ServerLevel level, RandomSource random, BlockPos pos, BlockState state) {
 		ItemEntity item = new ItemEntity(level, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, new ItemStack(this));
 		level.addFreshEntity(item);

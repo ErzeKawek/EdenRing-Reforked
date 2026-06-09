@@ -6,6 +6,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.level.block.VineBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.blocks.BaseVineBlock;
 import org.betterx.bclib.blocks.BlockProperties.TripleShape;
@@ -16,7 +17,7 @@ import org.betterx.bclib.client.models.PatternsHelper;
 import java.util.Map;
 import java.util.Optional;
 
-public class SimpleVineBlock extends BaseVineBlock {
+public class SimpleVineBlock extends VineBlock {
 	private final boolean tripple;
 	
 	public SimpleVineBlock() {

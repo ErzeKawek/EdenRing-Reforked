@@ -1,6 +1,7 @@
 package paulevs.edenring.registries;
 
 import com.google.common.collect.Maps;
+import com.mojang.serialization.MapCodec;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
@@ -9,15 +10,11 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.level.material.MapColor;
-import org.jetbrains.annotations.NotNull;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.*;
 import paulevs.edenring.blocks.complex.*;
@@ -45,13 +42,33 @@ public class EdenBlocks {
 
 	public static Block AQUATUS_BLOCK = register("aquatus_block",
 			settings -> new RotatedPillarBlock(settings.instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WART_BLOCK)));
-	public static Block AQUATUS_ROOTS = register("aquatus_roots", AquatusRootsBlock::new);
+	public static Block AQUATUS_ROOTS = register("aquatus_roots",
+			settings -> new VegetationBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DANDELION)) {
+				@Override
+				protected MapCodec<? extends VegetationBlock> codec() {
+					return null;
+				}
+			});
 	public static Block MOSSY_STONE = register("mossy_stone", MossyStoneBlock::new);
 	public static Block GRAVILITE_BLOCK = register("gravilite_block",
 			settings -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel((blockState) -> 15)));
 	public static Block GRAVILITE_LAMP = register("gravilite_lamp",
 			settings -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel((blockState) -> 15)));
 	public static Block SYMBIOTIC_MOLD = register("symbiotic_mold", new SymbioticMoldBlock(0));
+	public static Block VOLVOX_BLOCK = register("volvox_block",
+			settings -> new SlimeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SLIME_BLOCK).strength(0.5F)));
+	public static Block VOLVOX_BLOCK_DENSE = register("volvox_block_dense",
+			settings -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).strength(1F).sound(SoundType.SLIME_BLOCK)));
+	public static Block VOLVOX_BLOCK_DENSE_MOSSY = register("volvox_block_dense_mossy",
+			settings -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).strength(1F).sound(SoundType.SLIME_BLOCK)));
+	/*public static Block TALL_BALLOON_MUSHROOM = register("tall_balloon_mushroom",
+			settings -> new DoublePlantBlock(BlockBehaviour.Properties.ofFullCopy()))*/
+	public static Block PARIGNUM = register("parignum",
+			settings -> new SixSidePlant(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE)));
+	public static final Block GOLDEN_GRASS = register("golden_grass",
+			settings -> new GrassBlock(sorry guys i have been swamped as hell with school)
+
+
 
 
 	public static Block AURITIS_SAPLING = register("auritis_sapling",
