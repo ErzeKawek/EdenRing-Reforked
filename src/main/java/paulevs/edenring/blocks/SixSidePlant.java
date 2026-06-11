@@ -2,6 +2,7 @@ package paulevs.edenring.blocks;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Holder;
@@ -22,6 +23,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.VegetationBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,7 +38,7 @@ import paulevs.edenring.misc.AllPurposeUtility;
 import java.util.List;
 import java.util.Map;
 
-public class SixSidePlant extends Block implements BonemealableBlock {
+public class SixSidePlant extends VegetationBlock implements BonemealableBlock {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	private static final VoxelShape UP_AABB = box(0, 15, 0, 16, 16, 16);
 	private static final VoxelShape DOWN_AABB = box(0, 0, 0, 16, 1, 16);
@@ -46,6 +48,8 @@ public class SixSidePlant extends Block implements BonemealableBlock {
 	private static final VoxelShape SOUTH_AABB = box(0, 0, 15, 16, 16, 16);
 	
 	private final Map<BlockState, VoxelShape> shapesCache = Maps.newHashMap();
+
+	public static final MapCodec<SixSidePlant> CODEC = simpleCodec(SixSidePlant::new);
 	
 	public SixSidePlant(Properties settings) {
 		super(settings);
@@ -55,7 +59,12 @@ public class SixSidePlant extends Block implements BonemealableBlock {
 		}
 		registerDefaultState(state);
 	}
-	
+
+	@Override
+	protected MapCodec<? extends VegetationBlock> codec() {
+		return CODEC;
+	}
+
 	public boolean isWall(LevelAccessor level, BlockPos pos, Direction face) {
 		BlockState state = level.getBlockState(pos);
 		return state.isFaceSturdy(level, pos, face.getOpposite()) || state.is(BlockTags.LEAVES);

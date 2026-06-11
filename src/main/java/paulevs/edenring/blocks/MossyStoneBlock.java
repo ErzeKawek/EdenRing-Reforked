@@ -16,12 +16,23 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.material.PushReaction;
 
-public class MossyStoneBlock implements BonemealableBlock {
-	public MossyStoneBlock() {
-		BlockBehaviour.Properties.ofFullCopy(Blocks.STONE);
+public class MossyStoneBlock extends GrassBlock implements BonemealableBlock {
+	public MossyStoneBlock(Properties settings) {
+		super(settings
+				.mapColor(MapColor.GRASS)
+				.strength(1.5F, 6)
+				.sound(SoundType.STONE)
+				.pushReaction(PushReaction.BLOCK)
+				.instrument(NoteBlockInstrument.BASEDRUM)
+		);
 	}
 
 

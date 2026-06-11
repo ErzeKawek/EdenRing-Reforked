@@ -2,7 +2,6 @@ package paulevs.datagen.recipes;
 
 import org.betterx.bclib.api.v3.datagen.RecipeDataProvider;
 import paulevs.edenring.EdenRing;
-import paulevs.edenring.registries.EdenRecipes;
 
 import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 

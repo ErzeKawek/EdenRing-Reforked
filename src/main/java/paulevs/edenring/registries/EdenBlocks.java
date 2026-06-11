@@ -54,7 +54,10 @@ public class EdenBlocks {
 			settings -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel((blockState) -> 15)));
 	public static Block GRAVILITE_LAMP = register("gravilite_lamp",
 			settings -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel((blockState) -> 15)));
-	public static Block SYMBIOTIC_MOLD = register("symbiotic_mold", new SymbioticMoldBlock(0));
+	public static Block SYMBIOTIC_MOLD = register("symbiotic_mold",
+			settings -> new CeilPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_ROOTS).offsetType(BlockBehaviour.OffsetType.NONE)));
+	public static Block SYMBIOTIC_MOLD_EMISSIVE = register("symbiotic_mold_emissive",
+			settings -> new CeilPlantBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_ROOTS).lightLevel((blockState) -> 13).offsetType(BlockBehaviour.OffsetType.NONE)));
 	public static Block VOLVOX_BLOCK = register("volvox_block",
 			settings -> new SlimeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.SLIME_BLOCK).strength(0.5F)));
 	public static Block VOLVOX_BLOCK_DENSE = register("volvox_block_dense",
@@ -62,11 +65,11 @@ public class EdenBlocks {
 	public static Block VOLVOX_BLOCK_DENSE_MOSSY = register("volvox_block_dense_mossy",
 			settings -> new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.OAK_WOOD).strength(1F).sound(SoundType.SLIME_BLOCK)));
 	/*public static Block TALL_BALLOON_MUSHROOM = register("tall_balloon_mushroom",
-			settings -> new DoublePlantBlock(BlockBehaviour.Properties.ofFullCopy()))*/
+			settings -> new DoublePlantBlock(BlockBehaviour.Properties.ofFullCopy()))
 	public static Block PARIGNUM = register("parignum",
-			settings -> new SixSidePlant(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE)));
-	public static final Block GOLDEN_GRASS = register("golden_grass",
-			settings -> new GrassBlock(sorry guys i have been swamped as hell with school)
+			settings -> new SixSidePlant(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE)));*/
+	public static Block GOLDEN_GRASS = register("golden_grass", GoldenGrass::new);
+
 
 
 
