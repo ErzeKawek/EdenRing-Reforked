@@ -9,12 +9,18 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.feature.Feature;
 import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.feature.configurations.NoneFeatureConfiguration;
 import paulevs.edenring.misc.AllPurposeUtility;
 import paulevs.edenring.registries.EdenBlocks;
 
-public class AquatusFeature {
+public class AquatusFeature extends Feature<NoneFeatureConfiguration> {
+
+	public AquatusFeature() {
+		super(NoneFeatureConfiguration.CODEC);
+	}
+
 	public boolean place(FeaturePlaceContext<NoneFeatureConfiguration> featurePlaceContext) {
 		WorldGenLevel level = featurePlaceContext.level();
 		BlockPos center = featurePlaceContext.origin();
@@ -56,8 +62,8 @@ public class AquatusFeature {
 			}
 		}
 		
-		BlockState roots = EdenBlocks.AQUATUS_ROOTS.defaultBlockState().setValue(BlockStateProperties.UP, false);
-		BlockState leaves = EdenBlocks.AQUATUS_ROOTS.defaultBlockState().setValue(BlockStateProperties.UP, true);
+		BlockState roots = EdenBlocks.AQUATUS_ROOTS.defaultBlockState();
+		BlockState leaves = EdenBlocks.AQUATUS_OUTER_LEAVES.defaultBlockState();
 		BlockState block = EdenBlocks.AQUATUS_BLOCK.defaultBlockState();
 		BlockState water = Blocks.WATER.defaultBlockState();
 		

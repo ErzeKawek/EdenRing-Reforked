@@ -19,10 +19,8 @@ import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
 import org.joml.Vector3f;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.Function;
 
 public class AllPurposeUtility {
@@ -46,6 +44,16 @@ public class AllPurposeUtility {
         public static Direction[] makeHorizontal() {
             return new Direction[]{Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST};
         }
+    }
+
+    public static final Random RANDOM = new Random();
+
+    public int nextInt() {
+        return ThreadLocalRandom.current().nextInt();
+    }
+
+    public int nextInt(int i) {
+        return ThreadLocalRandom.current().nextInt(i);
     }
 
     public static int randRange(int min, int max, RandomSource random) {

@@ -24,6 +24,8 @@ public class EdenPlacedFeatures {
     public static final ResourceKey<PlacedFeature> AURITIS_TREE = of("auritis_tree");
     public static final ResourceKey<PlacedFeature> BALLOON_MUSHROOM_TREE = of("balloon_mushroom_tree");
     public static final ResourceKey<PlacedFeature> PULSE_TREE = of("pulse_tree");
+    public static final ResourceKey<PlacedFeature> AQUATUS = of("aquatus");
+
 
     public static void bootstrap(BootstrapContext<PlacedFeature> context) {
 
@@ -81,8 +83,21 @@ public class EdenPlacedFeatures {
                         configuredFeatures.getOrThrow(EdenConfiguredFeatures.PULSE_TREE),
                         List.of(
                                 (net.minecraft.world.level.levelgen.placement.PlacementModifier) VegetationPlacements.treePlacement(
-                                        PlacementUtils.countExtra(14, 0.5F, 2),
+                                        PlacementUtils.countExtra(14, 0.5F, 1),
                                         EdenBlocks.PULSE_TREE_SAPLING
+                                )
+                        )
+                )
+        );
+
+        context.register(
+                AQUATUS,
+                new PlacedFeature(
+                        configuredFeatures.getOrThrow(EdenConfiguredFeatures.AQUATUS),
+                        List.of(
+                                (net.minecraft.world.level.levelgen.placement.PlacementModifier) VegetationPlacements.treePlacement(
+                                        PlacementUtils.countExtra(2, 0.5F, 1),
+                                        EdenBlocks.AQUATUS_SAPLING
                                 )
                         )
                 )

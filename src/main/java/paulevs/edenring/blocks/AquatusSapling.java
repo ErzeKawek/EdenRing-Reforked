@@ -4,14 +4,17 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SaplingBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
-import org.betterx.bclib.blocks.FeatureSaplingBlock;
+import net.minecraft.world.level.material.MapColor;
+import paulevs.edenring.blocks.complex.EdenSaplings;
 import paulevs.edenring.registries.EdenFeatures;
+import paulevs.edenring.world.features.plants.AquatusFeature;
 
 @SuppressWarnings("all")
-public class AquatusSapling extends SaplingBlock {
-	public AquatusSapling() {
-		super((state) -> EdenFeatures.AQUATUS.configuredFeature);
+public class AquatusSapling extends EdenSaplings {
+	public AquatusSapling(EdenSaplings treeConstructor, BlockBehaviour.Properties settings) {
+		super(AquatusFeature::new, settings.mapColor(MapColor.GOLD));
 	}
 	
 	@Override

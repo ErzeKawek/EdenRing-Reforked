@@ -20,6 +20,7 @@ import paulevs.edenring.blocks.*;
 import paulevs.edenring.blocks.complex.*;
 import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
 import net.minecraft.world.level.material.PushReaction;
+import paulevs.edenring.world.features.plants.AquatusFeature;
 import paulevs.edenring.world.features.trees.AuritisTreeFeature;
 import paulevs.edenring.world.features.trees.BalloonMushroomTreeFeature;
 import paulevs.edenring.world.features.trees.PulseTreeFeature;
@@ -35,20 +36,12 @@ public class EdenBlocks {
 	);
 
 
-	public static final Block EDEN_MYCELIUM = register("eden_mycelium",
-			new TexturedTerrainBlock(),
-			BlockTags.NYLIUM
-	);
+	public static Block EDEN_MYCELIUM = register("eden_mycelium", TexturedTerrainBlock::new);
 
 	public static Block AQUATUS_BLOCK = register("aquatus_block",
 			settings -> new RotatedPillarBlock(settings.instrument(NoteBlockInstrument.BASS).strength(2.0F, 3.0F).sound(SoundType.WART_BLOCK)));
-	public static Block AQUATUS_ROOTS = register("aquatus_roots",
-			settings -> new VegetationBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.DANDELION)) {
-				@Override
-				protected MapCodec<? extends VegetationBlock> codec() {
-					return null;
-				}
-			});
+	public static Block AQUATUS_OUTER_LEAVES = register("aquatus_outer_leaves", AquatusOuterLeaves::new);
+	public static Block AQUATUS_ROOTS = register("aquatus_roots", AquatusRoots::new);
 	public static Block MOSSY_STONE = register("mossy_stone", MossyStoneBlock::new);
 	public static Block GRAVILITE_BLOCK = register("gravilite_block",
 			settings -> new RotatedPillarBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel((blockState) -> 15)));
@@ -89,6 +82,8 @@ public class EdenBlocks {
 					settings.mapColor(MapColor.COLOR_LIGHT_BLUE)
 			)
 	);
+	public static Block AQUATUS_SAPLING = register("aquatus_sapling",
+			settings -> new EdenSaplings(AquatusFeature::new, settings.mapColor(MapColor.GOLD)));
 
 	public static Block AURITIS_LEAVES = register(
 			"auritis_leaves",
@@ -104,6 +99,7 @@ public class EdenBlocks {
 	public static BrainTreeWoodBlock.BrainTreeWoodSet BRAIN_TREE_MATERIAL = new BrainTreeWoodBlock.BrainTreeWoodSet("brain_tree", MapColor.COLOR_GRAY, MapColor.COLOR_LIGHT_GRAY);
 
 	// Balloon Mushroom Things
+	public static Block BALLOON_MUSHROOM_BLOCK = register("balloon_mushroom_block", BalloonMushroomBlock::new, true);
 
 	//public static final Block METAL_SPONGE = register("metal_sponge", new MetalSpongeBlock());
 	//public static final Block SOAKED_METAL_SPONGE = register("metal_sponge_soaked", new SoakedMetalSpongeBlock());

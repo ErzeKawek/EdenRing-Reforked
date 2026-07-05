@@ -2,7 +2,7 @@ package paulevs.edenring.items;
 
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
@@ -17,22 +17,22 @@ public class BalloonMushroomBlockItem extends BlockItem {
 	public BalloonMushroomBlockItem(Block block, Properties properties) {
 		super(block, properties);
 	}
-	
+
 	@Override
-	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
+	public InteractionResult use(Level level, Player player, InteractionHand interactionHand) {
 		Vec3 vec = new Vec3(0, 0, 1).xRot(-player.getXRot() * Mth.DEG_TO_RAD).yRot(-player.getYHeadRot() * Mth.DEG_TO_RAD);
 		BlockHitResult hit = level.isBlockInLine(new ClipBlockStateContext(
-			player.getEyePosition(),
-			player.getEyePosition().add(vec.scale(4.9)),
-			state -> state.isAir()
+				player.getEyePosition(),
+				player.getEyePosition().add(vec.scale(4.9)),
+				state -> state.isAir()
 		));
-		
+
 		if (hit != null) {
 			ItemStack stack = player.getItemInHand(interactionHand);
 			this.place(new BlockPlaceContext(player, interactionHand, stack, hit));
-			return InteractionResultHolder.sidedSuccess(stack, level.isClientSide());
+			return level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.SUCCESS_SERVER;
 		}
-		
-		return InteractionResultHolder.pass(player.getItemInHand(interactionHand));
+
+		return InteractionResult.PASS;
 	}
 }

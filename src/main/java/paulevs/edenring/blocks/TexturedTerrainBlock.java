@@ -11,16 +11,15 @@ import net.minecraft.world.level.block.state.BlockState;
 import paulevs.edenring.registries.EdenBiomes;
 import paulevs.edenring.registries.EdenBlocks;
 
-
 public class TexturedTerrainBlock extends GrassBlock {
-	public TexturedTerrainBlock() {
+	public TexturedTerrainBlock(BlockBehaviour.Properties properties) {
 		super(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK));
 	}
 
 	@Override
     public void performBonemeal(ServerLevel serverLevel, RandomSource randomSource, BlockPos blockPos, BlockState blockState) {
         super.performBonemeal(serverLevel, randomSource, blockPos, blockState);
-		if (isValidBonemealTarget(serverLevel, blockPos, blockState, serverLevel.isClientSide)) {
+		if (isValidBonemealTarget(serverLevel, blockPos, blockState)) {
 			for (Direction direction : Direction.values()) {
 				Boolean spread = false;
 				BlockPos nearby = blockPos.relative(direction);

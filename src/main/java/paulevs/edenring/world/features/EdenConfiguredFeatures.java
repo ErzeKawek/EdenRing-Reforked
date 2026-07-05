@@ -57,6 +57,13 @@ public class EdenConfiguredFeatures {
     );
     public static final ResourceKey<ConfiguredFeature<?, ?>> PULSE_TREE = of("pulse_tree");
 
+    public static final Feature<NoneFeatureConfiguration> AQUATUS_FEATURE = Registry.register(
+            BuiltInRegistries.FEATURE,
+            EdenRing.of("aquatus"),
+            new PulseTreeFeature()
+    );
+    public static final ResourceKey<ConfiguredFeature<?, ?>> AQUATUS = of("aquatus");
+
     public static void bootstrap(BootstrapContext<ConfiguredFeature<?, ?>> context) {
         HolderGetter<ConfiguredFeature<?, ?>> lookup = context.lookup(
                 Registries.CONFIGURED_FEATURE
@@ -66,6 +73,7 @@ public class EdenConfiguredFeatures {
         FeatureUtils.register(context, AURITIS_TREE, AURITIS_TREE_FEATURE);
         FeatureUtils.register(context, BALLOON_MUSHROOM_TREE, BALLOON_MUSHROOM_TREE_FEATURE);
         FeatureUtils.register(context, PULSE_TREE, PULSE_TREE_FEATURE);
+        FeatureUtils.register(context, AQUATUS, AQUATUS_FEATURE);
     }
 
     public static void init() {
