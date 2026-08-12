@@ -52,7 +52,7 @@ public class BranchBlock extends BaseBlockNotFull {
 	private final Map<BlockState, VoxelShape> shapesCache = Maps.newHashMap();
 	
 	public BranchBlock(Block block) {
-		this(FabricBlockSettings.copyOf(block));
+		this(BlockBehaviour.Properties.ofFullCopy(block));
 	}
 	
 	public BranchBlock(BlockBehaviour.Properties properties) {

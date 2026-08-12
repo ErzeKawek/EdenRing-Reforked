@@ -30,13 +30,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.phys.AABB;
-import org.betterx.bclib.blocks.BaseBlock;
-import org.betterx.bclib.blocks.BlockProperties;
-import org.betterx.bclib.client.models.ModelsHelper;
-import org.betterx.bclib.client.models.PatternsHelper;
-import org.betterx.bclib.client.render.BCLRenderLayer;
-import org.betterx.bclib.interfaces.RenderLayerProvider;
-import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.entities.LightningRayEntity;
 import paulevs.edenring.registries.EdenEntities;
@@ -51,7 +44,7 @@ public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider {
 	public static final BooleanProperty	ACTIVE = BlockProperties.ACTIVE;
 	public static final BooleanProperty	POWERED = BlockStateProperties.POWERED;
 	private static final ArmorMaterial[] PROTECTIVE = new ArmorMaterial[] {
-		ArmorMaterials.CHAIN,
+		ArmorMaterials.CHAINMAIL,
 		ArmorMaterials.IRON,
 		ArmorMaterials.GOLD,
 		ArmorMaterials.NETHERITE

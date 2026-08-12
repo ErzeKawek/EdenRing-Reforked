@@ -8,6 +8,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
+import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -33,7 +34,7 @@ import java.util.Map;
 
 public class BalloonMushroomStemBlock extends BaseBlockNotFull implements RenderLayerProvider {
 	public static final EnumProperty<BalloonMushroomStemState> BALLOON_MUSHROOM_STEM = EdenBlockProperties.BALLOON_MUSHROOM_STEM;
-	private static final Map<BalloonMushroomStemState, ResourceLocation> MODELS = Maps.newEnumMap(BalloonMushroomStemState.class);
+	private static final Map<BalloonMushroomStemState, Identifier> MODELS = Maps.newEnumMap(BalloonMushroomStemState.class);
 	private static final Map<BalloonMushroomStemState, VoxelShape> SHAPES = Maps.newEnumMap(BalloonMushroomStemState.class);
 	
 	public BalloonMushroomStemBlock() {
