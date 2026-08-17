@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "edenring:block/auritis_planks",
+    "side": "edenring:block/auritis_planks",
+    "top": "edenring:block/auritis_planks"
+  }
+}

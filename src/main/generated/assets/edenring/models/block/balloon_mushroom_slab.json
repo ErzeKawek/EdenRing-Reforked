@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/slab",
+  "textures": {
+    "bottom": "edenring:block/balloon_mushroom_planks",
+    "side": "edenring:block/balloon_mushroom_planks",
+    "top": "edenring:block/balloon_mushroom_planks"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "edenring:block/pulse_tree_stripped_bark",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "edenring:block/pulse_tree_stripped_bark"
+    },
+    "axis=z": {
+      "model": "edenring:block/pulse_tree_stripped_bark",
+      "x": 90
+    }
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "edenring:block/brain_tree_planks",
+    "side": "edenring:block/brain_tree_bookshelf"
+  }
+}

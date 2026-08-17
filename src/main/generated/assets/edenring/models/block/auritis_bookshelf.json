@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "edenring:block/auritis_planks",
+    "side": "edenring:block/auritis_bookshelf"
+  }
+}

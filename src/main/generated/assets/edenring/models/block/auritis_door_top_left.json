@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left",
+  "textures": {
+    "bottom": "edenring:block/auritis_door_bottom",
+    "top": "edenring:block/auritis_door_top"
+  }
+}

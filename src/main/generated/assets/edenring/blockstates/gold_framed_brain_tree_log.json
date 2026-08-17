@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "edenring:block/gold_framed_brain_tree_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "edenring:block/gold_framed_brain_tree_log"
+    },
+    "axis=z": {
+      "model": "edenring:block/gold_framed_brain_tree_log",
+      "x": 90
+    }
+  }
+}

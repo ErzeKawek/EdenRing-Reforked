@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "bottom": "edenring:block/auritis_barrel_bottom",
+    "side": "edenring:block/auritis_barrel_side",
+    "top": "edenring:block/auritis_barrel_top"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "edenring:block/balloon_mushroom_crafting_table_bottom",
+    "east": "edenring:block/balloon_mushroom_crafting_table_side",
+    "north": "edenring:block/balloon_mushroom_crafting_table_front",
+    "particle": "edenring:block/balloon_mushroom_crafting_table_front",
+    "south": "edenring:block/balloon_mushroom_crafting_table_side",
+    "up": "edenring:block/balloon_mushroom_crafting_table_top",
+    "west": "edenring:block/balloon_mushroom_crafting_table_front"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "edenring:block/pulse_tree_crafting_table_bottom",
+    "east": "edenring:block/pulse_tree_crafting_table_side",
+    "north": "edenring:block/pulse_tree_crafting_table_front",
+    "particle": "edenring:block/pulse_tree_crafting_table_front",
+    "south": "edenring:block/pulse_tree_crafting_table_side",
+    "up": "edenring:block/pulse_tree_crafting_table_top",
+    "west": "edenring:block/pulse_tree_crafting_table_front"
+  }
+}

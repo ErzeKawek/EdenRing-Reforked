@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "edenring:block/aquatus_block",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "edenring:block/aquatus_block"
+    },
+    "axis=z": {
+      "model": "edenring:block/aquatus_block",
+      "x": 90
+    }
+  }
+}

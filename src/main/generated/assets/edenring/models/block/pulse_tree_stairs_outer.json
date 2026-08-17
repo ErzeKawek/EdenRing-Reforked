@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/outer_stairs",
+  "textures": {
+    "bottom": "edenring:block/pulse_tree_planks",
+    "side": "edenring:block/pulse_tree_planks",
+    "top": "edenring:block/pulse_tree_planks"
+  }
+}

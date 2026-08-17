@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_top_left_open",
+  "textures": {
+    "bottom": "edenring:block/balloon_mushroom_door_bottom",
+    "top": "edenring:block/balloon_mushroom_door_top"
+  }
+}

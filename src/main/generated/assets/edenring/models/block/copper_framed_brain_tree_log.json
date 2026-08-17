@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/cube_column",
+  "textures": {
+    "end": "edenring:block/copper_framed_brain_tree_log_top",
+    "side": "edenring:block/copper_framed_brain_tree_log_side"
+  }
+}

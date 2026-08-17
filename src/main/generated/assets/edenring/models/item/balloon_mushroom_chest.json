@@ -1,0 +1,6 @@
+{
+  "parent": "bclib:block/chest_item",
+  "textures": {
+    "texture": "edenring:entity/chest/balloon_mushroom_chest"
+  }
+}

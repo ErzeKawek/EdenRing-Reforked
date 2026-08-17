@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/pressure_plate_up",
+  "textures": {
+    "texture": "edenring:block/balloon_mushroom_planks"
+  }
+}

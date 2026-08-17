@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "edenring:block/brain_tree_stripped_log",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "edenring:block/brain_tree_stripped_log"
+    },
+    "axis=z": {
+      "model": "edenring:block/brain_tree_stripped_log",
+      "x": 90
+    }
+  }
+}

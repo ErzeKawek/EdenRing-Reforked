@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "edenring:block/balloon_mushroom_sporocarp_white"
+  }
+}

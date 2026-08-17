@@ -1,0 +1,6 @@
+{
+  "parent": "bclib:block/ladder",
+  "textures": {
+    "texture": "edenring:block/pulse_tree_ladder"
+  }
+}

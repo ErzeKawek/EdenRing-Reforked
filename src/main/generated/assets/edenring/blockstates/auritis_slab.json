@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "edenring:block/auritis_slab"
+    },
+    "type=double": {
+      "model": "edenring:block/auritis_planks"
+    },
+    "type=top": {
+      "model": "edenring:block/auritis_slab_top"
+    }
+  }
+}

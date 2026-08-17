@@ -1,0 +1,7 @@
+{
+  "parent": "bclib:block/sided_trapdoor",
+  "textures": {
+    "side": "edenring:block/pulse_tree_door_side",
+    "texture": "edenring:block/pulse_tree_trapdoor"
+  }
+}

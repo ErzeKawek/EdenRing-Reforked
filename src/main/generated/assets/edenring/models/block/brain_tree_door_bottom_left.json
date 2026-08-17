@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:block/door_bottom_left",
+  "textures": {
+    "bottom": "edenring:block/brain_tree_door_bottom",
+    "top": "edenring:block/brain_tree_door_top"
+  }
+}

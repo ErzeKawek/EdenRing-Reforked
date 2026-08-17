@@ -1,0 +1,12 @@
+{
+  "parent": "minecraft:block/cube",
+  "textures": {
+    "down": "edenring:block/brain_tree_crafting_table_bottom",
+    "east": "edenring:block/brain_tree_crafting_table_side",
+    "north": "edenring:block/brain_tree_crafting_table_front",
+    "particle": "edenring:block/brain_tree_crafting_table_front",
+    "south": "edenring:block/brain_tree_crafting_table_side",
+    "up": "edenring:block/brain_tree_crafting_table_top",
+    "west": "edenring:block/brain_tree_crafting_table_front"
+  }
+}

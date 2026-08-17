@@ -1,0 +1,13 @@
+{
+  "variants": {
+    "type=bottom": {
+      "model": "edenring:block/pulse_tree_slab"
+    },
+    "type=double": {
+      "model": "edenring:block/pulse_tree_planks"
+    },
+    "type=top": {
+      "model": "edenring:block/pulse_tree_slab_top"
+    }
+  }
+}

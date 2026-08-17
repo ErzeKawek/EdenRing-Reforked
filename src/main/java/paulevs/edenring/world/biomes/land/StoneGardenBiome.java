@@ -25,6 +25,7 @@ public class StoneGardenBiome extends EdenRingBiome.Config {
                 .feature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST)
                 .feature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_TALL_GRASS)
                 .feature(GenerationStep.Decoration.VEGETAL_DECORATION, MiscOverworldPlacements.FOREST_ROCK)
+                .feature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.BAMBOO_LIGHT)
                 .feature(EdenFeatures.COBBLE_FLOOR)
                 .feature(EdenFeatures.MOSS_FLOOR)
                 .feature(EdenFeatures.MOSS_LAYER)

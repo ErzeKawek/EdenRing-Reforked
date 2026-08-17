@@ -12,6 +12,7 @@ import net.minecraft.world.item.HoeItem;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
 import org.betterx.bclib.api.v2.ComposterAPI;
@@ -81,7 +82,7 @@ public class EdenBlocks {
 			DyeColor color = DyeColor.byId(i);
 			Block lantern = register(
 				"balloon_mushroom_sporocarp_" + color.getName(),
-				new BaseBlock(FabricBlockSettings.copyOf(Blocks.MUSHROOM_STEM).sounds(SoundType.WOOL))
+				new BaseBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.MUSHROOM_STEM).sound(SoundType.WOOL))
 			);
 			BALLOON_MUSHROOM_SPOROCARP_COLORED.put(color, lantern);
 		}

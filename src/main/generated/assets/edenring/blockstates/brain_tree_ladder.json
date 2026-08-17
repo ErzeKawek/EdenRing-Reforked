@@ -1,0 +1,19 @@
+{
+  "variants": {
+    "facing=east": {
+      "model": "edenring:block/brain_tree_ladder",
+      "y": 90
+    },
+    "facing=north": {
+      "model": "edenring:block/brain_tree_ladder"
+    },
+    "facing=south": {
+      "model": "edenring:block/brain_tree_ladder",
+      "y": 180
+    },
+    "facing=west": {
+      "model": "edenring:block/brain_tree_ladder",
+      "y": 270
+    }
+  }
+}
