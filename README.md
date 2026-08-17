@@ -15,20 +15,17 @@ This Is A Fork Of Paulevs Eden Ring Mod for MC 1.20.1≥
 * Mod .jar will be in ./build/libs
 
 ### Mod Request:
-* BCLib 3.0.14≥
-* Fabric API (Obviously)
-* Continuity (Optional)
+* BCLib
+* Fabric API
+* WorldWeaver
 
 ### BetterX Fork Crew:
 * ErzeKawek (Main Dev)
 * ChristopherJ123 (Dev)
-* Villhume (For Major Bugfixing)
+  * Villhume (Dev)
 
-  | Version | Status  |
+    | Version | Status  |
     |---------|---------|
-  | 1.19.4  | ✕       |
-  | 1.20.1  | ✓ (LTS) |
-  | 1.20.2  | ✕       |
-  | 1.20.4  | ✓ (LTS) |
-  | 1.20.6  | ✕       |
-  | 1.21    | ⚒       |
+    | 1.20.1  | ✓ (LTS) |
+    | 1.20.4  | ✓ (LTS) |
+    | 1.21    | ✓       |
