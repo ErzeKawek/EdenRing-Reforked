@@ -5,7 +5,6 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.BlockItem;
@@ -49,10 +48,10 @@ public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvi
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	protected void appendCentralModel(ResourceLocation stateId, MultiPartBuilder builder, ModelResourceLocation keyCube, Map<ResourceLocation, UnbakedModel> modelCache) {
+	protected void appendCentralModel(ResourceLocation stateId, MultiPartBuilder builder, ResourceLocation keyCube, Map<ResourceLocation, UnbakedModel> modelCache) {
 		builder.part(keyCube).setCondition(state -> !state.getValue(NATURAL)).add();
-		
-		keyCube = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), defaultBlockState().toString() + "_natural");
+
+		keyCube = ResourceLocation.fromNamespaceAndPath(stateId.getNamespace(), "block/" + stateId.getPath() + "_natural");
 		if (!modelCache.containsKey(keyCube)) {
 			Map<String, String> textures = Maps.newHashMap();
 			String side = stateId.getNamespace() + ":block/" + stateId.getPath();
@@ -64,7 +63,7 @@ public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvi
 			BlockModel model = ModelsHelper.fromPattern(pattern);
 			modelCache.put(keyCube, model);
 		}
-		
+
 		builder.part(keyCube).setCondition(state -> state.getValue(NATURAL)).add();
 	}
 }

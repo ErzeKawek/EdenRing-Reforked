@@ -12,16 +12,18 @@ import net.minecraft.world.entity.EntityType.EntityFactory;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.SpawnEggItem;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
 import org.betterx.bclib.api.v2.spawning.SpawnRuleBuilder;
-import org.betterx.bclib.config.PathConfig;
 import paulevs.edenring.EdenRing;
+import paulevs.edenring.config.EdenPathConfig;
 import paulevs.edenring.entities.DiskwingEntity;
 import paulevs.edenring.entities.EdenPainting;
 import paulevs.edenring.entities.LightningRayEntity;
 
 public class EdenEntities {
-	private static final PathConfig ENTITY_CONFIG = new PathConfig(EdenRing.MOD_ID, "entities");
+	private static final EdenPathConfig ENTITY_CONFIG = new EdenPathConfig(EdenRing.MOD_ID, "entities");
 	
 	// Living //
 	public static final EntityType<DiskwingEntity> DISKWING = register("diskwing", MobCategory.AMBIENT, 0.9F, 0.25F, DiskwingEntity::new, DiskwingEntity.createMobAttributes(), 0x5b3e52, 0x978090);
@@ -60,7 +62,7 @@ public class EdenEntities {
 		if (ENTITY_CONFIG.getBooleanRoot(id.getPath(), true)) {
 			Registry.register(BuiltInRegistries.ENTITY_TYPE, id, type);
 			FabricDefaultAttributeRegistry.register(type, attributes);
-			EdenItems.REGISTRY.registerEgg(EdenRing.makeID("spawn_egg_" + name), type, eggColor, dotsColor);
+			EdenItems.REGISTRY.registerEgg("spawn_egg_" + name, new SpawnEggItem(type, eggColor, dotsColor, new Item.Properties()));
 		}
 		return type;
 	}

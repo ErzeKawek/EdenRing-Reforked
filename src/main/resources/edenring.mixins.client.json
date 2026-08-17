@@ -4,6 +4,7 @@
 	"package": "paulevs.edenring.mixin.client",
 	"compatibilityLevel": "JAVA_17",
 	"client": [
+		"BCLibClientMixin",
 		"LevelRendererMixin",
 		"ClientLevelMixin",
 		"MinecraftMixin"

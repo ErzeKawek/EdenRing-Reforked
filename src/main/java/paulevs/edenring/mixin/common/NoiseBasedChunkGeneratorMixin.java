@@ -20,7 +20,6 @@ import paulevs.edenring.world.generator.CaveGenerator;
 import paulevs.edenring.world.generator.TerrainFiller;
 
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.Executor;
 
 @Mixin(NoiseBasedChunkGenerator.class)
 public class NoiseBasedChunkGeneratorMixin implements EdenTargetChecker {
@@ -28,10 +27,10 @@ public class NoiseBasedChunkGeneratorMixin implements EdenTargetChecker {
 	@Shadow @Final protected Holder<NoiseGeneratorSettings> settings;
 	
 	@Inject(
-		method = "fillFromNoise(Ljava/util/concurrent/Executor;Lnet/minecraft/world/level/levelgen/blending/Blender;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;)Ljava/util/concurrent/CompletableFuture;",
+		method = "fillFromNoise(Lnet/minecraft/world/level/levelgen/blending/Blender;Lnet/minecraft/world/level/levelgen/RandomState;Lnet/minecraft/world/level/StructureManager;Lnet/minecraft/world/level/chunk/ChunkAccess;)Ljava/util/concurrent/CompletableFuture;",
 		at = @At("HEAD"), cancellable = true
 	)
-	private void eden_fillFromNoise(Executor executor, Blender blender, RandomState randomState, StructureManager structureFeatureManager, ChunkAccess chunkAccess, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> info) {
+	private void eden_fillFromNoise(Blender blender, RandomState randomState, StructureManager structureFeatureManager, ChunkAccess chunkAccess, CallbackInfoReturnable<CompletableFuture<ChunkAccess>> info) {
 		if (eden_isTarget()) {
 			info.setReturnValue(CompletableFuture.supplyAsync(Util.wrapThreadWithTaskName("wgen_fill_noise", () -> {
 				synchronized (chunkAccess) {

@@ -10,6 +10,7 @@ import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -18,6 +19,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.AABB;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import paulevs.edenring.paintings.EdenPaintings;
 import paulevs.edenring.paintings.PaintingInfo;
@@ -88,8 +91,22 @@ public class EdenPainting extends HangingEntity {
 	}
 	
 	@Override
-	protected void defineSynchedData() {
-		this.getEntityData().define(DATA_RAW_ID, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		builder.define(DATA_RAW_ID, 0);
+	}
+
+	@Override
+	protected AABB calculateBoundingBox(BlockPos pos, Direction direction) {
+		Vec3 center = Vec3.atCenterOf(pos).relative(direction, -0.46875);
+		Vec3 start = center.relative(direction.getCounterClockWise(), offsetForPaintingSize(getWidth())).relative(Direction.UP, offsetForPaintingSize(getHeight()));
+		double sizeX = direction.getAxis() == Direction.Axis.X ? 0.0625 : getWidth();
+		double sizeY = getHeight();
+		double sizeZ = direction.getAxis() == Direction.Axis.Z ? 0.0625 : getWidth();
+		return AABB.ofSize(start, sizeX, sizeY, sizeZ);
+	}
+
+	private static double offsetForPaintingSize(int size) {
+		return size % 2 == 0 ? 0.5 : 0.0;
 	}
 	
 	@Override
@@ -139,20 +156,17 @@ public class EdenPainting extends HangingEntity {
 		this.playSound(SoundEvents.PAINTING_PLACE, 1.0f, 1.0f);
 	}
 	
-	@Override
 	public int getWidth() {
 		return info == null ? 16 : info.getWidth();
 	}
-	
-	@Override
+
 	public int getHeight() {
 		return info == null ? 16 : info.getHeight();
 	}
-	
+
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		//return new ClientboundAddEntityPacket(this, this.getType(), this.direction.get2DDataValue(), this.pos);
-		return new ClientboundAddEntityPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+		return new ClientboundAddEntityPacket(this, entity, this.direction.get2DDataValue());
 	}
 	
 	@Override

@@ -13,12 +13,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.interfaces.CustomColorProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.ui.ColorUtil;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class OverlayPlantBlock extends SimplePlantBlock implements CustomColorProvider {
+public class OverlayPlantBlock extends SimplePlantBlock implements CustomColorProvider, RuntimeBlockModelProvider {
 	public OverlayPlantBlock(boolean replaceable) {
 		super(replaceable);
 	}

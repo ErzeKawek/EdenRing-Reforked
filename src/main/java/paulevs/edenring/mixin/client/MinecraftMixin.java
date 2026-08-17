@@ -32,8 +32,8 @@ public class MinecraftMixin {
 		}
 	}
 	
-	@Inject(method = "reloadResourcePacks(Z)Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"))
-	private void eden_reloadResourcePacks(boolean bl, CallbackInfoReturnable<CompletableFuture<Void>> cir) {
+	@Inject(method = "reloadResourcePacks()Ljava/util/concurrent/CompletableFuture;", at = @At("HEAD"))
+	private void eden_reloadResourcePacks(CallbackInfoReturnable<CompletableFuture<Void>> cir) {
 		GuideBookScreen.clearCache();
 	}
 }

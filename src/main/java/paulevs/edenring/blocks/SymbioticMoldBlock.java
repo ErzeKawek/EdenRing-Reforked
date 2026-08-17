@@ -11,12 +11,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class SymbioticMoldBlock extends CeilPlantBlock {
+public class SymbioticMoldBlock extends CeilPlantBlock implements RuntimeBlockModelProvider {
 	public SymbioticMoldBlock(int emission) {
 		super(FabricBlockSettings.copyOf(Blocks.WARPED_ROOTS).luminance(emission).offsetType(OffsetType.NONE));
 	}

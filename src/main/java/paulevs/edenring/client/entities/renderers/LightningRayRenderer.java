@@ -1,6 +1,5 @@
 package paulevs.edenring.client.entities.renderers;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -20,7 +19,7 @@ import paulevs.edenring.entities.LightningRayEntity;
 
 @Environment(value= EnvType.CLIENT)
 public class LightningRayRenderer extends EntityRenderer<LightningRayEntity> {
-	private static final ResourceLocation GUARDIAN_BEAM_LOCATION = new ResourceLocation("textures/entity/guardian_beam.png");
+	private static final ResourceLocation GUARDIAN_BEAM_LOCATION = ResourceLocation.withDefaultNamespace("textures/entity/guardian_beam.png");
 	private static final RenderType BEAM_RENDER_TYPE = RenderType.entityTranslucent(GUARDIAN_BEAM_LOCATION, true);
 	private static final Vec3 SIDE = new Vec3(1, 0, 0);
 	private static final Vec3 UP = new Vec3(0, 1, 0);
@@ -74,24 +73,22 @@ public class LightningRayRenderer extends EntityRenderer<LightningRayEntity> {
 		poseStack.pushPose();
 		Pose lastPose = poseStack.last();
 		Matrix4f pose = lastPose.pose();
-		Matrix3f normal = lastPose.normal();
-		vertex(vertexConsumer, pose, normal, -x1, y1, -z1, 0.0F, time);
-		vertex(vertexConsumer, pose, normal,  x2, y2,  z2, 0.0F,   dv);
-		vertex(vertexConsumer, pose, normal,  x3, y3,  z3, 0.5F,   dv);
-		vertex(vertexConsumer, pose, normal,  x1, y1,  z1, 0.5F, time);
+		vertex(vertexConsumer, pose, -x1, y1, -z1, 0.0F, time);
+		vertex(vertexConsumer, pose,  x2, y2,  z2, 0.0F,   dv);
+		vertex(vertexConsumer, pose,  x3, y3,  z3, 0.5F,   dv);
+		vertex(vertexConsumer, pose,  x1, y1,  z1, 0.5F, time);
 		poseStack.popPose();
-		
+
 		super.render(entity, f, deltaTick, poseStack, multiBufferSource, i);
 	}
-	
-	private void vertex(VertexConsumer vertexConsumer, Matrix4f pose, Matrix3f normal, float x, float y, float z, float u, float v) {
+
+	private void vertex(VertexConsumer vertexConsumer, Matrix4f pose, float x, float y, float z, float u, float v) {
 		vertexConsumer
 				.addVertex(pose, x, y, z)
 				.setColor(255, 255, 255, 255)
 				.setUv(u, v)
-			.overlayCoords(OverlayTexture.NO_OVERLAY)
-			.uv2(COLOR)
-			.normal(normal, 0, 1, 0)
-			.endVertex();
+				.setOverlay(OverlayTexture.NO_OVERLAY)
+				.setLight(COLOR)
+				.setNormal(0, 1, 0);
 	}
 }

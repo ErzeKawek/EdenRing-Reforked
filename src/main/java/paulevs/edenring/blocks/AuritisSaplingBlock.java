@@ -8,6 +8,6 @@ import paulevs.edenring.world.features.trees.AuritisTreeFeature;
 
 public class AuritisSaplingBlock extends PottableSaplings<AuritisTreeFeature, NoneFeatureConfiguration> implements SurvivesOnEdenGrass {
     public AuritisSaplingBlock() {
-        super((level, pos, state, rnd) -> EdenFeatures.AURITIS_TREE.place(level, pos, rnd));
+        super((level, pos, state, rnd) -> EdenFeatures.placeInWorld(EdenFeatures.AURITIS_TREE, level, pos, rnd));
     }
 }

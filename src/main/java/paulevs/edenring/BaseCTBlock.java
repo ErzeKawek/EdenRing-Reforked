@@ -26,6 +26,7 @@ import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.util.BlocksHelper;
 import org.joml.Vector3f;
 
@@ -35,7 +36,7 @@ import paulevs.edenring.blocks.EdenPatterns;
 import java.util.Map;
 import java.util.Optional;
 
-public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
+public class BaseCTBlock extends BaseBlock implements RenderLayerProvider, RuntimeBlockModelProvider {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	
 	public BaseCTBlock(Properties settings) {
@@ -78,17 +79,17 @@ public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
 	}
 
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		BlockState def = defaultBlockState();
-		String modID = stateId.getNamespace();
-		String name = stateId.getPath();
-		
-		ModelResourceLocation keyCube = new ModelResourceLocation(modID, name, def.toString());
-		ModelResourceLocation[] keyQuad = new ModelResourceLocation[4];
+		String modID = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+
+		ResourceLocation keyCube = ResourceLocation.fromNamespaceAndPath(modID, "block/" + name);
+		ResourceLocation[] keyQuad = new ResourceLocation[4];
 		for (int i = 0; i < 4; i++) {
-			keyQuad[i] = new ModelResourceLocation(modID, name, def + "_" + i);
+			keyQuad[i] = ResourceLocation.fromNamespaceAndPath(modID, "block/" + name + "_edge_" + i);
 		}
-		
+
 		if (!modelCache.containsKey(keyCube)) {
 			Map<String, String> textures = Maps.newHashMap();
 			textures.put("%modid%", modID);
@@ -96,18 +97,18 @@ public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
 			Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_BASE, textures);
 			
 			BlockModel model = ModelsHelper.fromPattern(pattern);
-			modelCache.put(keyCube.id(), model);
+			modelCache.put(keyCube, model);
 			
 			for (int i = 0; i < 4; i++) {
 				textures.put("%texture%", modID + ":block/" + name + "_edge_" + i);
 				pattern = PatternsHelper.createJson(EdenPatterns.BLOCK_UP_QUAD, textures);
 				model = ModelsHelper.fromPattern(pattern);
-				modelCache.put(keyQuad[i].id(), model);
+				modelCache.put(keyQuad[i], model);
 			}
 		}
 		
 		MultiPartBuilder builder = MultiPartBuilder.create(stateDefinition);
-		appendCentralModel(stateId, builder, keyCube, modelCache);
+		appendCentralModel(stateId.id(), builder, keyCube, modelCache);
 		//builder.part(keyCube).add();
 		
 		// UP and DOWN
@@ -195,7 +196,7 @@ public class BaseCTBlock extends BaseBlock implements RenderLayerProvider {
 	}
 	
 	@Environment(EnvType.CLIENT)
-	protected void appendCentralModel(ResourceLocation stateId, MultiPartBuilder builder, ModelResourceLocation keyCube, Map<ResourceLocation, UnbakedModel> modelCache) {
+	protected void appendCentralModel(ResourceLocation stateId, MultiPartBuilder builder, ResourceLocation keyCube, Map<ResourceLocation, UnbakedModel> modelCache) {
 		builder.part(keyCube).add();
 	}
 	

@@ -110,7 +110,7 @@ public class BalloonMushroomTreeFeature extends DefaultFeature {
 			}
 			updateBlocks.forEach(p -> {
 				BlockState s = level.getBlockState(p);
-				s = s.getBlock().updateShape(s, Direction.UP, AIR, level, p, p);
+				s = s.updateShape(Direction.UP, AIR, level, p, p);
 				BlocksHelper.setWithoutUpdate(level, p, s);
 			});
 		}

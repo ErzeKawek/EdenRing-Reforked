@@ -4,6 +4,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -25,13 +26,14 @@ import org.betterx.bclib.blocks.BaseBlockNotFull;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
 import paulevs.edenring.registries.EdenBlocks;
 
 import java.util.Map;
 
-public class BalloonMushroomStemBlock extends BaseBlockNotFull implements RenderLayerProvider {
+public class BalloonMushroomStemBlock extends BaseBlockNotFull implements RenderLayerProvider, RuntimeBlockModelProvider {
 	public static final EnumProperty<BalloonMushroomStemState> BALLOON_MUSHROOM_STEM = EdenBlockProperties.BALLOON_MUSHROOM_STEM;
 	private static final Map<BalloonMushroomStemState, ResourceLocation> MODELS = Maps.newEnumMap(BalloonMushroomStemState.class);
 	private static final Map<BalloonMushroomStemState, VoxelShape> SHAPES = Maps.newEnumMap(BalloonMushroomStemState.class);
@@ -77,7 +79,7 @@ public class BalloonMushroomStemBlock extends BaseBlockNotFull implements Render
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		BalloonMushroomStemState state = blockState.getValue(BALLOON_MUSHROOM_STEM);
 		ResourceLocation modelId = MODELS.get(state);
 		if (modelId != null) {
@@ -89,7 +91,7 @@ public class BalloonMushroomStemBlock extends BaseBlockNotFull implements Render
 			}
 			return ModelsHelper.createBlockSimple(modelId);
 		}
-		return super.getModelVariant(stateId, blockState, modelCache);
+		return RuntimeBlockModelProvider.super.getModelVariant(stateId, blockState, modelCache);
 	}
 	
 	@Override

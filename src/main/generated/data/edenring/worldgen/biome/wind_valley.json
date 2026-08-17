@@ -3,12 +3,18 @@
     "air": [],
     "liquid": []
   },
-  "downfall": 1.0,
+  "downfall": 0.0,
   "effects": {
     "ambient_sound": "edenring:edenring.ambience.wind_valley",
     "fog_color": -4729601,
     "foliage_color": -1687758,
-    "grass_color": -2010040,
+    "grass_color": -1687758,
+    "mood_sound": {
+      "block_search_extent": 8,
+      "offset": 2.0,
+      "sound": "edenring:edenring.ambience.wind_valley",
+      "tick_delay": 6000
+    },
     "music": {
       "max_delay": 2400,
       "min_delay": 600,
@@ -70,5 +76,5 @@
     "water_ambient": [],
     "water_creature": []
   },
-  "temperature": 1.0
+  "temperature": 0.5
 }

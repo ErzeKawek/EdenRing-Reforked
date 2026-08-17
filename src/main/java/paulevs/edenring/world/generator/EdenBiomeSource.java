@@ -1,29 +1,29 @@
 package paulevs.edenring.world.generator;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
-import net.minecraft.core.registries.Registries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderGetter;
 import net.minecraft.core.HolderLookup;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.biome.BiomeSource;
 import net.minecraft.world.level.biome.Climate.Sampler;
+import org.betterx.wover.biome.api.data.BiomeData;
+import org.betterx.wover.generator.api.biomesource.WoverBiomeData;
 import org.betterx.wover.generator.api.biomesource.WoverBiomePicker;
 import org.betterx.wover.generator.impl.map.hex.HexBiomeMap;
 import org.betterx.wover.generator.api.map.BiomeMap;
+import org.betterx.wover.state.api.WorldState;
 import paulevs.edenring.EdenRing;
-import paulevs.datagen.worldgen.EdenRingBiomesDataProvider;
 import paulevs.edenring.noise.InterpolationCell;
-import paulevs.edenring.world.biomes.EdenRingBiome;
+import paulevs.edenring.registries.EdenBiomes;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -31,22 +31,22 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EdenBiomeSource extends BiomeSource {
-	public static final Codec<EdenBiomeSource> CODEC = RecordCodecBuilder.create(
+	public static final MapCodec<EdenBiomeSource> CODEC = RecordCodecBuilder.mapCodec(
 		(instance) -> instance.group(
 			RegistryOps.retrieveGetter(Registries.BIOME)
 		).apply(instance, instance.stable(EdenBiomeSource::new))
 	);
-	
+
 	private Map<ChunkPos, InterpolationCell> terrainCache = new ConcurrentHashMap<>();
-	private WoverBiomePicker pickerLand;
-	private WoverBiomePicker pickerVoid;
-	private WoverBiomePicker pickerCave;
-	private BiomeMap mapLand;
-	private BiomeMap mapVoid;
-	private BiomeMap mapCave;
+	private volatile WoverBiomePicker pickerLand;
+	private volatile WoverBiomePicker pickerVoid;
+	private volatile WoverBiomePicker pickerCave;
+	private volatile BiomeMap mapLand;
+	private volatile BiomeMap mapVoid;
+	private volatile BiomeMap mapCave;
 
 	protected List<Holder<Biome>> biomes;
-	
+
 	public EdenBiomeSource(HolderGetter<Biome> biomeRegistry) {
 		super();
 
@@ -54,48 +54,67 @@ public class EdenBiomeSource extends BiomeSource {
 			.filter(key -> key.location().getNamespace().equals(EdenRing.MOD_ID))
 			.map(biomeRegistry::getOrThrow)
 			.collect(Collectors.toList());
-
-		if (pickerLand == null) {
-			pickerLand = new WoverBiomePicker((ResourceKey<Biome>) biomeRegistry);
-			Iterator<EdenRingBiome> biomeLand = EdenRingBiomesDataProvider.BIOMES_LAND.iterator();
-			while (biomeLand.hasNext()) {
-				pickerLand.addBiome(biomeLand.next());
-			}
-			pickerLand.rebuild();
-			
-			pickerVoid = new WoverBiomePicker((ResourceKey<Biome>) biomeRegistry);
-			Iterator<EdenRingBiome> biomeAir = EdenRingBiomesDataProvider.BIOMES_AIR.iterator();
-			while (biomeAir.hasNext()) {
-				pickerVoid.addBiome(biomeAir.next());
-			}
-			pickerVoid.rebuild();
-			
-			pickerCave = new WoverBiomePicker((ResourceKey<Biome>) biomeRegistry);
-			Iterator<EdenRingBiome> biomeCave = EdenRingBiomesDataProvider.BIOMES_CAVE.iterator();
-			while (biomeCave.hasNext()) {
-				pickerCave.addBiome(biomeCave.next());
-			}
-			pickerCave.rebuild();
+	}
+	private void initPickers() {
+		if (pickerLand != null) return;
+		if (WorldState.registryAccess() == null && WorldState.allStageRegistryAccess() == null) {
+			return;
 		}
 
-		mapLand = new HexBiomeMap(0, GeneratorOptions.biomeSizeLand, pickerLand);
-		mapVoid = new HexBiomeMap(0, GeneratorOptions.biomeSizeVoid, pickerVoid);
-		mapCave = new HexBiomeMap(0, GeneratorOptions.biomeSizeCave, pickerCave);
+		pickerLand = new WoverBiomePicker(EdenBiomes.STONE_GARDEN);
+		for (BiomeData biomeData : WoverBiomeData.getDataRegistry("eden ring land biome source", EdenBiomes.STONE_GARDEN)) {
+			if (biomeData.isIntendedFor(EdenBiomes.EDEN_LAND)) {
+				pickerLand.addBiome(biomeData);
+			}
+		}
+		pickerLand.rebuild();
+
+		pickerVoid = new WoverBiomePicker(EdenBiomes.AIR_OCEAN);
+		for (BiomeData biomeData : WoverBiomeData.getDataRegistry("eden ring void biome source", EdenBiomes.AIR_OCEAN)) {
+			if (biomeData.isIntendedFor(EdenBiomes.EDEN_VOID)) {
+				pickerVoid.addBiome(biomeData);
+			}
+		}
+		pickerVoid.rebuild();
+
+		pickerCave = new WoverBiomePicker(EdenBiomes.EMPTY_CAVE);
+		for (BiomeData biomeData : WoverBiomeData.getDataRegistry("eden ring cave biome source", EdenBiomes.EMPTY_CAVE)) {
+			if (biomeData.isIntendedFor(EdenBiomes.EDEN_CAVE)) {
+				pickerCave.addBiome(biomeData);
+			}
+		}
+		pickerCave.rebuild();
 	}
-	
+
+	private void initMaps() {
+		if (mapLand != null) return;
+		synchronized (this) {
+			if (mapLand != null) return;
+			initPickers();
+			if (pickerLand == null) return;
+			mapLand = new HexBiomeMap(0, GeneratorOptions.biomeSizeLand, pickerLand);
+			mapVoid = new HexBiomeMap(0, GeneratorOptions.biomeSizeVoid, pickerVoid);
+			mapCave = new HexBiomeMap(0, GeneratorOptions.biomeSizeCave, pickerCave);
+		}
+	}
+
 	@Override
 	protected MapCodec<? extends BiomeSource> codec() {
 		return CODEC;
 	}
-	
+
 	@Override
 	public Holder<Biome> getNoiseBiome(int x, int y, int z, Sampler sampler) {
+		initMaps();
+		if (mapLand == null) {
+			return biomes.isEmpty() ? null : biomes.get(0);
+		}
 		cleanCache(x, z);
-		
+
 		int px = (x << 2) | 2;
 		int py = (y << 2) | 2;
 		int pz = (z << 2) | 2;
-		
+
 		ChunkPos chunkPos = new ChunkPos(px >> 4, pz >> 4);
 		InterpolationCell cell = terrainCache.get(chunkPos);
 		if (cell == null) {
@@ -104,7 +123,7 @@ public class EdenBiomeSource extends BiomeSource {
 			terrainCache.put(chunkPos, cell);
 		}
 		MutableBlockPos pos = new MutableBlockPos(px, 0, pz);
-		
+
 		if (isLand(cell, pos)) {
 			if (isCave(cell, pos.setY(py))) {
 				return mapCave.getBiome(px, 0, pz).biome;
@@ -113,13 +132,15 @@ public class EdenBiomeSource extends BiomeSource {
 		}
 		return mapVoid.getBiome(px, 0, pz).biome;
 	}
-	
+
 	public void setSeed(long seed) {
+		initMaps();
+		if (pickerLand == null) return;
 		mapLand = new HexBiomeMap(seed, GeneratorOptions.biomeSizeLand, pickerLand);
 		mapVoid = new HexBiomeMap(seed, GeneratorOptions.biomeSizeVoid, pickerVoid);
 		mapCave = new HexBiomeMap(seed, GeneratorOptions.biomeSizeCave, pickerCave);
 	}
-	
+
 	private void cleanCache(int x, int z) {
 		if ((x & 63) == 0 && (z & 63) == 0) {
 			terrainCache.clear();
@@ -128,7 +149,7 @@ public class EdenBiomeSource extends BiomeSource {
 			mapCave.clearCache();
 		}
 	}
-	
+
 	private boolean isLand(InterpolationCell cell, MutableBlockPos pos) {
 		for (short py = 0; py < 256; py += 8) {
 			if (cell.get(pos.setY(py), false) > -0.05F) {
@@ -137,7 +158,7 @@ public class EdenBiomeSource extends BiomeSource {
 		}
 		return false;
 	}
-	
+
 	private boolean isCave(InterpolationCell cell, MutableBlockPos pos) {
 		if (pos.getY() < 8 || pos.getY() > 240) return false;
 		boolean v1 = cell.get(pos, false) > 0.0F;

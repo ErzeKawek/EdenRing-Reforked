@@ -21,6 +21,7 @@ import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
 import org.betterx.wover.core.api.Logger;
 import org.betterx.wover.core.api.ModCore;
 import org.betterx.wover.state.api.WorldConfig;
+import de.ambertation.wunderlib.utils.Version;
 import paulevs.edenring.config.Configs;
 import paulevs.edenring.paintings.EdenPaintings;
 import paulevs.edenring.registries.*;
@@ -59,7 +60,7 @@ public void onInitialize() {
   Registry.register(BuiltInRegistries.BIOME_SOURCE, C.mk("biome_source"), EdenBiomeSource.CODEC);
   EdenPortal.init();
   
-  DataFixerAPI.registerPatch(() -> new ForcedLevelPatch(MOD_ID, "0.2.0") {
+  DataFixerAPI.registerPatch(() -> new ForcedLevelPatch(C, new Version("0.2.0")) {
     @Override
     protected Boolean runLevelDatPatch(CompoundTag root, MigrationProfile profile) {
       CompoundTag worldGenSettings = root.getCompound("Data").getCompound("WorldGenSettings");
@@ -100,17 +101,17 @@ public void onInitialize() {
   });
   
   final ResourceLocation[] possibleLocations = new ResourceLocation[] {
-    new ResourceLocation("chests/end_city_treasure"),
-    new ResourceLocation("chests/buried_treasure"),
-    new ResourceLocation("chests/desert_pyramid"),
-    new ResourceLocation("chests/jungle_temple"),
-    new ResourceLocation("chests/pillager_outpost"),
-    new ResourceLocation("chests/shipwreck_treasure"),
-    new ResourceLocation("chests/simple_dungeon")
+    ResourceLocation.parse("chests/end_city_treasure"),
+    ResourceLocation.parse("chests/buried_treasure"),
+    ResourceLocation.parse("chests/desert_pyramid"),
+    ResourceLocation.parse("chests/jungle_temple"),
+    ResourceLocation.parse("chests/pillager_outpost"),
+    ResourceLocation.parse("chests/shipwreck_treasure"),
+    ResourceLocation.parse("chests/simple_dungeon")
   };
-  LootTableEvents.MODIFY.register((resourceManager, lootManager, id, table, setter) -> {
+  LootTableEvents.MODIFY.register((id, table, source) -> {
     for (ResourceLocation resourceLocation: possibleLocations) {
-      if (id.equals(resourceLocation)) {
+      if (id.location().equals(resourceLocation)) {
         LootPool.Builder builder = LootPool.lootPool();
         builder.setRolls(ConstantValue.exactly(1));
         builder.conditionally(LootItemRandomChanceCondition.randomChance(0.4f).build());
@@ -123,6 +124,6 @@ public void onInitialize() {
 }
 
 public static ResourceLocation makeID(String path) {
-  return new ResourceLocation(MOD_ID, path);
+  return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 }
 }

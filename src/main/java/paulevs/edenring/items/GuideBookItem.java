@@ -14,10 +14,10 @@ import org.betterx.bclib.items.ModelProviderItem;
 import paulevs.edenring.gui.GuideBookScreen;
 
 public class GuideBookItem extends ModelProviderItem {
-	/*public GuideBookItem(Properties properties) {
+	public GuideBookItem(Properties properties) {
 		super(properties);
 	}
-	
+
 	@Override
 	public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
 		ItemStack itemStack = player.getItemInHand(interactionHand);
@@ -27,10 +27,10 @@ public class GuideBookItem extends ModelProviderItem {
 		player.awardStat(Stats.ITEM_USED.get(this));
 		return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
 	}
-	
+
 	@Environment(EnvType.CLIENT)
 	private void openClientScreen() {
 		Minecraft minecraft = Minecraft.getInstance();
 		minecraft.setScreen(new GuideBookScreen());
-	}*/
+	}
 }

@@ -1,6 +1,6 @@
 package paulevs.edenring.world.generator;
 
-import org.betterx.bclib.config.PathConfig;
+import paulevs.edenring.config.EdenPathConfig;
 import paulevs.edenring.EdenRing;
 
 public class GeneratorOptions {
@@ -12,7 +12,7 @@ public class GeneratorOptions {
 	public static int biomeSizeCave;
 	
 	public static void init() {
-		PathConfig config = new PathConfig(EdenRing.MOD_ID, "generator", false, false);
+		EdenPathConfig config = new EdenPathConfig(EdenRing.MOD_ID, "generator", false, false);
 		
 		bigOptions = new LayerOptions("terrain.layers.bigIslands", config, 300, 200, 128, 20);
 		mediumOptions = new LayerOptions("terrain.layers.mediumIslands", config, 150, 100, 128, 40);

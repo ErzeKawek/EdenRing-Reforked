@@ -1,34 +1,25 @@
 package paulevs.edenring.world.biomes;
 
-import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
-import com.mojang.serialization.codecs.RecordCodecBuilder;
-import net.minecraft.core.BlockPos;
 import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.KeyDispatchDataCodec;
-import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.biome.Climate;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.levelgen.SurfaceRules;
 import org.betterx.bclib.interfaces.SurfaceMaterialProvider;
 import org.betterx.wover.biome.api.data.BiomeData;
 import org.betterx.wover.biome.api.data.BiomeGenerationDataContainer;
-import org.betterx.wover.generator.api.biomesource.WoverBiomeBuilder;
 import org.betterx.wover.generator.api.biomesource.WoverBiomeData;
+import org.betterx.wover.surface.api.Conditions;
 import org.betterx.wover.surface.api.SurfaceRuleBuilder;
+import org.betterx.wover.surface.impl.BaseSurfaceRuleBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import paulevs.edenring.EdenRing;
-import paulevs.edenring.registries.EdenBiomes;
 import paulevs.edenring.registries.EdenBlocks;
-import paulevs.edenring.registries.EdenSounds;
-import paulevs.edenring.world.generator.BiomeType;
-
-import java.util.List;
-import java.util.Optional;
 
 public class EdenRingBiome extends WoverBiomeData implements SurfaceMaterialProvider {
     @SuppressWarnings("null")
@@ -109,9 +100,16 @@ public class EdenRingBiome extends WoverBiomeData implements SurfaceMaterialProv
 
             if (generateFloorRule() && getTopMaterial() != getUnderMaterial()) {
                 if (getTopMaterial() == getAltTopMaterial()) {
-                    builder.floor(getTopMaterial());
+                    builder.surface(getTopMaterial());
                 } else {
-                    builder.chancedFloor(getTopMaterial(), getAltTopMaterial());
+                    SurfaceRules.RuleSource chanced = SurfaceRules.ifTrue(
+                            SurfaceRules.ON_FLOOR,
+                            SurfaceRules.sequence(
+                                    SurfaceRules.ifTrue(Conditions.DOUBLE_BLOCK_SURFACE_NOISE, SurfaceRules.state(getTopMaterial())),
+                                    SurfaceRules.state(getAltTopMaterial())
+                            )
+                    );
+                    builder.rule(chanced, BaseSurfaceRuleBuilder.TOP_SURFACE_PRIORITY);
                 }
             }
             if (generateSubSurfaceRule()) {
@@ -136,40 +134,13 @@ public class EdenRingBiome extends WoverBiomeData implements SurfaceMaterialProv
 
         protected abstract void addCustomBuildData(EdenBiomeBuilder builder);
 
-        public EdenBiomeBuilder.BiomeSupplier<EdenRingBiome> getSupplier() {
+        public EdenBiomeBuilder.BiomeFactory getSupplier() {
             return EdenRingBiome::new;
         }
 
         protected SurfaceMaterialProvider surfaceMaterial() {
             return DEFAULT_MATERIAL;
         }
-    }
-
-    public EdenRingBiome(ResourceKey<Biome> biomeID, WoverBiomeData settings) {
-        super(biomeID, settings);
-    }
-
-    public static EdenRingBiome create(Config biomeConfig, BiomeAPI.BiomeType type) {
-        return create(biomeConfig, type, null);
-    }
-
-    public static EdenRingBiome createSubBiome(Config data, @NotNull WoverBiomeBuilder.WoverBiome parentBiome) {
-        return create(data, parentBiome.parent(), parentBiome);
-    }
-
-
-    public static EdenRingBiome create(Config biomeConfig, BiomeType type, WoverBiomeData parentBiome) {
-        EdenBiomeBuilder builder = EdenBiomeBuilder
-                .start(biomeConfig.ID)
-                .music(EdenSounds.MUSIC_COMMON)
-                .waterColor(4159204)
-                .waterFogColor(329011)
-                .fogColor(183, 212, 255)
-                .skyColor(113, 178, 255)
-                .surface(biomeConfig.surfaceMaterial().surface().build())
-                .type(type);
-
-        // Check if parentBiome is not null before setting it
     }
 
     protected SurfaceMaterialProvider surfMatProv = Config.DEFAULT_MATERIAL;
@@ -201,29 +172,5 @@ public class EdenRingBiome extends WoverBiomeData implements SurfaceMaterialProv
     @Override
     public SurfaceRuleBuilder surface() {
         return this.surfMatProv.surface();
-    }
-
-    public static BlockState findTopMaterial(WoverBiomeData biome) {
-        return BiomeAPI.findTopMaterial(biome).orElse(Config.DEFAULT_MATERIAL.getTopMaterial());
-    }
-
-    public static BlockState findTopMaterial(WoverBiomeData biome) {
-        return findTopMaterial(BiomeAPI.getBiome(biome));
-    }
-
-    public static BlockState findTopMaterial(WorldGenLevel world, BlockPos pos) {
-        return findTopMaterial(BiomeAPI.getBiome(world.getBiome(pos)));
-    }
-
-    public static BlockState findUnderMaterial(WoverBiomeData biome) {
-        return BiomeAPI.findUnderMaterial(biome).orElse(Config.DEFAULT_MATERIAL.getUnderMaterial());
-    }
-
-    public static BlockState findUnderMaterial(WorldGenLevel world, BlockPos pos) {
-        return findUnderMaterial(BiomeAPI.getBiome(world.getBiome(pos)));
-    }
-
-    public static List<WoverBiomeData> getAllBeBiomes() {
-        return WoverBiomeData.getAllBiomes(BiomeType.EDEN);
     }
 }

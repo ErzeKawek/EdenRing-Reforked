@@ -3,7 +3,7 @@ package paulevs.edenring.client.environment.renderers;
 import com.mojang.blaze3d.platform.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.BufferBuilder;
-import com.mojang.blaze3d.vertex.BufferBuilder.RenderedBuffer;
+import com.mojang.blaze3d.vertex.MeshData;
 import com.mojang.math.Axis;
 import com.mojang.blaze3d.vertex.BufferUploader;
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
@@ -54,30 +54,29 @@ public class EdenSkyRenderer implements SkyRenderer {
 	private static VertexBuffer[] horizon;
 	private static VertexBuffer[] nebula;
 	private static VertexBuffer stars;
-	
+
 	private boolean shouldInit = true;
-	
+
 	private void init() {
 		shouldInit = false;
-		bufferBuilder = Tesselator.getInstance().getBuilder();
-		
+
 		if (horizon == null) {
 			horizon = new VertexBuffer[3];
 		}
-		
+
 		if (nebula == null) {
 			nebula = new VertexBuffer[3];
 		}
-		
-		horizon[0] = buildBufferCylinder(bufferBuilder, horizon[0], 20);
-		horizon[1] = buildBufferCylinder(bufferBuilder, horizon[1], 40);
-		horizon[2] = buildBufferCylinder(bufferBuilder, horizon[2], 100);
-		
-		nebula[0] = buildBufferCylinder(bufferBuilder, nebula[0], 30);
-		nebula[1] = buildBufferSquares(bufferBuilder, nebula[1], 20, 60, 10, 1, 235);
-		nebula[2] = buildBufferSquares(bufferBuilder, nebula[2], 20, 60, 10, 1, 352);
-		
-		stars = buildBufferSquares(bufferBuilder, stars, 0.125, 0.875, 5000, 4, 41315);
+
+		horizon[0] = buildBufferCylinder(horizon[0], 20);
+		horizon[1] = buildBufferCylinder(horizon[1], 40);
+		horizon[2] = buildBufferCylinder(horizon[2], 100);
+
+		nebula[0] = buildBufferCylinder(nebula[0], 30);
+		nebula[1] = buildBufferSquares(nebula[1], 20, 60, 10, 1, 235);
+		nebula[2] = buildBufferSquares(nebula[2], 20, 60, 10, 1, 352);
+
+		stars = buildBufferSquares(stars, 0.125, 0.875, 5000, 4, 41315);
 		
 		RandomSource random = new XoroshiroRandomSource(0);
 		for (int i = 0; i < MOONS.length; i++) {
@@ -99,8 +98,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 		}
 		
 		Minecraft minecraft = Minecraft.getInstance();
-		PoseStack poseStack = context.matrixStack();
-		float tickDelta = context.tickDelta();
+		PoseStack poseStack = new PoseStack();
+		Matrix4f positionMatrix = context.positionMatrix();
+		if (positionMatrix != null) {
+			poseStack.mulPose(positionMatrix);
+		}
+		float tickDelta = context.tickCounter().getGameTimeDeltaPartialTick(false);
 		
 		if (shouldInit) {
 			init();
@@ -142,12 +145,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 		RenderSystem.clearColor(skyR, skyG, skyB, 1.0F);
 		RenderSystem.setShaderColor(skyR, skyG, skyB, 1.0F);
 		RenderSystem.setShader(GameRenderer::getPositionShader);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-		bufferBuilder.vertex(projectionMatrix, -10.0F, -10.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(projectionMatrix,  10.0F, -10.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(projectionMatrix,  10.0F,  10.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(projectionMatrix, -10.0F,  10.0F, 0.0F).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+		bufferBuilder.addVertex(projectionMatrix, -10.0F, -10.0F, 0.0F);
+		bufferBuilder.addVertex(projectionMatrix,  10.0F, -10.0F, 0.0F);
+		bufferBuilder.addVertex(projectionMatrix,  10.0F,  10.0F, 0.0F);
+		bufferBuilder.addVertex(projectionMatrix, -10.0F,  10.0F, 0.0F);
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 		
 		// Render Nebula And Stars //
 		
@@ -183,24 +186,24 @@ public class EdenSkyRenderer implements SkyRenderer {
 		
 		RenderSystem.setShaderColor(skyR, skyG, skyB, 1.0F);
 		RenderSystem.setShaderTexture(0, SUN_FADE);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferBuilder.vertex(matrix, -80.0F, 100.0F, -80.0F).uv(0.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  80.0F, 100.0F, -80.0F).uv(1.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  80.0F, 100.0F,  80.0F).uv(1.0F, 1.0F).endVertex();
-		bufferBuilder.vertex(matrix, -80.0F, 100.0F,  80.0F).uv(0.0F, 1.0F).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder sunFadeBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		sunFadeBuilder.addVertex(matrix, -80.0F, 100.0F, -80.0F).setUv(0.0F, 0.0F);
+		sunFadeBuilder.addVertex(matrix,  80.0F, 100.0F, -80.0F).setUv(1.0F, 0.0F);
+		sunFadeBuilder.addVertex(matrix,  80.0F, 100.0F,  80.0F).setUv(1.0F, 1.0F);
+		sunFadeBuilder.addVertex(matrix, -80.0F, 100.0F,  80.0F).setUv(0.0F, 1.0F);
+		BufferUploader.drawWithShader(sunFadeBuilder.buildOrThrow());
 		
 		float color = (float) Math.cos(dayTime * Math.PI * 2) * 1.1F;
 		color = Mth.clamp(color, 0.3F, 1.0F);
 		RenderSystem.setShaderColor(1.0F, color, color, 1.0F);
 		RenderSystem.setShaderTexture(0, SUN);
 		RenderSystem.blendFuncSeparate(GlStateManager.SourceFactor.SRC_ALPHA, GlStateManager.DestFactor.ONE, GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ZERO);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferBuilder.vertex(matrix, -30.0F, 100.0F, -30.0F).uv(0.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  30.0F, 100.0F, -30.0F).uv(1.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  30.0F, 100.0F,  30.0F).uv(1.0F, 1.0F).endVertex();
-		bufferBuilder.vertex(matrix, -30.0F, 100.0F,  30.0F).uv(0.0F, 1.0F).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder sunBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		sunBuilder.addVertex(matrix, -30.0F, 100.0F, -30.0F).setUv(0.0F, 0.0F);
+		sunBuilder.addVertex(matrix,  30.0F, 100.0F, -30.0F).setUv(1.0F, 0.0F);
+		sunBuilder.addVertex(matrix,  30.0F, 100.0F,  30.0F).setUv(1.0F, 1.0F);
+		sunBuilder.addVertex(matrix, -30.0F, 100.0F,  30.0F).setUv(0.0F, 1.0F);
+		BufferUploader.drawWithShader(sunBuilder.buildOrThrow());
 		RenderSystem.defaultBlendFunc();
 		
 		poseStack.popPose();
@@ -221,12 +224,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 		RenderSystem.setShaderTexture(0, RINGS_SOFT_TEXTURE);
 		
 		matrix = poseStack.last().pose();
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferBuilder.vertex(matrix, -130.0F, 0.0F, -130.0F).uv(0.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  130.0F, 0.0F, -130.0F).uv(1.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  130.0F, 0.0F,  130.0F).uv(1.0F, 1.0F).endVertex();
-		bufferBuilder.vertex(matrix, -130.0F, 0.0F,  130.0F).uv(0.0F, 1.0F).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder ringsBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		ringsBuilder.addVertex(matrix, -130.0F, 0.0F, -130.0F).setUv(0.0F, 0.0F);
+		ringsBuilder.addVertex(matrix,  130.0F, 0.0F, -130.0F).setUv(1.0F, 0.0F);
+		ringsBuilder.addVertex(matrix,  130.0F, 0.0F,  130.0F).setUv(1.0F, 1.0F);
+		ringsBuilder.addVertex(matrix, -130.0F, 0.0F,  130.0F).setUv(0.0F, 1.0F);
+		BufferUploader.drawWithShader(ringsBuilder.buildOrThrow());
 		
 		poseStack.popPose();
 		
@@ -250,12 +253,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 		matrix = poseStack.last().pose();
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, PLANET_TEXTURE);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferBuilder.vertex(matrix, -140,  140, 0.0F).uv(0.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  140,  140, 0.0F).uv(1.0F, 0.0F).endVertex();
-		bufferBuilder.vertex(matrix,  140, -140, 0.0F).uv(1.0F, 1.0F).endVertex();
-		bufferBuilder.vertex(matrix, -140, -140, 0.0F).uv(0.0F, 1.0F).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder planetBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		planetBuilder.addVertex(matrix, -140,  140, 0.0F).setUv(0.0F, 0.0F);
+		planetBuilder.addVertex(matrix,  140,  140, 0.0F).setUv(1.0F, 0.0F);
+		planetBuilder.addVertex(matrix,  140, -140, 0.0F).setUv(1.0F, 1.0F);
+		planetBuilder.addVertex(matrix, -140, -140, 0.0F).setUv(0.0F, 1.0F);
+		BufferUploader.drawWithShader(planetBuilder.buildOrThrow());
 		
 		poseStack.popPose();
 		
@@ -277,12 +280,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 			RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, py > 0.5F ? 0.5F : (float) py);
 			RenderSystem.setShaderTexture(0, RINGS_TEXTURE);
 			matrix = poseStack.last().pose();
-			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-			bufferBuilder.vertex(matrix, -130.0F, 0.001F,   0.0F).uv(0.0F, 0.5F).endVertex();
-			bufferBuilder.vertex(matrix,  130.0F, 0.001F,   0.0F).uv(1.0F, 0.5F).endVertex();
-			bufferBuilder.vertex(matrix,  130.0F, 0.001F, 130.0F).uv(1.0F, 1.0F).endVertex();
-			bufferBuilder.vertex(matrix, -130.0F, 0.001F, 130.0F).uv(0.0F, 1.0F).endVertex();
-			BufferUploader.drawWithShader(bufferBuilder.end());
+			BufferBuilder ringsFrontBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+			ringsFrontBuilder.addVertex(matrix, -130.0F, 0.001F,   0.0F).setUv(0.0F, 0.5F);
+			ringsFrontBuilder.addVertex(matrix,  130.0F, 0.001F,   0.0F).setUv(1.0F, 0.5F);
+			ringsFrontBuilder.addVertex(matrix,  130.0F, 0.001F, 130.0F).setUv(1.0F, 1.0F);
+			ringsFrontBuilder.addVertex(matrix, -130.0F, 0.001F, 130.0F).setUv(0.0F, 1.0F);
+			BufferUploader.drawWithShader(ringsFrontBuilder.buildOrThrow());
 			poseStack.popPose();
 		}
 		
@@ -350,35 +353,37 @@ public class EdenSkyRenderer implements SkyRenderer {
 			
 			RenderSystem.setShaderColor(0, 0, 0, BackgroundInfo.blindness);
 			RenderSystem.setShader(GameRenderer::getPositionShader);
-			bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
-			bufferBuilder.vertex(projectionMatrix, -10.0F, -10.0F, 0.0F).endVertex();
-			bufferBuilder.vertex(projectionMatrix, 10.0F, -10.0F, 0.0F).endVertex();
-			bufferBuilder.vertex(projectionMatrix, 10.0F, 10.0F, 0.0F).endVertex();
-			bufferBuilder.vertex(projectionMatrix, -10.0F, 10.0F, 0.0F).endVertex();
-			BufferUploader.drawWithShader(bufferBuilder.end());
+			BufferBuilder blindnessBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION);
+			blindnessBuilder.addVertex(projectionMatrix, -10.0F, -10.0F, 0.0F);
+			blindnessBuilder.addVertex(projectionMatrix, 10.0F, -10.0F, 0.0F);
+			blindnessBuilder.addVertex(projectionMatrix, 10.0F, 10.0F, 0.0F);
+			blindnessBuilder.addVertex(projectionMatrix, -10.0F, 10.0F, 0.0F);
+			BufferUploader.drawWithShader(blindnessBuilder.buildOrThrow());
 		}
 		
 		// Finalize //
-		
+
 		//RenderSystem.enableTexture();
 		RenderSystem.depthMask(true);
 		RenderSystem.defaultBlendFunc();
 		RenderSystem.disableBlend();
 		RenderSystem.enableDepthTest();
 		RenderSystem.enableCull();
+		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 	}
 	
-	private VertexBuffer buildBufferCylinder(BufferBuilder bufferBuilder, VertexBuffer buffer, double height) {
+	private VertexBuffer buildBufferCylinder(VertexBuffer buffer, double height) {
 		if (buffer != null) {
 			buffer.close();
 		}
-		
-		buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		makeCylinder(bufferBuilder, 16, height, 100);
-		RenderedBuffer renderBuffer = bufferBuilder.end();
+		MeshData renderBuffer = bufferBuilder.buildOrThrow();
+		buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		buffer.bind();
 		buffer.upload(renderBuffer);
-		
+
 		return buffer;
 	}
 	
@@ -395,7 +400,6 @@ public class EdenSkyRenderer implements SkyRenderer {
 	}
 	
 	private void makeCylinder(BufferBuilder buffer, int segments, double height, double radius) {
-		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		for (int i = 0; i < segments; i++) {
 			double a1 = (double) i * Math.PI * 2.0 / (double) segments;
 			double a2 = (double) (i + 1) * Math.PI * 2.0 / (double) segments;
@@ -403,35 +407,35 @@ public class EdenSkyRenderer implements SkyRenderer {
 			double pz1 = Math.cos(a1) * radius;
 			double px2 = Math.sin(a2) * radius;
 			double pz2 = Math.cos(a2) * radius;
-			
+
 			float u0 = (float) i / (float) segments;
 			float u1 = (float) (i + 1) / (float) segments;
-			
-			buffer.vertex(px1, -height, pz1).uv(u0, 0).endVertex();
-			buffer.vertex(px1, height, pz1).uv(u0, 1).endVertex();
-			buffer.vertex(px2, height, pz2).uv(u1, 1).endVertex();
-			buffer.vertex(px2, -height, pz2).uv(u1, 0).endVertex();
+
+			buffer.addVertex((float) px1, (float) -height, (float) pz1).setUv(u0, 0);
+			buffer.addVertex((float) px1, (float) height, (float) pz1).setUv(u0, 1);
+			buffer.addVertex((float) px2, (float) height, (float) pz2).setUv(u1, 1);
+			buffer.addVertex((float) px2, (float) -height, (float) pz2).setUv(u1, 0);
 		}
 	}
 	
-	private VertexBuffer buildBufferSquares(BufferBuilder bufferBuilder, VertexBuffer buffer, double minSize, double maxSize, int count, int verticalCount, long seed) {
+	private VertexBuffer buildBufferSquares(VertexBuffer buffer, double minSize, double maxSize, int count, int verticalCount, long seed) {
 		if (buffer != null) {
 			buffer.close();
 		}
-		
-		buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
+
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
 		makeStars(bufferBuilder, minSize, maxSize, count, verticalCount, seed);
-		RenderedBuffer renderBuffer = bufferBuilder.end();
+		MeshData renderBuffer = bufferBuilder.buildOrThrow();
+		buffer = new VertexBuffer(VertexBuffer.Usage.STATIC);
 		buffer.bind();
 		buffer.upload(renderBuffer);
-		
+
 		return buffer;
 	}
 	
 	private void makeStars(BufferBuilder buffer, double minSize, double maxSize, int count, int verticalCount, long seed) {
 		RandomSource random = new XoroshiroRandomSource(seed);
-		buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		
+
 		for (int i = 0; i < count; ++i) {
 			double posX = random.nextDouble() * 2.0 - 1.0;
 			double posY = random.nextDouble() * 2.0 - 1.0;
@@ -470,7 +474,7 @@ public class EdenSkyRenderer implements SkyRenderer {
 					float texU = (pos >> 1) & 1;
 					float texV = (float) (((pos + 1) >> 1) & 1) / verticalCount + minV;
 					pos++;
-					buffer.vertex(j + af, k + ad, l + ah).uv(texU, texV).endVertex();
+					buffer.addVertex((float) (j + af), (float) (k + ad), (float) (l + ah)).setUv(texU, texV);
 				}
 			}
 		}
@@ -488,12 +492,12 @@ public class EdenSkyRenderer implements SkyRenderer {
 		Matrix4f matrix = matrices.last().pose();
 		RenderSystem.setShaderColor(color.x(), color.y(), color.z(), 1F);
 		RenderSystem.setShaderTexture(0, MOON_TEXTURE);
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
-		bufferBuilder.vertex(matrix, -size,  size, 0.0F).uv(0.0F, v0).endVertex();
-		bufferBuilder.vertex(matrix,  size,  size, 0.0F).uv(1.0F, v0).endVertex();
-		bufferBuilder.vertex(matrix,  size, -size, 0.0F).uv(1.0F, v1).endVertex();
-		bufferBuilder.vertex(matrix, -size, -size, 0.0F).uv(0.0F, v1).endVertex();
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX);
+		bufferBuilder.addVertex(matrix, -size,  size, 0.0F).setUv(0.0F, v0);
+		bufferBuilder.addVertex(matrix,  size,  size, 0.0F).setUv(1.0F, v0);
+		bufferBuilder.addVertex(matrix,  size, -size, 0.0F).setUv(1.0F, v1);
+		bufferBuilder.addVertex(matrix, -size, -size, 0.0F).setUv(0.0F, v1);
+		BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
 		
 		matrices.popPose();
 	}

@@ -1,6 +1,5 @@
 package paulevs.edenring.client.entities.renderers;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.vertex.PoseStack;
@@ -51,7 +50,6 @@ public class EdenPaintingRenderer extends EntityRenderer<EdenPainting> {
 	
 	private void renderPainting(PoseStack poseStack, VertexConsumer vertexConsumer, EdenPainting painting, PaintingInfo info) {
 		PoseStack.Pose pose = poseStack.last();
-		Matrix3f normal = pose.normal();
 		Matrix4f pos = pose.pose();
 		
 		//float f = -info.getWidth() * 0.5F;
@@ -80,23 +78,22 @@ public class EdenPaintingRenderer extends EntityRenderer<EdenPainting> {
 			rgb = provider.getColor((ClientLevel) painting.level(), POS);
 		}
 		
-		this.vertex(pos, normal, vertexConsumer, rgb, -dx,  dy, -0.5f, 1, 0, light);
-		this.vertex(pos, normal, vertexConsumer, rgb,  dx,  dy, -0.5f, 0, 0, light);
-		this.vertex(pos, normal, vertexConsumer, rgb,  dx, -dy, -0.5f, 0, 1, light);
-		this.vertex(pos, normal, vertexConsumer, rgb, -dx, -dy, -0.5f, 1, 1, light);
+		this.vertex(pos, vertexConsumer, rgb, -dx,  dy, -0.5f, 1, 0, light);
+		this.vertex(pos, vertexConsumer, rgb,  dx,  dy, -0.5f, 0, 0, light);
+		this.vertex(pos, vertexConsumer, rgb,  dx, -dy, -0.5f, 0, 1, light);
+		this.vertex(pos, vertexConsumer, rgb, -dx, -dy, -0.5f, 1, 1, light);
 	}
-	
-	private void vertex(Matrix4f pos, Matrix3f normal, VertexConsumer vertexConsumer, int rgb, float x, float y, float z, float u, float v, int lightmap) {
+
+	private void vertex(Matrix4f pos, VertexConsumer vertexConsumer, int rgb, float x, float y, float z, float u, float v, int lightmap) {
 		int r = (rgb >> 16) & 255;
 		int g = (rgb >> 8) & 255;
 		int b = rgb & 255;
 		vertexConsumer
-			.vertex(pos, x, y, z)
-			.color(r, g, b, 255)
-			.uv(u, v)
-			.overlayCoords(OverlayTexture.NO_OVERLAY)
-			.uv2(lightmap)
-			.normal(normal, 0, 0, -1)
-			.endVertex();
+			.addVertex(pos, x, y, z)
+			.setColor(r, g, b, 255)
+			.setUv(u, v)
+			.setOverlay(OverlayTexture.NO_OVERLAY)
+			.setLight(lightmap)
+			.setNormal(0, 0, -1);
 	}
 }

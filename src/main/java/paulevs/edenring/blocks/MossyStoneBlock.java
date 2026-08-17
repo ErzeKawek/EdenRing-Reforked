@@ -25,13 +25,14 @@ import org.betterx.bclib.blocks.BaseBlock;
 import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class MossyStoneBlock extends BaseBlock implements BonemealableBlock {
+public class MossyStoneBlock extends BaseBlock implements BonemealableBlock, RuntimeBlockModelProvider {
 	public MossyStoneBlock() {
 		super(FabricBlockSettings.copyOf(Blocks.STONE));
 	}
@@ -51,14 +52,14 @@ public class MossyStoneBlock extends BaseBlock implements BonemealableBlock {
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		if (tool == null || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) == 0) {
+		if (tool == null || EnchantmentHelper.getEnchantmentsForCrafting(tool).keySet().stream().noneMatch(enchantment -> enchantment.is(Enchantments.SILK_TOUCH))) {
 			return Collections.singletonList(new ItemStack(Blocks.STONE));
 		}
 		return Collections.singletonList(new ItemStack(this));
 	}
 
 	@Override
-	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state, boolean var4) {
+	public boolean isValidBonemealTarget(LevelReader level, BlockPos pos, BlockState state) {
 		BlockState up = level.getBlockState(pos.above());
 		return up.isAir() || up.is(Blocks.STONE);
 	}

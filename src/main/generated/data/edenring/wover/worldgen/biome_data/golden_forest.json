@@ -1,0 +1,25 @@
+{
+  "type": "edenring:biome",
+  "biome": "edenring:golden_forest",
+  "generation_data": {
+    "intended_placement": "edenring:eden_land"
+  },
+  "surface": {
+    "alt": {
+      "Name": "edenring:eden_grass",
+      "Properties": {
+        "snowy": "false"
+      }
+    },
+    "floor_rule": true,
+    "top": {
+      "Name": "edenring:eden_grass",
+      "Properties": {
+        "snowy": "false"
+      }
+    },
+    "under": {
+      "Name": "minecraft:dirt"
+    }
+  }
+}

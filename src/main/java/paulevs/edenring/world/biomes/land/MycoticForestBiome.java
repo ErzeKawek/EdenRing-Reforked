@@ -1,6 +1,5 @@
 package paulevs.edenring.world.biomes.land;
 
-import org.betterx.bclib.api.v2.levelgen.biomes.BCLBiomeBuilder;
 import org.betterx.bclib.interfaces.SurfaceMaterialProvider;
 
 import net.minecraft.data.worldgen.placement.VegetationPlacements;

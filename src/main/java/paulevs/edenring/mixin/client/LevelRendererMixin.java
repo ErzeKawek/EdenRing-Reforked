@@ -3,6 +3,7 @@ package paulevs.edenring.mixin.client;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.client.Camera;
+import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.LevelRenderer;
@@ -39,29 +40,32 @@ public abstract class LevelRendererMixin {
 	
 	@Inject(method = "renderLevel", at = @At(
 		value = "INVOKE",
-		target = "Lcom/mojang/blaze3d/systems/RenderSystem;getModelViewStack()Lcom/mojang/blaze3d/vertex/PoseStack;",
+		target = "Lcom/mojang/blaze3d/systems/RenderSystem;getModelViewStack()Lorg/joml/Matrix4fStack;",
 		shift = Shift.BEFORE
 	))
 
-	public void eden_renderLevel(PoseStack poseStack, float f, long l, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, CallbackInfo info) {
+	public void eden_renderLevel(DeltaTracker deltaTracker, boolean bl, Camera camera, GameRenderer gameRenderer, LightTexture lightTexture, Matrix4f matrix4f, Matrix4f matrix4f2, CallbackInfo info) {
 		if (minecraft.hitResult == null || !(minecraft.hitResult instanceof BlockHitResult)) {
 			return;
 		}
-		
+
 		ItemStack item = minecraft.player.getMainHandItem();
 		if (item != null && !(item.getItem() instanceof BalloonMushroomBlockItem)) {
 			return;
 		}
-		
+
 		BlockPos pos = ((BlockHitResult) minecraft.hitResult).getBlockPos();
 		BlockState state = minecraft.level.getBlockState(pos);
 		if (!state.canBeReplaced()) return;
-		
+
 		state = EdenBlocks.BALLOON_MUSHROOM_BLOCK.defaultBlockState();
 		BufferSource bufferSource = this.renderBuffers.bufferSource();
 		VertexConsumer consumer = bufferSource.getBuffer(RenderType.lines());
 		Vec3 camPos = camera.getPosition();
-		
+
+		PoseStack poseStack = new PoseStack();
+		poseStack.mulPose(camera.rotation());
+
 		renderShape(
 			poseStack, consumer,
 			state.getShape(minecraft.level, pos, CollisionContext.of(camera.getEntity())),

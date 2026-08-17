@@ -10,6 +10,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import org.joml.Matrix4fStack;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.client.EdenRingClient;
 import paulevs.edenring.client.environment.TransformHelper;
@@ -20,8 +21,8 @@ import paulevs.edenring.registries.EdenBiomes;
 public class EdenWeatherRenderer implements WeatherRenderer {
 	private static final ResourceLocation LIGHTNING = EdenRing.makeID("textures/environment/lightning.png");
 	private SpriteGrid grid = new SpriteGrid(LightningAnimation::new, (biome, random) -> {
-		// Check for null biome before accessing getBiomeKey()
-		return biome != null && biome.getBiomeKey() == EdenBiomes.BRAINSTORM ? random.nextInt(3) : 0;
+		// Check for null biome before accessing biomeKey
+		return biome != null && EdenBiomes.BRAINSTORM.equals(biome.biomeKey) ? random.nextInt(3) : 0;
 	});
 
 	@Override
@@ -45,19 +46,26 @@ public class EdenWeatherRenderer implements WeatherRenderer {
 
 		// Start
 
-		poseStack.pushPose();
-
 		Minecraft minecraft = context.gameRenderer().getMinecraft();
-		TransformHelper.applyPerspective(poseStack, camera);
-		if (minecraft.options.bobView().get() && EdenRingClient.hasIris()) {
-			TransformHelper.fixBobbing(poseStack, minecraft.player, context.tickDelta());
+		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushMatrix();
+		modelViewStack.rotateY((float) Math.PI);
+		RenderSystem.applyModelViewMatrix();
+		try {
+			poseStack.pushPose();
+			if (minecraft.options.bobView().get() && EdenRingClient.hasIris()) {
+				TransformHelper.fixBobbing(poseStack, minecraft.player, context.tickCounter().getGameTimeDeltaPartialTick(false));
+			}
+
+			ChunkPos pos = camera.getEntity().chunkPosition();
+			int distance = context.gameRenderer().getMinecraft().options.renderDistance().get();
+			grid.render(level, pos, distance << 1 | 1, poseStack, camera, context.tickCounter().getGameTimeDeltaPartialTick(false), null);
 		}
-
-		ChunkPos pos = camera.getEntity().chunkPosition();
-		int distance = context.gameRenderer().getMinecraft().options.renderDistance().get();
-		grid.render(level, pos, distance << 1 | 1, poseStack, camera, context.tickDelta(), null);
-
-		poseStack.popPose();
+		finally {
+			poseStack.popPose();
+			modelViewStack.popMatrix();
+			RenderSystem.applyModelViewMatrix();
+		}
 
 		// Finalise
 

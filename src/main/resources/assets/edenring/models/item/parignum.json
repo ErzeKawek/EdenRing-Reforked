@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "edenring:block/parignum",
+    "layer1": "edenring:block/parignum_flowers_1"
+  }
+}

@@ -8,6 +8,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -27,7 +28,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
-import org.betterx.bclib.interfaces.BlockModelProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.interfaces.CustomColorProvider;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
 import org.betterx.ui.ColorUtil;
@@ -35,7 +36,7 @@ import org.betterx.ui.ColorUtil;
 import java.util.Map;
 import java.util.Optional;
 
-public class EdenMossBlock extends MossBlock implements BlockModelProvider, CustomColorProvider, RenderLayerProvider {
+public class EdenMossBlock extends MossBlock implements RuntimeBlockModelProvider, CustomColorProvider, RenderLayerProvider {
 	private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 2, 16);
 	
 	public EdenMossBlock() {
@@ -75,10 +76,10 @@ public class EdenMossBlock extends MossBlock implements BlockModelProvider, Cust
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		ResourceLocation modelId = new ResourceLocation(stateId.getNamespace(), "block/" + stateId.getPath());
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		ModelResourceLocation modelId = new ModelResourceLocation(ResourceLocation.fromNamespaceAndPath(stateId.id().getNamespace(), "block/" + stateId.id().getPath()), "");
 		this.registerBlockModel(stateId, modelId, blockState, modelCache);
-		return ModelsHelper.createRandomTopModel(modelId);
+		return ModelsHelper.createRandomTopModel(modelId.id());
 	}
 	
 	@Override

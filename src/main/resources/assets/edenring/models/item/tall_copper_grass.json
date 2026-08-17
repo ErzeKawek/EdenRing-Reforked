@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "edenring:block/tall_copper_grass_top_color",
+    "layer1": "edenring:block/tall_copper_grass_top_overlay"
+  }
+}

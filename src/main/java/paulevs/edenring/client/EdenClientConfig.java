@@ -1,27 +1,28 @@
 package paulevs.edenring.client;
 
-import org.betterx.bclib.config.ConfigUI;
-import org.betterx.bclib.config.NamedPathConfig;
+import org.betterx.bclib.config.Config;
+import org.betterx.bclib.config.ConfigKey;
 import paulevs.edenring.EdenRing;
 
-public class EdenClientConfig extends NamedPathConfig {
-	@ConfigUI
-	private static final ConfigToken<Boolean> RENDER_SKY = ConfigToken.Boolean(true, "renderSky", "rendering");
-	
-	@ConfigUI
-	private static final ConfigToken<Boolean> RENDER_BUFFER = ConfigToken.Boolean(false, "renderInBuffer", "rendering");
-	
+public class EdenClientConfig extends Config {
+	private static final ConfigKey RENDER_SKY = new ConfigKey("renderSky", "rendering");
+	private static final ConfigKey RENDER_BUFFER = new ConfigKey("renderInBuffer", "rendering");
+
 	public EdenClientConfig() {
-		super(EdenRing.MOD_ID, "client", false, false);
-		getBoolean(RENDER_SKY, RENDER_SKY.defaultValue);
-		getBoolean(RENDER_BUFFER, RENDER_BUFFER.defaultValue);
+		super(EdenRing.MOD_ID, "client");
 	}
-	
+
+	@Override
+	protected void registerEntries() {
+		getBoolean(RENDER_SKY, true);
+		getBoolean(RENDER_BUFFER, false);
+	}
+
 	public boolean renderSky() {
-		return get(RENDER_SKY);
+		return getBoolean(RENDER_SKY, true);
 	}
-	
+
 	public boolean renderInBuffer() {
-		return get(RENDER_BUFFER);
+		return getBoolean(RENDER_BUFFER, false);
 	}
 }

@@ -5,6 +5,8 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.BlockModelRotation;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -29,9 +31,11 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 import org.betterx.bclib.blocks.BaseBlockNotFull;
 import org.betterx.bclib.client.models.ModelsHelper;
+import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.EdenBlockProperties.PulseTreeState;
@@ -42,7 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class PulseTreeBlock extends BaseBlockNotFull implements RenderLayerProvider {
+public class PulseTreeBlock extends BaseBlockNotFull implements RenderLayerProvider, RuntimeBlockModelProvider {
 	public static final EnumProperty<PulseTreeState> PULSE_TREE = EdenBlockProperties.PULSE_TREE;
 	private static final Map<PulseTreeState, VoxelShape> SHAPES = Maps.newEnumMap(PulseTreeState.class);
 	
@@ -78,19 +82,22 @@ public class PulseTreeBlock extends BaseBlockNotFull implements RenderLayerProvi
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		PulseTreeState state = blockState.getValue(PULSE_TREE);
-		
-		if (state == PulseTreeState.NORTH_SOUTH) {
-			return ModelsHelper.createRotatedModel(EdenRing.makeID("block/pulse_tree_up"), Axis.Z);
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
+		for (PulseTreeState pulseState : PulseTreeState.values()) {
+			MultiPartBuilder.ModelPart part;
+			switch (pulseState) {
+				case UP, HEAD_BIG, HEAD_MEDIUM, HEAD_SMALL -> part = model.part(EdenRing.makeID(
+						"block/pulse_tree_" + (pulseState == PulseTreeState.UP ? "up" : pulseState.getSerializedName())));
+				case NORTH_SOUTH -> part = model.part(EdenRing.makeID("block/pulse_tree_up"))
+						.setTransformation(BlockModelRotation.X90_Y0.getRotation());
+				case EAST_WEST -> part = model.part(EdenRing.makeID("block/pulse_tree_up"))
+						.setTransformation(BlockModelRotation.X90_Y90.getRotation());
+				default -> throw new IllegalStateException("Unexpected pulse tree state: " + pulseState);
+			}
+			part.setCondition(state -> state.getValue(PULSE_TREE) == pulseState).add();
 		}
-		if (state == PulseTreeState.EAST_WEST) {
-			return ModelsHelper.createRotatedModel(EdenRing.makeID("block/pulse_tree_up"), Axis.X);
-		}
-		
-		ResourceLocation modelId = EdenRing.makeID("block/pulse_tree_" + state.getSerializedName());
-		
-		return ModelsHelper.createBlockSimple(modelId);
+		return model.build();
 	}
 	
 	@Override

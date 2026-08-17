@@ -5,6 +5,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
@@ -20,11 +21,12 @@ import org.betterx.bclib.blocks.BaseBlock;
 import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class GravityCompressorBlock extends BaseBlock {
+public class GravityCompressorBlock extends BaseBlock implements RuntimeBlockModelProvider {
 	public static final IntegerProperty POWER = BlockStateProperties.POWER;
 	
 	public GravityCompressorBlock() {
@@ -39,14 +41,15 @@ public class GravityCompressorBlock extends BaseBlock {
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		boolean active = blockState.getValue(POWER) > 0;
-		String modId = stateId.getNamespace();
-		String side = active ? stateId.getPath() + "_side_on" : stateId.getPath() + "_side_off";
+		String modId = stateId.id().getNamespace();
+		String path = stateId.id().getPath();
+		String side = active ? path + "_side_on" : path + "_side_off";
 		Map<String, String> textures = Maps.newHashMap();
 		textures.put("%top%", "minecraft:block/piston_top");
 		textures.put("%side%", modId + ":block/" + side);
-		textures.put("%bottom%", modId + ":block/" + stateId.getPath() + "_bottom");
+		textures.put("%bottom%", modId + ":block/" + path + "_bottom");
 		Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_TOP_SIDE_BOTTOM, textures);
 		return ModelsHelper.fromPattern(pattern);
 	}

@@ -1,0 +1,21 @@
+{
+  "parent": "minecraft:block/block",
+  "textures": {
+    "particle": "#texture",
+    "texture": "edenring:block/balloon_mushroom_branch"
+  },
+  "elements": [
+    {
+      "from": [4, 4, 4],
+      "to": [12, 12, 12],
+      "faces": {
+        "down": {"uv": [4, 4, 12, 12], "texture": "#texture"},
+        "up": {"uv": [4, 4, 12, 12], "texture": "#texture"},
+        "north": {"uv": [4, 4, 12, 12], "texture": "#texture"},
+        "south": {"uv": [4, 4, 12, 12], "texture": "#texture"},
+        "west": {"uv": [4, 4, 12, 12], "texture": "#texture"},
+        "east": {"uv": [4, 4, 12, 12], "texture": "#texture"}
+      }
+    }
+  ]
+}

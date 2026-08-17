@@ -124,7 +124,7 @@ public class DiskwingEntityModel extends EntityModel<DiskwingEntity> {
 	}
 
 	@Override
-	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int i, int j, int k) {
-
+	public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int light, int overlay, int color) {
+		model.render(poseStack, vertexConsumer, light, overlay, color);
 	}
 }

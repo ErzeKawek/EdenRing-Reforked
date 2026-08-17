@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Holder;
 import net.minecraft.resources.ResourceLocation;
@@ -22,8 +23,11 @@ import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.betterx.bclib.blocks.BaseDoublePlantBlock;
 import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
+import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.items.tool.BaseShearsItem;
+import org.jetbrains.annotations.Nullable;
 import paulevs.edenring.EdenRing;
 
 import java.util.Collections;
@@ -31,16 +35,33 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class EdenDoublePlantBlock extends BaseDoublePlantBlock {
+public class EdenDoublePlantBlock extends BaseDoublePlantBlock implements RuntimeBlockModelProvider {
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		String modId = stateId.getNamespace();
-		String name = stateId.getPath() + (blockState.getValue(TOP) ? "_top" : "_bottom");
+	public @Nullable BlockModel getBlockModel(ResourceLocation blockId, BlockState blockState) {
+		String modId = blockId.getNamespace();
+		String name = blockId.getPath() + (blockState.getValue(TOP) ? "_top" : "_bottom");
 		Map<String, String> textures = Maps.newHashMap();
 		textures.put("%texture%", name);
 		textures.put("%modid%", modId);
 		Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures);
 		return ModelsHelper.fromPattern(pattern);
+	}
+
+	@Override
+	@Environment(EnvType.CLIENT)
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String modId = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
+		for (boolean top : new boolean[]{false, true}) {
+			ModelResourceLocation modelId = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, top ? "_top" : "_bottom");
+			Map<String, String> textures = Maps.newHashMap();
+			textures.put("%texture%", name + (top ? "_top" : "_bottom"));
+			textures.put("%modid%", modId);
+			modelCache.put(modelId.id(), ModelsHelper.fromPattern(PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures)));
+			model.part(modelId.id()).setCondition(state -> state.getValue(TOP) == top).add();
+		}
+		return model.build();
 	}
 
 	@Environment(EnvType.CLIENT)

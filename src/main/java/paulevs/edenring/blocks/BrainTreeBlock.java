@@ -3,6 +3,7 @@ package paulevs.edenring.blocks;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -38,6 +39,7 @@ import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.entities.LightningRayEntity;
@@ -49,7 +51,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider {
+public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider, RuntimeBlockModelProvider {
 	public static final BooleanProperty	ACTIVE = BlockProperties.ACTIVE;
 	public static final BooleanProperty	POWERED = BlockStateProperties.POWERED;
 	private static final Holder<ArmorMaterial>[] PROTECTIVE = new Holder[]{
@@ -173,11 +175,10 @@ public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider {
 				Iterator<ItemStack> iterator = entity.getArmorSlots().iterator();
 				while (iterator.hasNext()) {
 					ItemStack stack = iterator.next();
-					if (stack.getItem() instanceof ArmorItem) {
-						ArmorItem item = (ArmorItem) stack.getItem();
+					if (stack.getItem() instanceof ArmorItem item) {
 						ArmorMaterial material = item.getMaterial().value();
-						for (ArmorMaterial m: PROTECTIVE) {
-							if (material == m) {
+						for (Holder<ArmorMaterial> m: PROTECTIVE) {
+							if (material == m.value()) {
 								resistance += 0.25F;
 								break;
 							}
@@ -192,9 +193,10 @@ public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider {
 		}
 	}
 
+	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		Optional<String> pattern = PatternsHelper.createBlockSimple(blockState.getValue(ACTIVE) ? EdenRing.makeID(stateId.getPath() + "_active") : stateId);
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		Optional<String> pattern = PatternsHelper.createBlockSimple(blockState.getValue(ACTIVE) ? EdenRing.makeID(stateId.id().getPath() + "_active") : stateId.id());
 		return ModelsHelper.fromPattern(pattern);
 	}
 	
