@@ -6,6 +6,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
@@ -18,7 +19,7 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
-import org.betterx.bclib.interfaces.BlockModelProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.interfaces.CustomColorProvider;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
 import org.betterx.bclib.noise.OpenSimplexNoise;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class VolvoxBlock extends SlimeBlock implements RenderLayerProvider, BlockModelProvider, CustomColorProvider {
+public class VolvoxBlock extends SlimeBlock implements RenderLayerProvider, RuntimeBlockModelProvider, CustomColorProvider {
 	private static final OpenSimplexNoise NOISE = new OpenSimplexNoise("volvox".hashCode());
 	
 	private static final int[] COLORS;
@@ -45,8 +46,8 @@ public class VolvoxBlock extends SlimeBlock implements RenderLayerProvider, Bloc
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		Optional<String> pattern = PatternsHelper.createBlockColored(stateId);
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		Optional<String> pattern = PatternsHelper.createBlockColored(stateId.id());
 		return ModelsHelper.fromPattern(pattern);
 	}
 	

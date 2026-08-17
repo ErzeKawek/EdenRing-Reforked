@@ -7,6 +7,7 @@ import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.MultiVariant;
 import net.minecraft.client.renderer.block.model.Variant;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.SoundType;
@@ -16,11 +17,12 @@ import org.betterx.bclib.behaviours.BehaviourBuilders;
 import org.betterx.bclib.blocks.BaseBlock;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class VolvoxBlockDense extends BaseBlock {
+public class VolvoxBlockDense extends BaseBlock implements RuntimeBlockModelProvider {
 	public VolvoxBlockDense() {
 		super(BehaviourBuilders.createWood().strength(1F).sound(SoundType.SLIME_BLOCK));
 	}
@@ -34,12 +36,13 @@ public class VolvoxBlockDense extends BaseBlock {
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		ResourceLocation model1 = new ResourceLocation(stateId.getNamespace(), "volvox_block_dense");
-		ResourceLocation model2 = new ResourceLocation(stateId.getNamespace(), "volvox_block_dense_mossy");
-		modelCache.put(model1, ModelsHelper.fromPattern(PatternsHelper.createBlockSimple(model1)));
-		modelCache.put(model2, ModelsHelper.fromPattern(PatternsHelper.createBlockSimple(model2)));
-		
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String namespace = stateId.id().getNamespace();
+		ResourceLocation model1 = ResourceLocation.fromNamespaceAndPath(namespace, "block/volvox_block_dense");
+		ResourceLocation model2 = ResourceLocation.fromNamespaceAndPath(namespace, "block/volvox_block_dense_mossy");
+		modelCache.put(model1, ModelsHelper.fromPattern(PatternsHelper.createBlockSimple(ResourceLocation.fromNamespaceAndPath(namespace, "volvox_block_dense"))));
+		modelCache.put(model2, ModelsHelper.fromPattern(PatternsHelper.createBlockSimple(ResourceLocation.fromNamespaceAndPath(namespace, "volvox_block_dense_mossy"))));
+
 		return new MultiVariant(Lists.newArrayList(
 			new Variant(model1, Transformation.identity(), false, 2),
 			new Variant(model2, Transformation.identity(), false, 1)

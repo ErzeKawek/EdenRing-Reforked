@@ -8,6 +8,7 @@ import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
@@ -23,8 +24,10 @@ import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import org.betterx.bclib.blocks.BaseDoublePlantBlock;
 import org.betterx.bclib.client.models.ModelsHelper;
+import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.interfaces.CustomColorProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.items.tool.BaseShearsItem;
 import org.betterx.ui.ColorUtil;
 
@@ -33,17 +36,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements CustomColorProvider {
+public class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements CustomColorProvider, RuntimeBlockModelProvider {
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		String modId = stateId.getNamespace();
-		String name = stateId.getPath() + (blockState.getValue(TOP) ? "_top" : "_bottom");
-		Map<String, String> textures = Maps.newHashMap();
-		textures.put("%texture%", modId + ":block/" + name + "_color");
-		textures.put("%overlay%", modId + ":block/" + name + "_overlay");
-		Optional<String> pattern = PatternsHelper.createJson(EdenPatterns.BLOCK_TINTED_CROSS_OVERLAY, textures);
-		return ModelsHelper.fromPattern(pattern);
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String modId = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
+		for (boolean top : new boolean[]{false, true}) {
+			ModelResourceLocation modelId = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, top ? "_top" : "_bottom");
+			String suffix = top ? "_top" : "_bottom";
+			Map<String, String> textures = Maps.newHashMap();
+			textures.put("%texture%", modId + ":block/" + name + suffix + "_color");
+			textures.put("%overlay%", modId + ":block/" + name + suffix + "_overlay");
+			modelCache.put(modelId.id(), ModelsHelper.fromPattern(PatternsHelper.createJson(EdenPatterns.BLOCK_TINTED_CROSS_OVERLAY, textures)));
+			model.part(modelId.id()).setCondition(state -> state.getValue(TOP) == top).add();
+		}
+		return model.build();
 	}
 	
 	@Override
@@ -82,7 +91,7 @@ public class OverlayDoublePlantBlock extends BaseDoublePlantBlock implements Cus
 	@SuppressWarnings("unchecked")
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		if (tool != null && BaseShearsItem.isShear(tool) || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0) {
+		if (tool != null && (BaseShearsItem.isShear(tool) || EnchantmentHelper.getEnchantmentsForCrafting(tool).keySet().stream().anyMatch(enchantment -> enchantment.is(Enchantments.SILK_TOUCH)))) {
 			return Lists.newArrayList(new ItemStack(this));
 		}
 		else {

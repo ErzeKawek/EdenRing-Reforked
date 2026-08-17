@@ -1,0 +1,19 @@
+{
+  "type": "edenring:biome",
+  "biome": "edenring:lakeside_desert",
+  "generation_data": {
+    "intended_placement": "edenring:eden_land"
+  },
+  "surface": {
+    "alt": {
+      "Name": "minecraft:sandstone"
+    },
+    "floor_rule": true,
+    "top": {
+      "Name": "minecraft:sandstone"
+    },
+    "under": {
+      "Name": "minecraft:sandstone"
+    }
+  }
+}

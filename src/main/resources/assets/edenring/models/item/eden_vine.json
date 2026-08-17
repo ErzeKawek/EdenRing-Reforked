@@ -1,0 +1,7 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "edenring:block/eden_vine_bottom_color",
+    "layer1": "edenring:block/eden_vine_bottom_overlay"
+  }
+}

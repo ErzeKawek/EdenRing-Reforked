@@ -8,7 +8,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -17,8 +16,6 @@ import org.betterx.bclib.behaviours.BehaviourBuilders;
 import org.betterx.bclib.blocks.FeatureSaplingBlock;
 import paulevs.edenring.registries.EdenBlocks;
 import paulevs.edenring.registries.EdenFeatures;
-
-import java.util.Optional;
 
 @SuppressWarnings("all")
 public class BalloonMushroomSmallBlock extends FeatureSaplingBlock {
@@ -30,7 +27,7 @@ public class BalloonMushroomSmallBlock extends FeatureSaplingBlock {
 			.instabreak()
 			.sound(SoundType.GRASS)
 			.offsetType(OffsetType.XZ),
-			(state) -> EdenFeatures.BALLOON_MUSHROOM_TREE.configuredFeature
+			(level, pos, state, rnd) -> EdenFeatures.placeInWorld(EdenFeatures.BALLOON_MUSHROOM_TREE, level, pos, rnd)
 		);
 	}
 	
@@ -52,8 +49,7 @@ public class BalloonMushroomSmallBlock extends FeatureSaplingBlock {
 			super.advanceTree(level, pos, blockState, random);
 			return;
 		};
-		FeaturePlaceContext context = new FeaturePlaceContext(Optional.empty(), level, level.getChunkSource().getGenerator(), random, start, null);
-		EdenFeatures.OLD_BALLOON_MUSHROOM_TREE.getFeature().place(context);
+		EdenFeatures.placeInWorld(EdenFeatures.OLD_BALLOON_MUSHROOM_TREE, level, start, random);
 	}
 	
 	private BlockPos getStart(ServerLevel level, BlockPos pos) {

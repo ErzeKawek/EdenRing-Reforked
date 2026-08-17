@@ -144,7 +144,7 @@ public class GuideBookScreen extends Screen {
 	
 	@Override
 	public void render(GuiGraphics guiGraphics, int i, int j, float f) {
-		this.renderBackground(guiGraphics);
+		this.renderBackground(guiGraphics, i, j, f);
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);
 		RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 		RenderSystem.setShaderTexture(0, BOOK_TEXTURE);
@@ -407,7 +407,7 @@ public class GuideBookScreen extends Screen {
 		
 		IllustrationPageEntry(JsonObject obj) {
 			super(obj);
-			this.texture = new ResourceLocation(obj.get("image").getAsString());
+			this.texture = ResourceLocation.parse(obj.get("image").getAsString());
 			height = obj.get("height").getAsInt();
 			width = obj.get("width").getAsInt();
 			JsonElement preCentered = obj.get("centered");
@@ -434,7 +434,7 @@ public class GuideBookScreen extends Screen {
 			super(obj);
 			String text = obj.get("item").getAsString();
 			height = obj.get("height").getAsInt();
-			ResourceLocation location = new ResourceLocation(text);
+			ResourceLocation location = ResourceLocation.parse(text);
 			item = new ItemStack(BuiltInRegistries.ITEM.get(location));
 			JsonElement preCentered = obj.get("centered");
 			centered = preCentered == null ? false : preCentered.getAsBoolean();

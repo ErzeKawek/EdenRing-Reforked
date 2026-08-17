@@ -39,6 +39,7 @@ import org.betterx.bclib.blocks.BaseBlockNotFull;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.CustomColorProvider;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.items.tool.BaseShearsItem;
 import org.betterx.bclib.util.BlocksHelper;
 import org.betterx.ui.ColorUtil;
@@ -46,7 +47,7 @@ import org.betterx.ui.ColorUtil;
 import java.util.List;
 import java.util.Map;
 
-public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvider, RenderLayerProvider, BonemealableBlock {
+public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvider, RenderLayerProvider, BonemealableBlock, RuntimeBlockModelProvider {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	private static final VoxelShape UP_AABB = box(0, 15, 0, 16, 16, 16);
 	private static final VoxelShape DOWN_AABB = box(0, 0, 0, 16, 1, 16);
@@ -174,7 +175,7 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	}
 	
 	private boolean hasSilkTouch(ItemStack tool) {
-		return EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0;
+		return EnchantmentHelper.getEnchantmentsForCrafting(tool).keySet().stream().anyMatch(enchantment -> enchantment.is(Enchantments.SILK_TOUCH));
 	}
 	
 	@Override
@@ -208,7 +209,7 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	}
 	
 	@Override
-	public boolean isValidBonemealTarget(LevelReader blockGetter, BlockPos blockPos, BlockState blockState, boolean bl) {
+	public boolean isValidBonemealTarget(LevelReader blockGetter, BlockPos blockPos, BlockState blockState) {
 		return true;
 	}
 	

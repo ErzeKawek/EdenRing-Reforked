@@ -136,7 +136,7 @@ public class OldBalloonMushroomTreeFeature extends DefaultFeature {
 		
 		updateBlocks.forEach(pos -> {
 			BlockState s = level.getBlockState(pos);
-			s = s.getBlock().updateShape(s, Direction.UP, AIR, level, pos, pos);
+			s = s.updateShape(Direction.UP, AIR, level, pos, pos);
 			BlocksHelper.setWithoutUpdate(level, pos, s);
 		});
 	}

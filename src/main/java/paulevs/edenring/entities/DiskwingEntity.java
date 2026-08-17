@@ -25,6 +25,7 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.Goal;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
@@ -59,37 +60,23 @@ public class DiskwingEntity extends DespawnableAnimal {
 	
 	@Override
 	@SuppressWarnings("resource")
-	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData, CompoundTag entityTag) {
-		SpawnGroupData data = super.finalizeSpawn(world, difficulty, spawnReason, entityData, entityTag);
-		
+	public SpawnGroupData finalizeSpawn(ServerLevelAccessor world, DifficultyInstance difficulty, MobSpawnType spawnReason, SpawnGroupData entityData) {
+		SpawnGroupData data = super.finalizeSpawn(world, difficulty, spawnReason, entityData);
+
 		this.entityData.set(VARIANT, world.getLevel().random.nextInt(DiskwingType.VALUES.length));
 		this.entityData.set(SIZE, world.getLevel().random.nextInt(255));
-		
-		if (entityTag != null) {
-			if (entityTag.contains("Variant")) {
-				int variant = entityTag.getInt("Variant");
-				if (variant >= DiskwingType.VALUES.length) {
-					variant = 0;
-				}
-				this.entityData.set(VARIANT, variant);
-			}
-			if (entityTag.contains("Size")) {
-				int size = entityTag.getInt("Size");
-				this.entityData.set(SIZE, size);
-			}
-		}
-		
+
 		anchorPoint = this.blockPosition().above(5);
-		
+
 		this.refreshDimensions();
 		return data;
 	}
-	
+
 	@Override
-	protected void defineSynchedData() {
-		super.defineSynchedData();
-		this.entityData.define(VARIANT, 0);
-		this.entityData.define(SIZE, 0);
+	protected void defineSynchedData(SynchedEntityData.Builder builder) {
+		super.defineSynchedData(builder);
+		builder.define(VARIANT, 0);
+		builder.define(SIZE, 0);
 	}
 	
 	@Override
@@ -123,9 +110,14 @@ public class DiskwingEntity extends DespawnableAnimal {
 		entity.setScale(ageableMob.getRandom().nextInt(255));
 		return entity;
 	}
-	
+
 	@Override
-	public boolean canBeLeashed(Player player) {
+	public boolean isFood(ItemStack stack) {
+		return false;
+	}
+
+	@Override
+	public boolean canBeLeashed() {
 		return false;
 	}
 	

@@ -10,7 +10,7 @@ import paulevs.edenring.registries.EdenFeatures;
 @SuppressWarnings("all")
 public class AquatusSapling extends FeatureSaplingBlock {
 	public AquatusSapling() {
-		super((state) -> EdenFeatures.AQUATUS.configuredFeature);
+		super((level, pos, state, rnd) -> EdenFeatures.placeInWorld(EdenFeatures.AQUATUS, level, pos, rnd));
 	}
 	
 	@Override

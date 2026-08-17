@@ -8,7 +8,7 @@ import paulevs.edenring.EdenRing;
 
 public class BrainTreeComplexMaterial extends EdenWoodenComplexMaterial {
 	public BrainTreeComplexMaterial(String baseName) {
-		super(EdenRing.MOD_ID, baseName, "eden", MapColor.COLOR_LIGHT_GRAY, MapColor.COLOR_LIGHT_GRAY);
+		super(EdenRing.C, baseName, "eden", MapColor.COLOR_LIGHT_GRAY, MapColor.COLOR_LIGHT_GRAY);
 	}
 	
 	@Override

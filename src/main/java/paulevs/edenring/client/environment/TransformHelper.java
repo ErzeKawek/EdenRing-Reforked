@@ -13,11 +13,7 @@ import net.minecraft.world.entity.player.Player;
 public class TransformHelper {
 	private static final Vector3f p1 = new Vector3f();
 	private static final Vector3f p2 = new Vector3f();
-	
-	public static void applyPerspective(PoseStack poseStack, Camera camera) {
-		poseStack.mulPose(camera.rotation());
-	}
-	
+
 	public static void fixBobbing(PoseStack poseStack, Player player, float tickDelta) {
 		float g = player.walkDist - player.walkDistO;
 		float h = -(player.walkDist + g * tickDelta);

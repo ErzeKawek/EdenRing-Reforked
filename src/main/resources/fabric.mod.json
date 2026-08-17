@@ -44,11 +44,11 @@
 			"1.21.1"
 		],
 		"bclib": ">=21.0.13",
-		"worldweaver": ">=21.0.13"
+		"wover": ">=21.0.13"
 	},
 	"breaks": {
 		"bclib": "<21.0.13",
-		"worldweaver": "<21.0.13"
+		"wover": "<21.0.13"
 	},
 	"custom": {
 		"bclib": {

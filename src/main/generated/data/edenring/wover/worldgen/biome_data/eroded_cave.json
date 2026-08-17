@@ -1,0 +1,19 @@
+{
+  "type": "edenring:biome",
+  "biome": "edenring:eroded_cave",
+  "generation_data": {
+    "intended_placement": "edenring:eden_cave"
+  },
+  "surface": {
+    "alt": {
+      "Name": "minecraft:dripstone_block"
+    },
+    "floor_rule": true,
+    "top": {
+      "Name": "minecraft:dripstone_block"
+    },
+    "under": {
+      "Name": "minecraft:dirt"
+    }
+  }
+}

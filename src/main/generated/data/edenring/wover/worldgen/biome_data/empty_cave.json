@@ -1,0 +1,19 @@
+{
+  "type": "edenring:biome",
+  "biome": "edenring:empty_cave",
+  "generation_data": {
+    "intended_placement": "edenring:eden_cave"
+  },
+  "surface": {
+    "alt": {
+      "Name": "minecraft:stone"
+    },
+    "floor_rule": true,
+    "top": {
+      "Name": "minecraft:stone"
+    },
+    "under": {
+      "Name": "minecraft:stone"
+    }
+  }
+}

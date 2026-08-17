@@ -3,18 +3,15 @@ package paulevs.edenring.config;
 import org.betterx.bclib.BCLib;
 import org.betterx.bclib.config.EntryConfig;
 import org.betterx.bclib.config.IdConfig;
-import org.betterx.bclib.config.PathConfig;
 
-import net.fabricmc.api.EnvType;
-import net.fabricmc.api.Environment;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.client.EdenClientConfig;
 
 public class Configs {
     public static final IdConfig BIOMES = new EntryConfig(EdenRing.MOD_ID, "biomes");
-    public static final PathConfig GENERATOR = new PathConfig(EdenRing.MOD_ID, "generator", false, false);
-    public static final PathConfig ITEMS = new PathConfig(EdenRing.MOD_ID, "items");
-    public static final PathConfig RECIPES = new PathConfig(EdenRing.MOD_ID, "recipes");
+    public static final EdenPathConfig GENERATOR = new EdenPathConfig(EdenRing.MOD_ID, "generator");
+    public static final EdenPathConfig ITEMS = new EdenPathConfig(EdenRing.MOD_ID, "items");
+    public static final EdenPathConfig RECIPES = new EdenPathConfig(EdenRing.MOD_ID, "recipes");
 
     public static final EdenClientConfig CLIENT_CONFIG = new EdenClientConfig();
 

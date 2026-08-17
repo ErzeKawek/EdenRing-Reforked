@@ -8,11 +8,9 @@ import org.betterx.wover.biome.api.data.BiomeGenerationDataContainer;
 import org.betterx.wover.generator.api.biomesource.WoverBiomeBuilder;
 
 import net.minecraft.data.worldgen.BootstrapContext;
-import net.minecraft.data.worldgen.placement.EndPlacements;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
-import net.minecraft.world.level.levelgen.GenerationStep;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -20,7 +18,6 @@ import paulevs.edenring.EdenRing;
 import paulevs.edenring.registries.EdenSounds;
 
 public class EdenBiomeBuilder extends WoverBiomeBuilder.AbstractWoverBiomeBuilder<EdenBiomeBuilder> {
-    protected boolean hasCave = false;
     protected SurfaceMaterialProvider surface;
     protected BiomeFactory biomeFactory;
 
@@ -45,11 +42,13 @@ public class EdenBiomeBuilder extends WoverBiomeBuilder.AbstractWoverBiomeBuilde
                 .tag(biomeTag);
     }
 
-    public <B extends VanillaBuilder<B>> VanillaBuilder<B> grassColor(int i, int i1, int i2) {
-        return null;
+    public EdenBiomeBuilder grassColor(int r, int g, int b) {
+        return grassColorOverride(r, g, b);
     }
 
     EdenBiomeBuilder configure(EdenRingBiome.Config biomeConfig) {
+        this.biomeFactory = biomeConfig.getSupplier();
+        biomeConfig.addCustomBuildData(this);
         this.startSurface()
                 .rule(biomeConfig.surfaceMaterial().surface().build())
                 .finishSurface();
@@ -81,7 +80,12 @@ public class EdenBiomeBuilder extends WoverBiomeBuilder.AbstractWoverBiomeBuilde
 
     @Override
     public void registerBiomeData(BootstrapContext<BiomeData> dataContext) {
-        final EdenRingBiome biome = biomeFactory.instantiateBiome(fogDensity, key, new BiomeGenerationDataContainer(parameters, intendedPlacement), terrainHeight, genChance, edgeSize, vertical, edge, parent, hasCave, surface);
+        final EdenRingBiome biome = biomeFactory.instantiateBiome(
+                fogDensity,
+                key.key,
+                new BiomeGenerationDataContainer(parameters, intendedPlacement),
+                terrainHeight, genChance, edgeSize, vertical, edge, parent, surface
+        );
         biome.datagenSetup(dataContext);
         dataContext.register(key.dataKey, biome);
     }
@@ -91,7 +95,7 @@ public class EdenBiomeBuilder extends WoverBiomeBuilder.AbstractWoverBiomeBuilde
         @NotNull
         EdenRingBiome instantiateBiome(
                 float fogDensity,
-                BiomeKey<?> key,
+                @NotNull ResourceKey<Biome> biome,
                 @NotNull BiomeGenerationDataContainer generatorData,
                 float terrainHeight,
                 float genChance,
@@ -99,8 +103,7 @@ public class EdenBiomeBuilder extends WoverBiomeBuilder.AbstractWoverBiomeBuilde
                 boolean vertical,
                 @Nullable ResourceKey<Biome> edge,
                 @Nullable ResourceKey<Biome> parent,
-                boolean hasCave,
-                SurfaceMaterialProvider surface
+                @NotNull SurfaceMaterialProvider surface
         );
     }
 }

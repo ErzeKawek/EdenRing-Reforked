@@ -14,8 +14,9 @@ import org.betterx.bclib.behaviours.BehaviourBuilders;
 import org.betterx.bclib.blocks.BasePlantBlock;
 
 public class SimplePlantBlock extends BasePlantBlock {
+	private static final VoxelShape GRASS_SHAPE = Block.box(2, 0, 2, 14, 13, 14);
 	private boolean isGrass;
-	
+
 	public SimplePlantBlock(boolean replaceable) {
 		super(BehaviourBuilders.createPlant().replaceable());
 		isGrass = replaceable;
@@ -35,6 +36,6 @@ public class SimplePlantBlock extends BasePlantBlock {
 	@Override
 	@SuppressWarnings("deprecation")
 	public VoxelShape getShape(BlockState state, BlockGetter view, BlockPos pos, CollisionContext ePos) {
-		return isGrass ? Blocks.GRASS.getShape(state, view, pos, ePos) : super.getShape(state, view, pos, ePos);
+		return isGrass ? GRASS_SHAPE : super.getShape(state, view, pos, ePos);
 	}
 }

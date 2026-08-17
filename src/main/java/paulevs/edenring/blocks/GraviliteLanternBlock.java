@@ -6,6 +6,7 @@ import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,13 +19,14 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.betterx.bclib.blocks.BaseAttachedBlock;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import paulevs.edenring.EdenRing;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class GraviliteLanternBlock extends BaseAttachedBlock {
+public class GraviliteLanternBlock extends BaseAttachedBlock implements RuntimeBlockModelProvider {
 	private static final EnumMap<Direction, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Direction.class);
 	
 	public GraviliteLanternBlock() {
@@ -34,7 +36,7 @@ public class GraviliteLanternBlock extends BaseAttachedBlock {
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		Direction facing = blockState.getValue(FACING);
 		Transformation transformation = new Transformation(null, facing.getRotation(), null, null);
 		return ModelsHelper.createMultiVariant(EdenRing.makeID("block/gravilite_lantern"), transformation, false);

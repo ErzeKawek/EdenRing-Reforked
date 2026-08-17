@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
@@ -31,7 +32,9 @@ import org.betterx.bclib.behaviours.BehaviourBuilders;
 import org.betterx.bclib.blocks.BasePlantBlock;
 import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
+import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.items.tool.BaseShearsItem;
 import org.betterx.bclib.util.MHelper;
 import paulevs.edenring.EdenRing;
@@ -42,7 +45,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class TallBalloonMushroom extends BasePlantBlock {
+public class TallBalloonMushroom extends BasePlantBlock implements RuntimeBlockModelProvider {
 	public static final IntegerProperty TEXTURE = EdenBlockProperties.TEXTURE_4;
 	
 	public TallBalloonMushroom() {
@@ -91,14 +94,20 @@ public class TallBalloonMushroom extends BasePlantBlock {
 	}
 	
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		String modId = stateId.getNamespace();
-		String name = stateId.getPath() + "_" + blockState.getValue(TEXTURE);
-		Map<String, String> textures = Maps.newHashMap();
-		textures.put("%texture%", name);
-		textures.put("%modid%", modId);
-		Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures);
-		return ModelsHelper.fromPattern(pattern);
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String modId = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
+		for (int texture = 0; texture <= 3; texture++) {
+			ModelResourceLocation modelId = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_" + texture);
+			Map<String, String> textures = Maps.newHashMap();
+			textures.put("%texture%", name + "_" + texture);
+			textures.put("%modid%", modId);
+			modelCache.put(modelId.id(), ModelsHelper.fromPattern(PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures)));
+			final int t = texture;
+			model.part(modelId.id()).setCondition(state -> state.getValue(TEXTURE) == t).add();
+		}
+		return model.build();
 	}
 	
 	@Override
@@ -110,7 +119,7 @@ public class TallBalloonMushroom extends BasePlantBlock {
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		if (tool != null && BaseShearsItem.isShear(tool) || EnchantmentHelper.getItemEnchantmentLevel(Enchantments.SILK_TOUCH, tool) > 0) {
+		if (tool != null && (BaseShearsItem.isShear(tool) || EnchantmentHelper.getEnchantmentsForCrafting(tool).keySet().stream().anyMatch(enchantment -> enchantment.is(Enchantments.SILK_TOUCH)))) {
 			return Lists.newArrayList(new ItemStack(this));
 		}
 		else if (state.getValue(TEXTURE) == 3) {
@@ -125,7 +134,7 @@ public class TallBalloonMushroom extends BasePlantBlock {
 	}
 	
 	@Override
-	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
 		return false;
 	}
 	

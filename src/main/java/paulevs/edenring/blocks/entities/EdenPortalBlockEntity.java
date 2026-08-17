@@ -2,7 +2,6 @@ package paulevs.edenring.blocks.entities;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.dimension.v1.FabricDimensions;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockPos.MutableBlockPos;
 import net.minecraft.resources.ResourceKey;
@@ -16,10 +15,9 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.chunk.ChunkAccess;
-import net.minecraft.world.level.chunk.ChunkStatus;
+import net.minecraft.world.level.chunk.status.ChunkStatus;
 import net.minecraft.world.level.levelgen.Heightmap.Types;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
-import net.minecraft.world.level.portal.PortalInfo;
+import net.minecraft.world.level.portal.DimensionTransition;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
 import paulevs.edenring.EdenRing;
@@ -31,7 +29,6 @@ import paulevs.edenring.world.EdenPortal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import org.betterx.bclib.util.BlocksHelper;
 
@@ -90,9 +87,6 @@ public class EdenPortalBlockEntity extends BlockEntity {
 		ResourceKey<Level> key;
 		if (level.dimension().equals(EdenRing.EDEN_RING_KEY)) {
 			key = Level.OVERWORLD;
-		}
-		else if (level.dimension().equals(EdenRing.EDEN_RING_KEY)) {
-			key = Level.NETHER;
 		} else key = EdenRing.EDEN_RING_KEY;
 		ServerLevel destination = server.getLevel(key);
 		
@@ -105,14 +99,7 @@ public class EdenPortalBlockEntity extends BlockEntity {
 			preExit = blockPos.mutable();
 			getLand(destination, preExit);
 			if (preExit.getY() == 130 && destination.getBlockState(preExit.below(2)).isAir()) {
-				EdenFeatures.SMALL_ISLAND.getFeature().place(new FeaturePlaceContext<>(
-					Optional.empty(),
-					destination,
-					destination.getChunkSource().getGenerator(),
-					destination.random,
-					preExit.below(2),
-					null
-				));
+				EdenFeatures.placeInWorld(EdenFeatures.SMALL_ISLAND, destination, preExit.below(2), destination.random);
 			}
 			EdenPortal.buildPortal(destination, preExit);
 		}
@@ -127,16 +114,14 @@ public class EdenPortalBlockEntity extends BlockEntity {
 				else {
 					if (e instanceof ServerPlayer) {
 						ServerPlayer player = (ServerPlayer) e;
-						FabricDimensions.teleport(
-							player,
-							destination,
-							new PortalInfo(
-								new Vec3(exit.getX() + 0.5, exit.getY(), exit.getZ()+0.5),
-								new Vec3(0,0,0),
+						player.changeDimension(new DimensionTransition(
+								destination,
+								new Vec3(exit.getX() + 0.5, exit.getY(), exit.getZ() + 0.5),
+								Vec3.ZERO,
 								player.getYRot(),
-								player.getXRot()
-							)
-						);
+								player.getXRot(),
+								DimensionTransition.DO_NOTHING
+						));
 						((EdenPortable) player).setPortalTimeout(20);
 					}
 					else {

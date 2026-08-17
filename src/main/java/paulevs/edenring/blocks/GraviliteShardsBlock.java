@@ -22,12 +22,13 @@ import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.Optional;
 
-public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLayerProvider {
+public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLayerProvider, RuntimeBlockModelProvider {
 	private static final EnumMap<Direction, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Direction.class);
 	
 	public GraviliteShardsBlock() {
@@ -46,13 +47,13 @@ public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLay
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		ModelResourceLocation shardsUp = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), this.defaultBlockState().toString());
-		
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		ResourceLocation shardsUp = ResourceLocation.fromNamespaceAndPath(stateId.id().getNamespace(), "block/" + stateId.id().getPath());
+
 		if (!modelCache.containsKey(shardsUp)) {
 			Map<String, String> textures = Maps.newHashMap();
-			textures.put("%modid%", stateId.getNamespace());
-			textures.put("%texture%", stateId.getPath());
+			textures.put("%modid%", stateId.id().getNamespace());
+			textures.put("%texture%", stateId.id().getPath());
 			Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures);
 			BlockModel model = ModelsHelper.fromPattern(pattern);
 			modelCache.put(shardsUp, model);

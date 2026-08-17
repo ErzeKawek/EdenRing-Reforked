@@ -1,6 +1,5 @@
 package paulevs.edenring.blocks.entities.renderers;
 
-import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -27,60 +26,59 @@ public class EdenPortalBlockEntityRenderer <T extends EdenPortalBlockEntity> imp
 	public void render(T entity, float tickDelta, PoseStack poseStack, MultiBufferSource multiBufferSource, int light, int overlay) {
 		poseStack.pushPose();
 		Matrix4f matrix = poseStack.last().pose();
-		Matrix3f normal = poseStack.last().normal();
-		
+
 		RenderSystem.disableCull();
-		
+
 		float time1 = (float) ((((double) entity.getTicks() + tickDelta) * 0.025) % 1.0);
 		float time2 = (float) ((((double) entity.getTicks() + tickDelta) * 0.04) % 1.0);
-		
+
 		float v1 = 1.0F + time1;
 		float v2 = time1;
-		
+
 		float v3 = 1.0F + time2 + 0.3F;
 		float v4 = time2 + 0.3F;
-		
+
 		VertexConsumer consumer = multiBufferSource.getBuffer(RenderType.beaconBeam(
 			PORTAL_RAY_DEEP,
 			true
 		));
 		RenderSystem.setShaderTexture(0, PORTAL_RAY_DEEP);
-		renderFaces(consumer, matrix, normal, v3, v4, 0.25F);
-		
+		renderFaces(consumer, matrix, v3, v4, 0.25F);
+
 		consumer = multiBufferSource.getBuffer(RenderType.beaconBeam(
 			PORTAL_RAY,
 			true
 		));
 		RenderSystem.setShaderTexture(0, PORTAL_RAY);
-		renderFaces(consumer, matrix, normal, v1, v2, 0.375F);
-		
+		renderFaces(consumer, matrix, v1, v2, 0.375F);
+
 		poseStack.popPose();
-		
+
 		RenderSystem.enableCull();
 	}
-	
-	private void renderFaces(VertexConsumer consumer, Matrix4f matrix, Matrix3f normal, float v1, float v2, float offset) {
+
+	private void renderFaces(VertexConsumer consumer, Matrix4f matrix, float v1, float v2, float offset) {
 		float xz1 = -offset;
 		float xz2 = 1.0F + offset;
 		
-		consumer.vertex(matrix, xz2,  0.0F, xz1).color(255, 255, 255, 255).uv(0.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  3.0F, xz1).color(255, 255, 255,   0).uv(0.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  3.0F, xz2).color(255, 255, 255,   0).uv(1.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  0.0F, xz2).color(255, 255, 255, 255).uv(1.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
+		consumer.addVertex(matrix, xz2,  0.0F, xz1).setColor(255, 255, 255, 255).setUv(0.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  3.0F, xz1).setColor(255, 255, 255,   0).setUv(0.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  3.0F, xz2).setColor(255, 255, 255,   0).setUv(1.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  0.0F, xz2).setColor(255, 255, 255, 255).setUv(1.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
 		
-		consumer.vertex(matrix, xz1,  0.0F, xz2).color(255, 255, 255, 255).uv(0.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz1,  3.0F, xz2).color(255, 255, 255,   0).uv(0.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz1,  3.0F, xz1).color(255, 255, 255,   0).uv(1.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz1,  0.0F, xz1).color(255, 255, 255, 255).uv(1.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
+		consumer.addVertex(matrix, xz1,  0.0F, xz2).setColor(255, 255, 255, 255).setUv(0.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz1,  3.0F, xz2).setColor(255, 255, 255,   0).setUv(0.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz1,  3.0F, xz1).setColor(255, 255, 255,   0).setUv(1.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz1,  0.0F, xz1).setColor(255, 255, 255, 255).setUv(1.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
 		
-		consumer.vertex(matrix, xz1,  0.0F,  xz2).color(255, 255, 255, 255).uv(0.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  0.0F,  xz2).color(255, 255, 255, 255).uv(1.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  3.0F,  xz2).color(255, 255, 255,   0).uv(1.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz1,  3.0F,  xz2).color(255, 255, 255,   0).uv(0.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
+		consumer.addVertex(matrix, xz1,  0.0F,  xz2).setColor(255, 255, 255, 255).setUv(0.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  0.0F,  xz2).setColor(255, 255, 255, 255).setUv(1.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  3.0F,  xz2).setColor(255, 255, 255,   0).setUv(1.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz1,  3.0F,  xz2).setColor(255, 255, 255,   0).setUv(0.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
 		
-		consumer.vertex(matrix, xz1,  3.0F, xz1).color(255, 255, 255,   0).uv(0.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  3.0F, xz1).color(255, 255, 255,   0).uv(1.0F, v2).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz2,  0.0F, xz1).color(255, 255, 255, 255).uv(1.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
-		consumer.vertex(matrix, xz1,  0.0F, xz1).color(255, 255, 255, 255).uv(0.0F, v1).overlayCoords(OverlayTexture.NO_OVERLAY).uv2(0xF000F0).normal(normal, 0.0f, 1.0f, 0.0f).endVertex();
+		consumer.addVertex(matrix, xz1,  3.0F, xz1).setColor(255, 255, 255,   0).setUv(0.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  3.0F, xz1).setColor(255, 255, 255,   0).setUv(1.0F, v2).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz2,  0.0F, xz1).setColor(255, 255, 255, 255).setUv(1.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
+		consumer.addVertex(matrix, xz1,  0.0F, xz1).setColor(255, 255, 255, 255).setUv(0.0F, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(0xF000F0).setNormal(0.0f, 1.0f, 0.0f);
 	}
 }

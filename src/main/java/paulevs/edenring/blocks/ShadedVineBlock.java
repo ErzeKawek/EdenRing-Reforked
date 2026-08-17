@@ -5,6 +5,7 @@ import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
 import net.minecraft.client.renderer.block.model.BlockModel;
+import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -35,9 +36,11 @@ import org.betterx.bclib.behaviours.BehaviourBuilders;
 import org.betterx.bclib.blocks.BaseBlockNotFull;
 import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
+import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
 import org.betterx.bclib.client.render.BCLRenderLayer;
 import org.betterx.bclib.interfaces.RenderLayerProvider;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.items.tool.BaseShearsItem;
 import org.betterx.bclib.util.BlocksHelper;
 import paulevs.edenring.blocks.EdenBlockProperties.QuadShape;
@@ -46,7 +49,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-public class ShadedVineBlock extends BaseBlockNotFull implements RenderLayerProvider, BonemealableBlock {
+public class ShadedVineBlock extends BaseBlockNotFull implements RenderLayerProvider, BonemealableBlock, RuntimeBlockModelProvider {
 	public static final EnumProperty<QuadShape> SHAPE = EdenBlockProperties.QUAD_SHAPE;
 	private static final VoxelShape VOXEL_SHAPE = Block.box(2, 0, 2, 14, 16, 14);
 	
@@ -61,23 +64,27 @@ public class ShadedVineBlock extends BaseBlockNotFull implements RenderLayerProv
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	@SuppressWarnings("incomplete-switch")
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		String modId = stateId.getNamespace();
-		String name = stateId.getPath();
-		
-		QuadShape shape = blockState.getValue(SHAPE);
-		switch (shape) {
-			case TOP -> name += "_top";
-			case BOTTOM -> name += "_bottom";
-			case SMALL -> name += "_small";
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String modId = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
+		for (QuadShape shape : QuadShape.values()) {
+			String suffix = switch (shape) {
+				case TOP -> "_top";
+				case BOTTOM -> "_bottom";
+				case SMALL -> "_small";
+				case MIDDLE -> "";
+			};
+			ModelResourceLocation modelId = RuntimeBlockModelProvider.remapModelResourceLocation(
+					stateId, blockState, suffix.isEmpty() ? "_mid" : suffix
+			);
+			Map<String, String> textures = Maps.newHashMap();
+			textures.put("%modid%", modId);
+			textures.put("%texture%", name + suffix);
+			modelCache.put(modelId.id(), ModelsHelper.fromPattern(PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures)));
+			model.part(modelId.id()).setCondition(state -> state.getValue(SHAPE) == shape).add();
 		}
-		
-		Map<String, String> textures = Maps.newHashMap();
-		textures.put("%modid%", modId);
-		textures.put("%texture%", name);
-		Optional<String> pattern = PatternsHelper.createJson(BasePatterns.BLOCK_CROSS, textures);
-		return ModelsHelper.fromPattern(pattern);
+		return model.build();
 	}
 	
 	@Override
@@ -134,10 +141,7 @@ public class ShadedVineBlock extends BaseBlockNotFull implements RenderLayerProv
 	@Override
 	public List<ItemStack> getDrops(BlockState state, LootParams.Builder builder) {
 		ItemStack tool = builder.getParameter(LootContextParams.TOOL);
-		if (tool != null && BaseShearsItem.isShear(tool) || EnchantmentHelper.getItemEnchantmentLevel(
-			Enchantments.SILK_TOUCH,
-			tool
-		) > 0) {
+		if (tool != null && (BaseShearsItem.isShear(tool) || EnchantmentHelper.getEnchantmentsForCrafting(tool).keySet().stream().anyMatch(enchantment -> enchantment.is(Enchantments.SILK_TOUCH)))) {
 			return Lists.newArrayList(new ItemStack(this));
 		}
 		else {
@@ -151,7 +155,7 @@ public class ShadedVineBlock extends BaseBlockNotFull implements RenderLayerProv
 	}
 	
 	@Override
-	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state, boolean isClient) {
+	public boolean isValidBonemealTarget(LevelReader world, BlockPos pos, BlockState state) {
 		while (world.getBlockState(pos).getBlock() == this) {
 			pos = pos.below();
 		}

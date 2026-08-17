@@ -28,13 +28,14 @@ import org.betterx.bclib.blocks.BaseBlockNotFull;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.util.BlocksHelper;
 import paulevs.edenring.blocks.EdenBlockProperties.BalloonMushroomStemState;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class BranchBlock extends BaseBlockNotFull {
+public class BranchBlock extends BaseBlockNotFull implements RuntimeBlockModelProvider {
 	public static final BooleanProperty[] DIRECTIONS = EdenBlockProperties.DIRECTIONS;
 	private static final VoxelShape CENTER = box(4, 4, 4, 12, 12, 12);
 	private static final VoxelShape[] DIRECTION_SHAPES = new VoxelShape[] {
@@ -114,14 +115,13 @@ public class BranchBlock extends BaseBlockNotFull {
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		BlockState def = defaultBlockState();
-		String modID = stateId.getNamespace();
-		String name = stateId.getPath();
-		
-		ModelResourceLocation keyCenter = new ModelResourceLocation(modID, name, def.toString());
-		ModelResourceLocation keyUp = new ModelResourceLocation(modID, name, def.setValue(BlockStateProperties.UP, true).toString());
-		
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		String modID = stateId.id().getNamespace();
+		String name = stateId.id().getPath();
+
+		ResourceLocation keyCenter = ResourceLocation.fromNamespaceAndPath(modID, "block/" + name);
+		ResourceLocation keyUp = ResourceLocation.fromNamespaceAndPath(modID, "block/" + name + "_up");
+
 		if (!modelCache.containsKey(keyCenter)) {
 			Map<String, String> textures = Maps.newHashMap();
 			textures.put("%texture%", modID + ":block/" + name);

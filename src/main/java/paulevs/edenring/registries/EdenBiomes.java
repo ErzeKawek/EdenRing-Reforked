@@ -2,19 +2,18 @@ package paulevs.edenring.registries;
 
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.level.biome.Biome;
 
-import org.betterx.bclib.api.v2.levelgen.biomes.BCLBiomeRegistry;
-import org.betterx.bclib.api.v2.levelgen.biomes.BiomeAPI;
 import org.betterx.wover.biome.api.data.BiomeCodecRegistry;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.world.biomes.EdenRingBiome;
 
 public class EdenBiomes {
-	public static final BiomeAPI.BiomeType EDEN = new BiomeAPI.BiomeType("EDEN");
-    public static final BiomeAPI.BiomeType EDEN_CAVE = new BiomeAPI.BiomeType("EDEN_CAVE", EDEN);
-    public static final BiomeAPI.BiomeType EDEN_LAND = new BiomeAPI.BiomeType("EDEN_LAND", EDEN);
-    public static final BiomeAPI.BiomeType EDEN_VOID = new BiomeAPI.BiomeType("EDEN_VOID", EDEN);
+	public static final TagKey<Biome> EDEN = tagKey("eden");
+    public static final TagKey<Biome> EDEN_CAVE = tagKey("eden_cave");
+    public static final TagKey<Biome> EDEN_LAND = tagKey("eden_land");
+    public static final TagKey<Biome> EDEN_VOID = tagKey("eden_void");
 
     // LAND //
     public static final ResourceKey<Biome> STONE_GARDEN = cKey("stone_garden");
@@ -41,6 +40,10 @@ public class EdenBiomes {
 
     private static ResourceKey<Biome> cKey(String path) {
         return ResourceKey.create(Registries.BIOME, EdenRing.makeID(path));
+    }
+
+    private static TagKey<Biome> tagKey(String path) {
+        return TagKey.create(Registries.BIOME, EdenRing.makeID(path));
     }
 
     public static void register() {

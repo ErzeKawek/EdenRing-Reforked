@@ -18,6 +18,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 import org.betterx.bclib.util.BlocksHelper;
 
 import java.util.Map;
@@ -27,42 +28,42 @@ public class Parignum extends SixSidePlant {
 	public Parignum() {
 		super(FabricBlockSettings.copyOf(Blocks.VINE));
 	}
-	
+
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
 		MultiPartBuilder model = MultiPartBuilder.create(stateDefinition);
 		for (Direction dir: BlocksHelper.DIRECTIONS) {
-			ModelResourceLocation noFlowers = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), "no_flowers_" + dir.name());
-			ModelResourceLocation flowers1 = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), "flowers_1_" + dir.name());
-			ModelResourceLocation flowers2 = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), "flowers_2_" + dir.name());
-			ModelResourceLocation flowers3 = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), "flowers_3_" + dir.name());
-			ModelResourceLocation flowers4 = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), "flowers_4_" + dir.name());
-			
-			modelCache.put(noFlowers, makeModel(stateId, null));
-			modelCache.put(flowers1, makeModel(stateId, "_flowers_1"));
-			modelCache.put(flowers2, makeModel(stateId, "_flowers_2"));
-			modelCache.put(flowers3, makeModel(stateId, "_flowers_3"));
-			modelCache.put(flowers4, makeModel(stateId, "_flowers_4"));
-			
+			ModelResourceLocation noFlowers = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_no_flowers_" + dir.getName());
+			ModelResourceLocation flowers1 = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_flowers_1_" + dir.getName());
+			ModelResourceLocation flowers2 = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_flowers_2_" + dir.getName());
+			ModelResourceLocation flowers3 = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_flowers_3_" + dir.getName());
+			ModelResourceLocation flowers4 = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_flowers_4_" + dir.getName());
+
+			modelCache.put(noFlowers.id(), makeModel(stateId.id(), null));
+			modelCache.put(flowers1.id(), makeModel(stateId.id(), "_flowers_1"));
+			modelCache.put(flowers2.id(), makeModel(stateId.id(), "_flowers_2"));
+			modelCache.put(flowers3.id(), makeModel(stateId.id(), "_flowers_3"));
+			modelCache.put(flowers4.id(), makeModel(stateId.id(), "_flowers_4"));
+
 			Transformation transformation = new Transformation(null, dir.getOpposite().getRotation(), null, null);
-			
-			ModelResourceLocation stateModel = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), dir.getName());
+
+			ResourceLocation stateModel = RuntimeBlockModelProvider.remapModelResourceLocation(stateId, blockState, "_" + dir.getName()).id();
 			modelCache.put(stateModel, new MultiVariant(Lists.newArrayList(
-				new Variant(noFlowers, transformation, false, 2),
-				new Variant(flowers1, transformation, false, 1),
-				new Variant(flowers2, transformation, false, 1),
-				new Variant(flowers3, transformation, false, 1),
-				new Variant(flowers4, transformation, false, 1)
+				new Variant(noFlowers.id(), transformation, false, 2),
+				new Variant(flowers1.id(), transformation, false, 1),
+				new Variant(flowers2.id(), transformation, false, 1),
+				new Variant(flowers3.id(), transformation, false, 1),
+				new Variant(flowers4.id(), transformation, false, 1)
 			)));
-			
+
 			int index = dir.get3DDataValue();
 			model.part(stateModel).setCondition(state -> state.getValue(DIRECTIONS[index])).add();
 		}
-		
+
 		return model.build();
 	}
-	
+
 	@Override
 	@Environment(EnvType.CLIENT)
 	public BlockModel getItemModel(ResourceLocation itemID) {
@@ -74,18 +75,22 @@ public class Parignum extends SixSidePlant {
 		Optional<String> pattern = PatternsHelper.createJson(EdenPatterns.ITEM_TINTED_OVERLAY, textures);
 		return ModelsHelper.fromPattern(pattern);
 	}
-	
+
 	@Environment(EnvType.CLIENT)
 	private BlockModel makeModel(ResourceLocation stateId, String overlay) {
+		String path = stateId.getPath();
+		if (path.startsWith("block/")) {
+			path = path.substring("block/".length());
+		}
 		Map<String, String> textures = Maps.newHashMap();
 		ResourceLocation patternID;
 		if (overlay == null) {
-			textures.put("%texture%", stateId.getNamespace() + ":block/" + stateId.getPath());
+			textures.put("%texture%", stateId.getNamespace() + ":block/" + path);
 			patternID = EdenPatterns.BLOCK_PLANE_TINT;
 		}
 		else {
-			textures.put("%texture%", stateId.getNamespace() + ":block/" + stateId.getPath());
-			textures.put("%overlay%", stateId.getNamespace() + ":block/" + stateId.getPath() + overlay);
+			textures.put("%texture%", stateId.getNamespace() + ":block/" + path);
+			textures.put("%overlay%", stateId.getNamespace() + ":block/" + path + overlay);
 			patternID = EdenPatterns.BLOCK_PLANE_OVERLAY;
 		}
 		Optional<String> pattern = PatternsHelper.createJson(patternID, textures);

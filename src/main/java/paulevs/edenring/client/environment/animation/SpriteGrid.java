@@ -11,16 +11,19 @@ import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.core.BlockPos;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.level.biome.Biome;
 import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.level.levelgen.XoroshiroRandomSource;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import org.betterx.bclib.api.v2.levelgen.biomes.BCLBiome;
-import org.betterx.bclib.api.v2.levelgen.biomes.BiomeAPI;
 import org.betterx.bclib.util.MHelper;
+import org.betterx.wover.biome.api.data.BiomeData;
+import org.betterx.wover.biome.api.data.BiomeDataRegistry;
+import org.betterx.wover.generator.api.biomesource.WoverBiomeData;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
@@ -32,6 +35,7 @@ import paulevs.edenring.interfaces.SpriteInitializer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 public class SpriteGrid {
 	private final BiomeCountProvider spriteCount;
@@ -159,8 +163,8 @@ public class SpriteGrid {
 		
 		final double time = (double) level.getGameTime() + tickDelta;
 		
-		BufferBuilder bufferBuilder = Tesselator.getInstance().getBuilder();
-		bufferBuilder.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		BufferBuilder bufferBuilder = Tesselator.getInstance().begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
+		final boolean[] hasContent = {false};
 		animations.forEach(sprite -> {
 			sprite.update(time);
 			if (sprite.getFrame() < 0 || sprite.getAlpha() < 0.01F || sprite.getScale() < 0.01F) return;
@@ -205,15 +209,26 @@ public class SpriteGrid {
 			sprite.offset(this.pos);
 			float v = sprite.getFrame() * sprite.getVSize();
 			renderSprite(sprite.getScale(), v, v + sprite.getVSize(), bufferBuilder, poseStack);
+			hasContent[0] = true;
 		});
-		BufferUploader.drawWithShader(bufferBuilder.end());
+		if (hasContent[0]) {
+			BufferUploader.drawWithShader(bufferBuilder.buildOrThrow());
+		}
 	}
 	
 	private SpriteChunk initChunk(ClientLevel level, int px, int pz) {
 		LevelChunk levelChunk = level.getChunk(px, pz);
 		if (levelChunk.isEmpty()) return null;
 		random.setSeed(MHelper.getSeed(0, px, pz));
-		BCLBiome biome = BiomeAPI.getRenderBiome(levelChunk.getNoiseBiome(2, 32, 2).value());
+		BiomeData biome = null;
+		Optional<ResourceKey<Biome>> key = levelChunk.getNoiseBiome(2, 32, 2).unwrapKey();
+		if (key.isPresent()) {
+			try {
+				biome = WoverBiomeData.getDataRegistry("eden ring sprite grid", key.get()).get(BiomeDataRegistry.createKey(key.get()));
+			}
+			catch (IllegalStateException ignored) {
+			}
+		}
 		int count = spriteCount.getCount(biome, random);
 		return new SpriteChunk(px, pz, random, count, initializer);
 	}
@@ -227,10 +242,10 @@ public class SpriteGrid {
 	
 	private void renderQuad(BufferBuilder bufferBuilder, PoseStack poseStack, float size, float v1, float v2) {
 		Matrix4f matrix = poseStack.last().pose();
-		bufferBuilder.vertex(matrix, -size, -size, 0.0F).uv(0.0F, v2).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-		bufferBuilder.vertex(matrix,  size, -size, 0.0F).uv(1.0F, v2).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-		bufferBuilder.vertex(matrix,  size,  size, 0.0F).uv(1.0F, v1).color(color.x(), color.y(), color.z(), color.w()).endVertex();
-		bufferBuilder.vertex(matrix, -size,  size, 0.0F).uv(0.0F, v1).color(color.x(), color.y(), color.z(), color.w()).endVertex();
+		bufferBuilder.addVertex(matrix, -size, -size, 0.0F).setUv(0.0F, v2).setColor(color.x(), color.y(), color.z(), color.w());
+		bufferBuilder.addVertex(matrix,  size, -size, 0.0F).setUv(1.0F, v2).setColor(color.x(), color.y(), color.z(), color.w());
+		bufferBuilder.addVertex(matrix,  size,  size, 0.0F).setUv(1.0F, v1).setColor(color.x(), color.y(), color.z(), color.w());
+		bufferBuilder.addVertex(matrix, -size,  size, 0.0F).setUv(0.0F, v1).setColor(color.x(), color.y(), color.z(), color.w());
 	}
 	
 	private void sort(Camera camera) {

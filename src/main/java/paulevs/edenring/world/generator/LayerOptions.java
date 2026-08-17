@@ -1,7 +1,7 @@
 package paulevs.edenring.world.generator;
 
 import net.minecraft.util.Mth;
-import org.betterx.bclib.config.PathConfig;
+import paulevs.edenring.config.EdenPathConfig;
 
 public class LayerOptions {
 	public final float distance;
@@ -12,7 +12,7 @@ public class LayerOptions {
 	public final int minY;
 	public final int maxY;
 	
-	public LayerOptions(String name, PathConfig config, float distance, float scale, int center, int heightVariation) {
+	public LayerOptions(String name, EdenPathConfig config, float distance, float scale, int center, int heightVariation) {
 		this.distance = clampDistance(config.getFloat(name, "distance[1-8192]", distance));
 		this.scale = clampScale(config.getFloat(name, "scale[0.1-1024]", scale));
 		this.center = clampCenter(config.getInt(name, "averageHeight[0-255]", center));

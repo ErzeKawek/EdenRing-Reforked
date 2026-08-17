@@ -13,24 +13,25 @@ import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.blocks.BaseRotatedPillarBlock;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
+import org.betterx.bclib.interfaces.RuntimeBlockModelProvider;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class GraviliteBlock extends BaseRotatedPillarBlock {
+public class GraviliteBlock extends BaseRotatedPillarBlock implements RuntimeBlockModelProvider {
 	public GraviliteBlock() {
 		super(FabricBlockSettings.copyOf(Blocks.AMETHYST_BLOCK).luminance(15));
 	}
 	
 	@Override
 	@Environment(EnvType.CLIENT)
-	public UnbakedModel getModelVariant(ResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
-		ModelResourceLocation pillarUp = new ModelResourceLocation(stateId.getNamespace(), stateId.getPath(), this.defaultBlockState().toString());
-		
+	public UnbakedModel getModelVariant(ModelResourceLocation stateId, BlockState blockState, Map<ResourceLocation, UnbakedModel> modelCache) {
+		ResourceLocation pillarUp = ResourceLocation.fromNamespaceAndPath(stateId.id().getNamespace(), "block/" + stateId.id().getPath());
+
 		if (!modelCache.containsKey(pillarUp)) {
 			Map<String, String> textures = Maps.newHashMap();
-			String modId = stateId.getNamespace();
-			String name = stateId.getPath();
+			String modId = stateId.id().getNamespace();
+			String name = stateId.id().getPath();
 			textures.put("%side%", modId + ":block/" + name + "_side");
 			textures.put("%end%", modId + ":block/" + name + "_top");
 			Optional<String> pattern = PatternsHelper.createJson(EdenPatterns.BLOCK_PILLAR_NO_SHADE, textures);

@@ -12,6 +12,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.ChunkPos;
+import org.joml.Matrix4fStack;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.client.EdenRingClient;
 import paulevs.edenring.client.environment.TransformHelper;
@@ -26,7 +27,7 @@ public class EdenCloudRenderer implements CloudRenderer {
 			// Handle null biome case (e.g., return a default value)
 			return 0; // Or another appropriate value based on your logic
 		}
-		float fog = biome.settings.getFogDensity();
+		float fog = biome.fogDensity;
 		if (fog > 1 && random.nextInt(5) > 0) {
 			return (int) (random.nextFloat() * fog * 2);
 		}
@@ -56,19 +57,26 @@ public class EdenCloudRenderer implements CloudRenderer {
 		
 		// Start
 		
-		poseStack.pushPose();
-		
 		Minecraft minecraft = context.gameRenderer().getMinecraft();
-		TransformHelper.applyPerspective(poseStack, camera);
-		if (minecraft.options.bobView().get() && EdenRingClient.hasIris()) {
-			TransformHelper.fixBobbing(poseStack, minecraft.player, context.tickDelta());
+		Matrix4fStack modelViewStack = RenderSystem.getModelViewStack();
+		modelViewStack.pushMatrix();
+		modelViewStack.rotateY((float) Math.PI);
+		RenderSystem.applyModelViewMatrix();
+		try {
+			poseStack.pushPose();
+			if (minecraft.options.bobView().get() && EdenRingClient.hasIris()) {
+				TransformHelper.fixBobbing(poseStack, minecraft.player, context.tickCounter().getGameTimeDeltaPartialTick(false));
+			}
+
+			ChunkPos pos = camera.getEntity().chunkPosition();
+			int distance = context.gameRenderer().getMinecraft().options.renderDistance().get();
+			grid.render(level, pos, distance << 1 | 1, poseStack, camera, context.tickCounter().getGameTimeDeltaPartialTick(false), context.frustum());
 		}
-		
-		ChunkPos pos = camera.getEntity().chunkPosition();
-		int distance = context.gameRenderer().getMinecraft().options.renderDistance().get();
-		grid.render(level, pos, distance << 1 | 1, poseStack, camera, context.tickDelta(), context.frustum());
-		
-		poseStack.popPose();
+		finally {
+			poseStack.popPose();
+			modelViewStack.popMatrix();
+			RenderSystem.applyModelViewMatrix();
+		}
 		
 		// Finalise
 		

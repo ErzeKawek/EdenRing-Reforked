@@ -9,6 +9,7 @@ import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
+import net.minecraft.server.level.ServerEntity;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.Level;
@@ -30,7 +31,9 @@ public class LightningRayEntity extends Entity {
 
 	@Override
 	protected void defineSynchedData(SynchedEntityData.Builder builder) {
-
+		builder.define(DATA_DIR_X_ID, 0F);
+		builder.define(DATA_DIR_Y_ID, 0F);
+		builder.define(DATA_DIR_Z_ID, 0F);
 	}
 
 	public void setEnd(Vec3 end) {
@@ -58,13 +61,6 @@ public class LightningRayEntity extends Entity {
 	}
 	
 	@Override
-	protected void defineSynchedData() {
-		this.entityData.define(DATA_DIR_X_ID, 0F);
-		this.entityData.define(DATA_DIR_Y_ID, 0F);
-		this.entityData.define(DATA_DIR_Z_ID, 0F);
-	}
-	
-	@Override
 	protected void readAdditionalSaveData(CompoundTag tag) {
 		if (tag.contains("direction")) {
 			setDir(vecFromNBT((ListTag) tag.get("direction")));
@@ -85,8 +81,8 @@ public class LightningRayEntity extends Entity {
 	}
 	
 	@Override
-	public Packet<ClientGamePacketListener> getAddEntityPacket() {
-		return new ClientboundAddEntityPacket(this);
+	public Packet<ClientGamePacketListener> getAddEntityPacket(ServerEntity entity) {
+		return new ClientboundAddEntityPacket(this, entity);
 	}
 	
 	@Override

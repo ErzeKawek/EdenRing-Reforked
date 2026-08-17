@@ -2,13 +2,14 @@ package paulevs.edenring.items;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
-import net.minecraft.nbt.CompoundTag;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.decoration.HangingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.HangingEntityItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.CustomData;
 import net.minecraft.world.item.context.UseOnContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.gameevent.GameEvent;
@@ -34,10 +35,10 @@ public class EdenPaintingItem extends HangingEntityItem implements ItemModelProv
 		
 		Level level = useOnContext.getLevel();
 		HangingEntity hangingEntity = new EdenPainting(level, relativePos, direction);
-		CompoundTag compoundTag = itemStack.getTag();
-		
-		if (compoundTag != null) {
-			EntityType.updateCustomEntityTag(level, player, hangingEntity, compoundTag);
+		CustomData customData = itemStack.getOrDefault(DataComponents.CUSTOM_DATA, CustomData.EMPTY);
+
+		if (!customData.isEmpty()) {
+			EntityType.updateCustomEntityTag(level, player, hangingEntity, customData);
 		}
 		
 		if (hangingEntity.survives()) {

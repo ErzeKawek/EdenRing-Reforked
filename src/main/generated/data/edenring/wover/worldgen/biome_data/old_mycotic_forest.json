@@ -1,0 +1,27 @@
+{
+  "type": "edenring:biome",
+  "parent": "edenring:mycotic_forest",
+  "biome": "edenring:old_mycotic_forest",
+  "genChance": 0.5,
+  "generation_data": {
+    "intended_placement": "edenring:eden_land"
+  },
+  "surface": {
+    "alt": {
+      "Name": "edenring:eden_mycelium",
+      "Properties": {
+        "snowy": "false"
+      }
+    },
+    "floor_rule": true,
+    "top": {
+      "Name": "edenring:eden_mycelium",
+      "Properties": {
+        "snowy": "false"
+      }
+    },
+    "under": {
+      "Name": "minecraft:dirt"
+    }
+  }
+}
