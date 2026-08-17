@@ -1,0 +1,8 @@
+{
+  "parent": "block/cube_all",
+  "textures": {
+    "all": "edenring:block/metal_sponge_soaked",
+    "particle": "edenring:block/metal_sponge_soaked"
+  },
+  "render_type": "solid"
+}

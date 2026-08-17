@@ -56,7 +56,7 @@ public class BalloonMushroomStemBlock extends BaseBlockNotFull implements Render
 		switch (axis) {
 			case X: return blockState.setValue(BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.EAST_WEST);
 			case Z: return blockState.setValue(BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.NORTH_SOUTH);
-			case Y: return blockState.setValue(BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.EAST_WEST);
+			case Y: return blockState.setValue(BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.UP);
 		}
 		
 		return blockState;

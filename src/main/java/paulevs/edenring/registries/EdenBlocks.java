@@ -126,7 +126,7 @@ public class EdenBlocks {
 	public static final Block TALL_MYCOTIC_GRASS = register("tall_mycotic_grass", new EdenDoublePlantBlock());
 	public static final Block LIMPHIUM_SAPLING = register("limphium_sapling", new LimphiumSapling());
 	public static final Block LIMPHIUM = registerBlockOnly("limphium", new LimphiumBlock());
-	// public static final Block ALAESPES = register("alaespes", new AlaespesBlock());
+	public static final Block ALAESPES = register("alaespes", new AlaespesBlock());
 	
 	public static final Block EDEN_VINE = register("eden_vine", new OverlayVineBlock());
 	
@@ -148,8 +148,8 @@ public class EdenBlocks {
 	//public static final Block INSULECTRICA_ROD = register("insulectrica_rod", new BaseBlock(FabricBlockSettings.copyOf(Blocks.STONE)));
 	//public static final block CLOUD_ANEMONE_BLOCK = register("cloud_anemone_block", new CloudAnemoneBlock());
 
-	//public static final Block METAL_SPONGE = register("metal_sponge", new MetalSpongeBlock());
-	//public static final Block SOAKED_METAL_SPONGE = register("metal_sponge_soaked", new SoakedMetalSpongeBlock());
+	//public static final Block METAL_SPONGE = register("metal_sponge", new MetalSpongeBlock(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_GRATE).mapColor(MapColor.COLOR_LIGHT_GRAY).sound(SoundType.COPPER_GRATE)));
+	//public static final Block SOAKED_METAL_SPONGE = register("metal_sponge_soaked", new SoakedMetalSpongeBlock(BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(0.6F).sound(SoundType.WET_SPONGE)));
 
 
 

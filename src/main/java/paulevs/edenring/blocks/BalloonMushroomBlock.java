@@ -20,14 +20,14 @@ import org.betterx.bclib.client.models.BasePatterns;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
 import org.betterx.bclib.client.models.PatternsHelper;
-import org.betterx.bclib.interfaces.CustomItemProvider;
+import org.betterx.wover.block.api.CustomBlockItemProvider;
 import paulevs.edenring.BaseCTBlock;
 import paulevs.edenring.items.BalloonMushroomBlockItem;
 
 import java.util.Map;
 import java.util.Optional;
 
-public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvider {
+public class BalloonMushroomBlock extends BaseCTBlock implements CustomBlockItemProvider {
 	public static final BooleanProperty NATURAL = EdenBlockProperties.NATURAL;
 	
 	public BalloonMushroomBlock() {
@@ -42,7 +42,7 @@ public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvi
 	}
 	
 	@Override
-	public BlockItem getCustomItem(ResourceLocation resourceLocation, Item.Properties itemProperties) {
+	public BlockItem getCustomBlockItem(ResourceLocation resourceLocation, Item.Properties itemProperties) {
 		return new BalloonMushroomBlockItem(this, itemProperties);
 	}
 	

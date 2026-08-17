@@ -19,6 +19,7 @@ public class EdenSounds {
 	
 	public static final SoundEvent DISKWING_AMBIENT = register("entity", "diskwing", "ambient");
 	public static final SoundEvent DISKWING_DAMAGE = register("entity", "diskwing", "damage");
+	public static final SoundEvent METAL_SPONGE_SOAK = register("block", "metal_sponge", "soak");
 	
 	private static SoundEvent register(String... path) {
 		StringBuilder builder = new StringBuilder(EdenRing.MOD_ID);
