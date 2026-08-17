@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
@@ -16,6 +15,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -39,7 +39,7 @@ public class BalloonMushroomStemBlock extends BaseBlockNotFull implements Render
 	private static final Map<BalloonMushroomStemState, VoxelShape> SHAPES = Maps.newEnumMap(BalloonMushroomStemState.class);
 	
 	public BalloonMushroomStemBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MUSHROOM_STEM).noOcclusion().isSuffocating(EdenBlocks::never).isViewBlocking(EdenBlocks::never));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.MUSHROOM_STEM).noOcclusion().isSuffocating(EdenBlocks::never).isViewBlocking(EdenBlocks::never));
 		registerDefaultState(stateDefinition.any().setValue(BALLOON_MUSHROOM_STEM, BalloonMushroomStemState.UP));
 	}
 	

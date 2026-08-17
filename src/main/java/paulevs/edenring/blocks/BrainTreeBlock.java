@@ -2,7 +2,6 @@ package paulevs.edenring.blocks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
@@ -27,6 +26,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -62,7 +62,7 @@ public class BrainTreeBlock extends BaseBlock implements RenderLayerProvider, Ru
 	};
 	
 	public BrainTreeBlock(MapColor color) {
-		super(FabricBlockSettings.copyOf(Blocks.COPPER_BLOCK).mapColor(color).luminance(state -> state.getValue(ACTIVE) ? 15 : 0).randomTicks());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK).mapColor(color).lightLevel(state -> state.getValue(ACTIVE) ? 15 : 0).randomTicks());
 		this.registerDefaultState(this.getStateDefinition().any().setValue(ACTIVE, false).setValue(POWERED, false));
 	}
 	

@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -32,7 +33,7 @@ public class GraviliteShardsBlock extends BaseAttachedBlock implements RenderLay
 	private static final EnumMap<Direction, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Direction.class);
 	
 	public GraviliteShardsBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.AMETHYST_CLUSTER).luminance(15).noCollision().noOcclusion());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_CLUSTER).lightLevel(state -> 15).noCollission().noOcclusion());
 	}
 	
 	@Override

@@ -9,6 +9,7 @@ import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.blocks.BaseRotatedPillarBlock;
 import org.betterx.bclib.client.models.ModelsHelper;
@@ -20,7 +21,7 @@ import java.util.Optional;
 
 public class GraviliteBlock extends BaseRotatedPillarBlock implements RuntimeBlockModelProvider {
 	public GraviliteBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.AMETHYST_BLOCK).luminance(15));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.AMETHYST_BLOCK).lightLevel(state -> 15));
 	}
 	
 	@Override

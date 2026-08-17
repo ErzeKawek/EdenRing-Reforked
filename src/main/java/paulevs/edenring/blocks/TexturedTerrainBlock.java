@@ -17,6 +17,7 @@ import net.minecraft.world.item.enchantment.EnchantmentHelper;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
@@ -35,7 +36,7 @@ import java.util.Optional;
 
 public class TexturedTerrainBlock extends GrassBlock implements RuntimeBlockModelProvider {
 	public TexturedTerrainBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK));
 	}
 	
 	@Override

@@ -12,6 +12,7 @@ import net.minecraft.core.Direction.Axis;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -29,7 +30,7 @@ public class GraviliteTallLanternBlock extends BaseRotatedPillarBlock implements
 	private static final EnumMap<Axis, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Axis.class);
 	
 	public GraviliteTallLanternBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.LANTERN).luminance(15));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel(state -> 15));
 	}
 	
 	@Override

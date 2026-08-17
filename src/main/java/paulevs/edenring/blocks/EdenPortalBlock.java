@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.BlockPos;
@@ -12,6 +11,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -37,7 +37,7 @@ public class EdenPortalBlock extends BaseBlockNotFull implements RuntimeBlockMod
 	private static final Map<EdenPortalState, VoxelShape> BOUNDS = Maps.newEnumMap(EdenPortalState.class);
 
 	public EdenPortalBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.COPPER_BLOCK));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.COPPER_BLOCK));
 	}
 
 	@Override

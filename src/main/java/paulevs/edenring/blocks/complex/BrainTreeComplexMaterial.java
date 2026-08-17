@@ -3,6 +3,7 @@ package paulevs.edenring.blocks.complex;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import paulevs.edenring.EdenRing;
 
@@ -12,7 +13,7 @@ public class BrainTreeComplexMaterial extends EdenWoodenComplexMaterial {
 	}
 	
 	@Override
-	protected FabricBlockSettings getBlockSettings() {
-		return FabricBlockSettings.copyOf(Blocks.IRON_BLOCK).sounds(SoundType.NETHERITE_BLOCK).mapColor(planksColor);
+	protected BlockBehaviour.Properties getBlockSettings() {
+		return BlockBehaviour.Properties.ofFullCopy(Blocks.IRON_BLOCK).sound(SoundType.NETHERITE_BLOCK).mapColor(planksColor);
 	}
 }

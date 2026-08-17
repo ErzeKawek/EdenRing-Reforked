@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.BiomeColors;
@@ -22,6 +21,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.MossBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -40,7 +40,7 @@ public class EdenMossBlock extends MossBlock implements RuntimeBlockModelProvide
 	private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 2, 16);
 	
 	public EdenMossBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MOSS_BLOCK).sound(SoundType.MOSS).offsetType(OffsetType.NONE).noCollission());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.MOSS_BLOCK).sound(SoundType.MOSS).offsetType(OffsetType.NONE).noCollission());
 	}
 	
 	@Override

@@ -8,6 +8,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.WorldGenLevel;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.Half;
@@ -17,7 +18,7 @@ import paulevs.edenring.registries.EdenBlocks;
 
 public class LimphiumSapling extends OverlayPlantBlock {
 	public LimphiumSapling() {
-		super(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).randomTicks());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK).randomTicks());
 	}
 	
 	@Override

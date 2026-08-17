@@ -3,13 +3,13 @@ package paulevs.edenring.blocks;
 import com.mojang.serialization.MapCodec;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.BaseEntityBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
@@ -32,7 +32,7 @@ import java.util.Optional;
 
 public class EdenPortalCenterBlock extends BaseBlockWithEntity implements RuntimeBlockModelProvider {
 	public EdenPortalCenterBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.BARRIER).mapColor(MapColor.NONE).luminance(15).noCollision().noOcclusion());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.BARRIER).mapColor(MapColor.NONE).lightLevel(state -> 15).noCollission().noOcclusion());
 	}
 
 	@Override

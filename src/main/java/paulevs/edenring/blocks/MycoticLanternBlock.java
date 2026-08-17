@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -11,6 +10,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -27,7 +27,7 @@ public class MycoticLanternBlock extends BaseBlockNotFull implements RuntimeBloc
 	private static final VoxelShape SHAPE = Shapes.or(box(2, 2, 2, 14, 14, 14), box(5, 0, 5, 11, 16, 11));
 	
 	public MycoticLanternBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MUSHROOM_STEM).luminance(15));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.MUSHROOM_STEM).lightLevel(state -> 15));
 	}
 	
 	@Override

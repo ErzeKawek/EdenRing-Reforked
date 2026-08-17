@@ -13,6 +13,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -30,7 +31,7 @@ public class GravityCompressorBlock extends BaseBlock implements RuntimeBlockMod
 	public static final IntegerProperty POWER = BlockStateProperties.POWER;
 	
 	public GravityCompressorBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.STONE).strength(1.5F).luminance(state -> state.getValue(POWER)));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.STONE).strength(1.5F).lightLevel(state -> state.getValue(POWER)));
 		registerDefaultState(getStateDefinition().any().setValue(POWER, 0));
 	}
 	

@@ -12,6 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
 import net.minecraft.world.level.block.SoundType;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 import org.betterx.bclib.client.models.BasePatterns;
@@ -26,7 +27,7 @@ import java.util.Optional;
 
 public class MetalGrassBlock extends GrassBlock implements RuntimeBlockModelProvider {
 	public MetalGrassBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.GRASS_BLOCK).sounds(SoundType.COPPER));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.GRASS_BLOCK).sound(SoundType.COPPER));
 	}
 	
 	@Override

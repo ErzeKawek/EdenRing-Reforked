@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.resources.ResourceLocation;
@@ -11,6 +10,7 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
@@ -31,7 +31,7 @@ public class BalloonMushroomBlock extends BaseCTBlock implements CustomItemProvi
 	public static final BooleanProperty NATURAL = EdenBlockProperties.NATURAL;
 	
 	public BalloonMushroomBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MUSHROOM_STEM).mapColor(MapColor.COLOR_PURPLE));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.MUSHROOM_STEM).mapColor(MapColor.COLOR_PURPLE));
 		registerDefaultState(defaultBlockState().setValue(NATURAL, false));
 	}
 	

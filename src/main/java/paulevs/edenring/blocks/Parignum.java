@@ -14,6 +14,7 @@ import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.ModelsHelper.MultiPartBuilder;
@@ -26,7 +27,7 @@ import java.util.Optional;
 
 public class Parignum extends SixSidePlant {
 	public Parignum() {
-		super(FabricBlockSettings.copyOf(Blocks.VINE));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.VINE));
 	}
 
 	@Override

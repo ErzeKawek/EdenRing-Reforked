@@ -3,7 +3,6 @@ package paulevs.edenring.blocks;
 import com.google.common.collect.Maps;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.BlockModelRotation;
 import net.minecraft.client.resources.model.ModelResourceLocation;
@@ -21,6 +20,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
@@ -51,7 +51,7 @@ public class PulseTreeBlock extends BaseBlockNotFull implements RenderLayerProvi
 	private static final Map<PulseTreeState, VoxelShape> SHAPES = Maps.newEnumMap(PulseTreeState.class);
 	
 	public PulseTreeBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.MUSHROOM_STEM).mapColor(MapColor.COLOR_CYAN).noOcclusion().isSuffocating(EdenBlocks::never).isViewBlocking(EdenBlocks::never));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.MUSHROOM_STEM).mapColor(MapColor.COLOR_CYAN).noOcclusion().isSuffocating(EdenBlocks::never).isViewBlocking(EdenBlocks::never));
 		registerDefaultState(stateDefinition.any().setValue(PULSE_TREE, PulseTreeState.UP));
 	}
 	

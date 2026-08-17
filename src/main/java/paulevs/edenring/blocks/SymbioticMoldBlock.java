@@ -7,6 +7,7 @@ import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import org.betterx.bclib.client.models.ModelsHelper;
 import org.betterx.bclib.client.models.PatternsHelper;
@@ -19,7 +20,7 @@ import java.util.Optional;
 
 public class SymbioticMoldBlock extends CeilPlantBlock implements RuntimeBlockModelProvider {
 	public SymbioticMoldBlock(int emission) {
-		super(FabricBlockSettings.copyOf(Blocks.WARPED_ROOTS).luminance(emission).offsetType(OffsetType.NONE));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.WARPED_ROOTS).lightLevel(state -> emission).offsetType(OffsetType.NONE));
 	}
 	
 	@Override

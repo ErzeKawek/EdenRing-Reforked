@@ -2,7 +2,6 @@ package paulevs.edenring.blocks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.color.block.BlockColor;
 import net.minecraft.client.color.item.ItemColor;
 import net.minecraft.client.renderer.block.model.BlockModel;
@@ -13,6 +12,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.SlimeBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.loot.LootParams;
 
@@ -36,7 +36,7 @@ public class VolvoxBlock extends SlimeBlock implements RenderLayerProvider, Runt
 	private static final int[] COLORS;
 	
 	public VolvoxBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.SLIME_BLOCK).hardness(0.5F));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.SLIME_BLOCK).destroyTime(0.5F));
 	}
 	
 	@Override

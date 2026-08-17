@@ -2,7 +2,6 @@ package paulevs.edenring.blocks;
 
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -17,6 +16,7 @@ import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.GrassBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -47,7 +47,7 @@ public class AquatusRootsBlock extends BaseBlockNotFull implements RenderLayerPr
 	public static final BooleanProperty UP = BlockStateProperties.UP;
 	
 	public AquatusRootsBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.DANDELION).randomTicks());
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.DANDELION).randomTicks());
 	}
 	
 	@Override

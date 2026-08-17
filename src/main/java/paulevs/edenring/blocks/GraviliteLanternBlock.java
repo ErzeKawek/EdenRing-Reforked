@@ -13,6 +13,7 @@ import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
@@ -30,7 +31,7 @@ public class GraviliteLanternBlock extends BaseAttachedBlock implements RuntimeB
 	private static final EnumMap<Direction, VoxelShape> BOUNDING_SHAPES = Maps.newEnumMap(Direction.class);
 	
 	public GraviliteLanternBlock() {
-		super(FabricBlockSettings.copyOf(Blocks.LANTERN).luminance(15));
+		super(BlockBehaviour.Properties.ofFullCopy(Blocks.LANTERN).lightLevel(state -> 15));
 		registerDefaultState(getStateDefinition().any().setValue(FACING, Direction.UP));
 	}
 	

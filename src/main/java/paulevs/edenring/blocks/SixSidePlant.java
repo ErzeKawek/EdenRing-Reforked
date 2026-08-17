@@ -26,6 +26,7 @@ import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.BonemealableBlock;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -58,7 +59,7 @@ public class SixSidePlant extends BaseBlockNotFull implements CustomColorProvide
 	
 	private final Map<BlockState, VoxelShape> shapesCache = Maps.newHashMap();
 	
-	public SixSidePlant(FabricBlockSettings settings) {
+	public SixSidePlant(BlockBehaviour.Properties settings) {
 		super(settings);
 		BlockState state = getStateDefinition().any();
 		for (BooleanProperty property: DIRECTIONS) {

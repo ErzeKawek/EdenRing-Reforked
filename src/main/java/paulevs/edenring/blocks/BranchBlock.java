@@ -4,7 +4,6 @@ import com.google.common.collect.Maps;
 import com.mojang.math.Transformation;
 import net.fabricmc.api.EnvType;
 import net.fabricmc.api.Environment;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.resources.model.ModelResourceLocation;
 import net.minecraft.client.resources.model.UnbakedModel;
@@ -17,9 +16,9 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition.Builder;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.Shapes;
@@ -49,7 +48,7 @@ public class BranchBlock extends BaseBlockNotFull implements RuntimeBlockModelPr
 	private final Map<BlockState, VoxelShape> shapesCache = Maps.newHashMap();
 	
 	public BranchBlock(Block block) {
-		this(FabricBlockSettings.copyOf(block));
+		this(BlockBehaviour.Properties.ofFullCopy(block));
 	}
 	
 	public BranchBlock(Properties properties) {
