@@ -1,4 +1,4 @@
-package paulevs.edenring.blocks;
+/*package paulevs.edenring.blocks;
 
 import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
@@ -72,3 +72,5 @@ public class SoakedMetalSpongeBlock extends WetSpongeBlock {
         }
     }
 }
+
+ */

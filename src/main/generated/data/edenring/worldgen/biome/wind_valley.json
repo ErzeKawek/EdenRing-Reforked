@@ -61,7 +61,8 @@
       "minecraft:patch_grass_forest",
       "edenring:violum_rare",
       "edenring:lonlix",
-      "edenring:parignum"
+      "edenring:parignum",
+      "edenring:alaespes_patch"
     ]
   ],
   "has_precipitation": false,

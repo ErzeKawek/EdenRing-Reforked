@@ -30,6 +30,7 @@ public class WindValleyBiome extends EdenRingBiome.Config {
                 .feature(GenerationStep.Decoration.VEGETAL_DECORATION, VegetationPlacements.PATCH_GRASS_FOREST)
                 .feature(EdenFeatures.VIOLUM_RARE)
                 .feature(EdenFeatures.LONLIX)
-                .feature(EdenFeatures.PARIGNUM);
+                .feature(EdenFeatures.PARIGNUM)
+                .feature(EdenFeatures.ALAESPES);
     }
 }

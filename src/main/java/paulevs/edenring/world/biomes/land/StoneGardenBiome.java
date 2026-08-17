@@ -35,6 +35,7 @@ public class StoneGardenBiome extends EdenRingBiome.Config {
                 .feature(EdenFeatures.VIOLUM_RARE)
                 .feature(EdenFeatures.EDEN_VINE)
                 .feature(EdenFeatures.ROOTS)
-                .feature(EdenFeatures.PARIGNUM);
+                .feature(EdenFeatures.PARIGNUM)
+                .feature(EdenFeatures.ALAESPES);
     }
 }
