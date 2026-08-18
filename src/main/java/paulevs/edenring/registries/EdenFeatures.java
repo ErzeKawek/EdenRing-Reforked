@@ -110,7 +110,7 @@ public class EdenFeatures {
 	public static final PlacedConfiguredFeatureKey IRON_GRASS = registerVegetation("iron_grass", new ScatterFeature(EdenBlocks.IRON_GRASS), 3);
 	public static final PlacedConfiguredFeatureKey GOLD_GRASS = registerVegetation("gold_grass", new ScatterFeature(EdenBlocks.GOLD_GRASS), 3);
 	public static final PlacedConfiguredFeatureKey LONLIX = registerVegetation("lonlix", new ScatterFeature(EdenBlocks.LONLIX), 3);
-	public static final PlacedConfiguredFeatureKey ALAESPES = registerVegetation("alaespes_patch", new DoubleScatterFeature(EdenBlocks.ALAESPES, 4), 2);
+	public static final PlacedConfiguredFeatureKey ALAESPES = registerVegetation("alaespes_patch", new DoubleScatterFeature(EdenBlocks.ALAESPES, 5), 3);
 
 	public static final PlacedConfiguredFeatureKey VIOLUM_DENSE = registerVegetation("violum_dense", new DoubleScatterFeature(EdenBlocks.VIOLUM), 8);
 	public static final PlacedConfiguredFeatureKey VIOLUM_RARE = registerVegetation("violum_rare", new DoubleScatterFeature(EdenBlocks.VIOLUM), 1);
