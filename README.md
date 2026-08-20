@@ -19,13 +19,17 @@ This Is A Fork Of Paulevs Eden Ring Mod for MC 1.20.1≥
 * Fabric API
 * WorldWeaver
 
-### BetterX Fork Crew:
+### Contributors
 * ErzeKawek (Main Dev)
 * ChristopherJ123 (Dev)
-  * Villhume (Dev)
+* Villhume (Dev)
+* y3z0n (Music)
+* Firel (Music)
 
-    | Version | Status  |
-    |---------|---------|
-    | 1.20.1  | ✓ (LTS) |
-    | 1.20.4  | ✓ (LTS) |
-    | 1.21    | ✓       |
+
+  | Version | Status   |
+  |---------|----------|
+  | 1.20.1  | ✓ (LTS) |
+  | 1.20.4  | ✓ (LTS) |
+  | 1.21    | ✓       |
+  | 26.2    | WIP      |
