@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "balloon_mushroom",
+  "key": {
+    "#": {
+      "item": "edenring:balloon_mushroom_stem"
+    }
+  },
+  "pattern": [
+    "##",
+    "##"
+  ],
+  "result": {
+    "count": 1,
+    "id": "edenring:balloon_mushroom_log"
+  }
+}

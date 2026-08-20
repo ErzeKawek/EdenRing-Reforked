@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_brain_tree_block_iron": {
+      "conditions": {
+        "items": [
+          {
+            "items": "edenring:brain_tree_block_iron"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "edenring:iron_framed_brain_tree_log"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_brain_tree_block_iron"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "edenring:iron_framed_brain_tree_log"
+    ]
+  }
+}

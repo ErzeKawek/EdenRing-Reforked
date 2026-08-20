@@ -1,0 +1,13 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    {
+      "item": "edenring:balloon_mushroom_stem"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "edenring:balloon_mushroom_branch"
+  }
+}

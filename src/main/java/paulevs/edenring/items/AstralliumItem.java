@@ -11,7 +11,7 @@ import java.util.List;
 
 public class AstralliumItem extends Item {
     public AstralliumItem(Properties properties) {
-        super(new Item.Properties().stacksTo(32).rarity(Rarity.COMMON));
+        super(new Item.Properties().stacksTo(64).rarity(Rarity.COMMON));
     }
 
     @Override

@@ -1,0 +1,14 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "group": "gravilite",
+  "ingredients": [
+    {
+      "item": "edenring:gravilite_block"
+    }
+  ],
+  "result": {
+    "count": 4,
+    "id": "edenring:gravilite_shards"
+  }
+}

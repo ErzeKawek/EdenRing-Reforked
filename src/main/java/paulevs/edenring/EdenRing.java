@@ -35,6 +35,13 @@ public class EdenRing implements ModInitializer {
   public static final String MOD_ID = C.namespace;
   public static final Logger LOGGER = C.LOG;
 
+  public static ResourceLocation id(String path) {
+    return ResourceLocation.tryBuild(MOD_ID, path);
+  }
+
+  public static ResourceLocation of(String name) {
+    return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
+  }
 
 public static final ResourceKey<DimensionType> EDEN_RING_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, C.mk(MOD_ID));
 public static final ResourceKey<Level> EDEN_RING_KEY = ResourceKey.create(Registries.DIMENSION, C.mk(MOD_ID));

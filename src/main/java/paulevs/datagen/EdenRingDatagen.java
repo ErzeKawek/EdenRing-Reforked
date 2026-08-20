@@ -1,5 +1,6 @@
 package paulevs.datagen;
 
+import net.fabricmc.fabric.api.datagen.v1.DataGeneratorEntrypoint;
 import net.fabricmc.fabric.api.datagen.v1.FabricDataGenerator;
 import net.minecraft.resources.ResourceLocation;
 import org.betterx.wover.core.api.ModCore;
@@ -11,7 +12,7 @@ import paulevs.datagen.worldgen.EdenRingBiomesDataProvider;
 import paulevs.datagen.worldgen.EdenRingFeaturesDataProvider;
 import paulevs.edenring.EdenRing;
 
-public class EdenRingDatagen extends WoverDataGenEntryPoint {
+public class EdenRingDatagen extends WoverDataGenEntryPoint implements DataGeneratorEntrypoint {
     @Override
     protected ModCore modCore() {
         return EdenRing.C;
