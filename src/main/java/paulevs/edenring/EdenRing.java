@@ -1,5 +1,6 @@
 package paulevs.edenring;
 
+import net.minecraft.resources.Identifier;
 import org.betterx.bclib.api.v2.datafixer.DataFixerAPI;
 import org.betterx.bclib.api.v2.datafixer.ForcedLevelPatch;
 import org.betterx.bclib.api.v2.datafixer.MigrationProfile;
@@ -34,14 +35,14 @@ public class EdenRing implements ModInitializer {
   public static final String MOD_NAME = "Eden Ring Reforked";
   public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-  public static ResourceLocation id(String path) {
-    return ResourceLocation.tryBuild(MOD_ID, path);
+  public static Identifier id(String path) {
+    return Identifier.tryBuild(MOD_ID, path);
   }
 
   public static final EdenConfig CONFIG = EdenConfig.loadConfiguration();
 
-  public static ResourceLocation of(String name) {
-    return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
+  public static Identifier of(String name) {
+    return Identifier.fromNamespaceAndPath(MOD_ID, name);
   }
 
 public static final ResourceKey<DimensionType> EDEN_RING_TYPE_KEY = ResourceKey.create(Registries.DIMENSION_TYPE, C.mk(MOD_ID));
