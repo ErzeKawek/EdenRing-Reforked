@@ -1,36 +1,19 @@
 package paulevs.edenring.registries;
 
 import com.google.common.collect.Maps;
-import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
-import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.DyeColor;
-import net.minecraft.world.item.HoeItem;
-import net.minecraft.world.item.Items;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.block.*;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.MapColor;
-import org.betterx.bclib.api.v2.ComposterAPI;
-import org.betterx.bclib.api.v2.ShovelAPI;
-import org.betterx.bclib.blocks.BaseBlock;
-import org.betterx.bclib.blocks.BaseLeavesBlock;
-import org.betterx.bclib.blocks.BaseVineBlock;
-import org.betterx.bclib.blocks.FeatureSaplingBlock;
-import org.betterx.bclib.complexmaterials.ComplexMaterial;
-import org.betterx.wover.block.api.BlockRegistry;
-import org.betterx.wover.tag.api.TagManager;
-import org.betterx.wover.tag.api.predefined.CommonBlockTags;
-import org.betterx.wover.tag.api.predefined.CommonItemTags;
-import org.betterx.wover.tag.api.predefined.MineableTags;
 import org.jetbrains.annotations.NotNull;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.blocks.*;
@@ -42,8 +25,6 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class EdenBlocks {
-	private static final BlockRegistry BLOCKS_REGISTRY = BlockRegistry.forMod(EdenRing.C);
-	
 	public static final Block EDEN_GRASS_BLOCK = register(
 			"eden_grass",
 			new EdenGrassBlock(),
@@ -161,46 +142,6 @@ public class EdenBlocks {
 
 
 	public static void init() {
-		TagManager.BLOCKS.bootstrapEvent().subscribe(context -> {
-			EdenBlocks.getModBlocks().forEach(block -> {
-				if (block instanceof BaseLeavesBlock) {
-					context.add(MineableTags.HOE, block);
-					context.add(CommonBlockTags.LEAVES, block);
-				}
-				else if (block instanceof GrassBlock) {
-					context.add(MineableTags.SHOVEL, block);
-				}
-				else if (block instanceof BonemealableBlock) {
-					context.add(MineableTags.HOE, block);
-				}
-				if (block instanceof BaseVineBlock) {
-					context.add(BlockTags.CLIMBABLE, block);
-				}
-			});
-		});
-
-		TagManager.ITEMS.bootstrapEvent().subscribe(context -> {
-			EdenBlocks.getModBlocks().forEach(block -> {
-				if (block instanceof BaseLeavesBlock) {
-					context.add(CommonItemTags.LEAVES, block);
-				}
-			});
-		});
-
-		EdenBlocks.getModBlocks().forEach(block -> {
-			if (block instanceof BaseLeavesBlock) {
-				ComposterAPI.allowCompost(0.3F, block);
-			}
-			else if (block instanceof GrassBlock) {
-				ShovelAPI.addShovelBehaviour(block, Blocks.DIRT_PATH.defaultBlockState());
-				TillableBlockRegistry.register(block, HoeItem::onlyIfAirAbove, Blocks.FARMLAND.defaultBlockState());
-			}
-			else if (block instanceof BonemealableBlock) {
-				if (block.asItem() != Items.AIR) {
-					ComposterAPI.allowCompost(0.1F, block);
-				}
-			}
-		});
 	}
 
 	public static List<Block> getModBlocks() {
@@ -226,11 +167,6 @@ public class EdenBlocks {
 		if (hasItem) EdenItems.registerBlock(block);
 
 		return block;
-	}
-
-	@SafeVarargs
-	public static <T extends Block> T registerBlock(String name, T block, TagKey<Block>... tags) {
-		return getBlockRegistry().register(name, block, tags);
 	}
 
 	private static Block register(String name, Block block,  TagKey<Block>... tags) {
