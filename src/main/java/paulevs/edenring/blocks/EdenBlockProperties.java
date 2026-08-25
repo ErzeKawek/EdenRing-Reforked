@@ -5,9 +5,8 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.IntegerProperty;
-import org.betterx.wover.block.api.BlockProperties;
 
-public class EdenBlockProperties extends BlockProperties {
+public class EdenBlockProperties extends BlockStateProperties {
 	public static final EnumProperty<BalloonMushroomStemState> BALLOON_MUSHROOM_STEM = EnumProperty.create("shape", BalloonMushroomStemState.class);
 	public static final EnumProperty<EdenPortalState> EDEN_PORTAL = EnumProperty.create("shape", EdenPortalState.class);
 	public static final EnumProperty<PulseTreeState> PULSE_TREE = EnumProperty.create("shape", PulseTreeState.class);

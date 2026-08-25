@@ -7,19 +7,19 @@ buildscript {
 plugins {
     id 'idea'
     id 'eclipse'
-    id 'fabric-loom' version "${loom_version}"
+    id "net.fabricmc.fabric-loom" version "${loom_version}"
     id 'maven-publish'
 }
-sourceCompatibility = JavaVersion.VERSION_17
-targetCompatibility = JavaVersion.VERSION_17
-archivesBaseName = project.archives_base_name
+
 version = project.mod_version
 group = project.maven_group
-def local_bclib = findProject(':BCLib') != null
-def local_wover = findProject(':WorldWeaver') != null
+
+base {
+    archivesName = project.archives_base_name
+}
+
 
 loom {
-    accessWidenerPath = file("src/main/resources/edenring.accesswidener")
     interfaceInjection {
         // When enabled injected interfaces from dependecies will be applied.
         enableDependencyInterfaceInjection = true
@@ -53,33 +53,32 @@ repositories {
     maven { url "https://maven.dblsaiko.net/" }
     maven { url "https://maven.fabricmc.net/" }
     maven { url 'https://maven.blamejared.com' }
-    maven { url 'https://maven.ambertation.de/releases' }
     maven { url "https://maven.shedaniel.me/" }
     maven { url 'https://jitpack.io' }
-	maven { url 'https://maven.terraformersmc.com/releases' }
+    maven { url 'https://maven.terraformersmc.com/releases' }
     maven { url 'https://maven.wispforest.io' }
-	flatDir {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Modrinth"
+                url = "https://api.modrinth.com/maven"
+            }
+        }
+        filter {
+            includeGroup "maven.modrinth"
+        }
+    }
+    flatDir {
         dirs 'libs'
     }
 }
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings loom.officialMojangMappings()
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 
-    println "Using local BCLib: ${local_bclib}"
-    if (local_bclib){
-        implementation( project(path:":BCLib", configuration: 'dev') )
-    } else {
-        modImplementation "org.betterx:bclib:${project.bclib_version}"
-    }
+    implementation "net.fabricmc:fabric-loader:$project.loader_version"
 
-    if (local_wover) {
-        implementation project(path: ":WorldWeaver", configuration: 'dev')
-    } else {
-        modImplementation "org.betterx:worldweaver:${project.wover_version}"
-    }
+    implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+
     dependencies {
         include(implementation(annotationProcessor("io.github.llamalad7:mixinextras-fabric:0.2.2")))
     }
@@ -130,11 +129,11 @@ processResources {
 // see http://yodaconditions.net/blog/fix-for-java-file-encoding-problems-with-gradle.html
 tasks.withType(JavaCompile) {
     options.encoding = "UTF-8"
-	it.options.release = 17
+    it.options.release = 21
 }
 javadoc {
     options.tags = ["reason"]
-	options.stylesheetFile = new File(projectDir, "javadoc.css");
+    options.stylesheetFile = new File(projectDir, "javadoc.css");
 }
 
 task javadocJar(type: Jar, dependsOn: javadoc) {

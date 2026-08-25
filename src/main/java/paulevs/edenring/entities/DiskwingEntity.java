@@ -5,7 +5,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.Mth;
@@ -36,6 +35,7 @@ import org.jetbrains.annotations.Nullable;
 import paulevs.edenring.EdenRing;
 import paulevs.edenring.registries.EdenEntities;
 import paulevs.edenring.registries.EdenSounds;
+import paulevs.edenring.utilities.APU;
 
 import java.util.EnumSet;
 
@@ -293,9 +293,9 @@ public class DiskwingEntity extends DespawnableAnimal {
 			RandomSource random = DiskwingEntity.this.random;
 			BlockPos point = DiskwingEntity.this.anchorPoint;
 			Level level = DiskwingEntity.this.level();
-			int x = point.getX() + MHelper.randRange(-20, 20, random);
-			int y = point.getY() + MHelper.randRange(-20, 20, random);
-			int z = point.getZ() + MHelper.randRange(-20, 20, random);
+			int x = point.getX() + APU.randRange(-20, 20, random);
+			int y = point.getY() + APU.randRange(-20, 20, random);
+			int z = point.getZ() + APU.randRange(-20, 20, random);
 			if (point.getY() - 64 < level.getMinBuildHeight()) {
 				y = level.getMinBuildHeight() + 64;
 			}

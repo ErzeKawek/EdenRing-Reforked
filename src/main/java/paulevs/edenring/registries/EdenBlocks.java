@@ -4,6 +4,10 @@ import com.google.common.collect.Maps;
 import net.fabricmc.fabric.api.object.builder.v1.block.FabricBlockSettings;
 import net.fabricmc.fabric.api.registry.TillableBlockRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -35,6 +39,7 @@ import paulevs.edenring.blocks.complex.EdenWoodenComplexMaterial;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 public class EdenBlocks {
 	private static final BlockRegistry BLOCKS_REGISTRY = BlockRegistry.forMod(EdenRing.C);
@@ -50,10 +55,12 @@ public class EdenBlocks {
 	);
 	public static final Block MOSSY_STONE = register("mossy_stone", new MossyStoneBlock());
 
-	public static final Block AURITIS_SAPLING = registerBlock(
-			"auritis_sapling",
-			new AuritisSaplingBlock()
-	);
+	//public static final Block AURITIS_SAPLING = registerBlock(
+	//		"auritis_sapling",
+	//		new AuritisSaplingBlock()
+	//);
+
+	public static final Block AURITIS_SAPLING = registerNew(true, "auritis_sapling", properties -> new AuritisSaplingBlock(EdenFeatures.AURITIS_TREE, properties))
 
 	public static final Block AURITIS_LEAVES = register(
 			"auritis_leaves",
@@ -199,9 +206,26 @@ public class EdenBlocks {
 	public static List<Block> getModBlocks() {
 		return getBlockRegistry().allBlocks().toList();
 	}
+
+
 	
 	private static Block register(String name, Block block) {
 		return BLOCKS_REGISTRY.register(name, block);
+	}
+
+	private static Block registerStair(String string, Block block) {
+		return registerNew(true, string, properties -> new StairBlock(block.defaultBlockState(), properties), BlockBehaviour.Properties.ofFullCopy(block));
+	}
+
+	private static Block registerNew(boolean hasItem, String string, Function<BlockBehaviour.Properties, Block> function, BlockBehaviour.Properties properties) {
+		ResourceKey<Block> key = ResourceKey.create(Registries.BLOCK, EdenRing.id(string));
+		Block block = function.apply(properties);
+
+		Registry.register(BuiltInRegistries.BLOCK, key, block);
+
+		if (hasItem) EdenItems.registerBlock(block);
+
+		return block;
 	}
 
 	@SafeVarargs

@@ -18,11 +18,10 @@ import net.minecraft.world.level.storage.loot.LootPool;
 import net.minecraft.world.level.storage.loot.entries.LootItem;
 import net.minecraft.world.level.storage.loot.predicates.LootItemRandomChanceCondition;
 import net.minecraft.world.level.storage.loot.providers.number.ConstantValue;
-import org.betterx.wover.core.api.Logger;
-import org.betterx.wover.core.api.ModCore;
-import org.betterx.wover.state.api.WorldConfig;
-import de.ambertation.wunderlib.utils.Version;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import paulevs.edenring.config.Configs;
+import paulevs.edenring.config.EdenConfig;
 import paulevs.edenring.paintings.EdenPaintings;
 import paulevs.edenring.registries.*;
 import paulevs.edenring.tab.EdenCreativeTabs;
@@ -31,13 +30,15 @@ import paulevs.edenring.world.generator.EdenBiomeSource;
 import paulevs.edenring.world.generator.GeneratorOptions;
 
 public class EdenRing implements ModInitializer {
-  public static final ModCore C = ModCore.create("edenring");
-  public static final String MOD_ID = C.namespace;
-  public static final Logger LOGGER = C.LOG;
+  public static final String MOD_ID = "edenring";
+  public static final String MOD_NAME = "Eden Ring Reforked";
+  public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
   public static ResourceLocation id(String path) {
     return ResourceLocation.tryBuild(MOD_ID, path);
   }
+
+  public static final EdenConfig CONFIG = EdenConfig.loadConfiguration();
 
   public static ResourceLocation of(String name) {
     return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
